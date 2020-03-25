@@ -51,6 +51,10 @@ headsepline, % Uncomment to get a line under the header
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
 
+%%%% added by me %%%%
+\usepackage{bookmark}
+
+
 %----------------------------------------------------------------------------------------
 %	MARGIN SETTINGS
 %----------------------------------------------------------------------------------------
@@ -293,11 +297,27 @@ Finally, we introduce a probing attack that lets an adversary reveal intermediar
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-%\include{Chapters/Chapter1}
-%\include{Chapters/Chapter2} 
-%\include{Chapters/Chapter3}
-%\include{Chapters/Chapter4} 
-%\include{Chapters/Chapter5} 
+\include{Chapters/Chapter01/Chapter01_Introduction}
+
+\part{Network-level privacy of Bitcoin and privacy focused cryptocurrencies}
+\include{Chapters/Chapter02/Chapter02_Intro_P2P}
+\include{Chapters/Chapter03/Chapter03_Clustering}
+\include{Chapters/Chapter04/Chapter04_Wallets}
+
+\part{Privacy of the Lightning Network}
+\include{Chapters/Chapter05/Chapter05_Intro_Lightning}
+\include{Chapters/Chapter06/Chapter06_LN_probing}
+\include{Chapters/Chapter07/Chapter07_LN_attacks}
+\include{Chapters/Chapter08/Chapter08_HTLC_limit}
+
+\part{Security of smart contracts on Ethereum}
+\include{Chapters/Chapter09/Chapter09_Intro_contracts}
+\include{Chapters/Chapter10/Chapter10_Findel}
+\include{Chapters/Chapter11/Chapter11_SmartCheck}
+\include{Chapters/Chapter12/Chapter12_KYC}
+
+\bookmarksetupnext{level=chapter}
+\include{Chapters/Chapter13/Chapter13_Conclusion}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

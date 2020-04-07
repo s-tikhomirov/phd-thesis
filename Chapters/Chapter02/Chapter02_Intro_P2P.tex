@@ -4,4 +4,214 @@
 
 \label{Chapter02_Intro_P2P} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-Peer-to-peer networks have a long history before being used in blockchain protocols.
+A peer-to-peer protocol is an essential part of a cryptocurrency.
+The design goal of a cryptocurrency is open participation.
+Every user must be able to verify the validity of the blockchain state.
+Consequently, every user must be able to obtain the current state of the system from other peers.
+\footnote{Zero-knowledge cryptography alleviates this requirement for some blockchain protocols.} % cite Coda
+
+One of the design goals of ARPANET, the precursor to the Internet established in 1969, was reliability.
+The network was designed to survive even if a large share of nodes were lost.
+The key design decision enabling this was packet switching.
+In contrast to earlier circuit switching networks, like the telephone network, where a dedicated end-to-end channel was assigned to any pair of currently connected parties, Internet protocols embrace the uncertainty stemming from connecting heterogeneous, geographically distributed computer networks.
+Data is divided into packets, which are routed independently along various networks routes, to be re-combined at the receiving end.
+No central server is responsible for routing: individual routers take decisions based on their view of the network.
+This idea, counter-intuitive at the time, enabled the Internet to grow by many orders of magnitude, and still be resilient to disruptions.
+
+As the Internet gained adoption with the general public in the 1990s, file-sharing networks emerged.
+They allowed users to share large files very efficiently without relying on any one server.
+The primary example of such networks is BitTorrent.
+Over the years, it has shown impressive resiliency, surviving multiple attempts by law enforcement to shut individual BitTorrent trackers down due to them facilitating illegal content sharing.
+Therefore it may be considered a precursor for Bitcoin.
+
+BitTorrent resiliency remains an inspiration for cryptocurrency designers.
+Satoshi Nakamoto, the creator of Bitcoin, wrote: "Governments are good at cutting off the heads of a centrally controlled networks like Napster, but pure P2P networks like Gnutella and Tor seem to be holding their own."~\cite{Nakamoto2008}.
+\todo{Make an chapter or part epigraph?}
+However, the goal of disseminating cryptocurrency data has important distinctions compared to file-sharing.
+
+This introductory motivates our study of privacy issues of Bitcoin's P2P protocol and puts it in a historical context.
+In~\ref{sec:C02_S1_Background_P2P}, we provide a historical overview of P2P networks and outline the similarities and differences in the functions of a file-sharing network and a P2P network powering a blockchain such as Bitcoin.
+In~\ref{sec:C02_S2_Architecture_Bitcoin_P2P}, we describe the architecture of the networking layer of Bitcoin.
+In~\ref{sec:C02_S3_Background_Wallets}, we describe the different types of cryptocurrency wallets.
+Finally,~\ref{sec:C02_S4_Our_Contributions} puts our contributions, to be presented in detail in the following chapters of this part, into context.
+
+
+\section{Background on P2P networks}
+\label{sec:C02_S1_Background_P2P}
+
+As any network, computer networks comprise of nodes.
+An important question that network architects have to face is whether nodes are equal in their functions, or all nodes can perform the common set of tasks.
+
+The former approach emphasizes efficiency.
+We can draw an analogy with economic development of humanity, where the total wealth grows hand in hand with the division of labor.
+Humans specialize in narrow tasks, getting very efficient at their professions, and exchange the fruit of their labor with others.
+In network architecture, dedicating special nodes to perform operations such as coordination or data hosting brings efficiency.
+Specialized nodes, can be implemented using optimized hardware (servers), maintained in specialized facilities (data centers) by professional technicians, take advantage of the economy of scale, and so on.
+
+However, specialization harms resiliency.
+If only a small group of people are responsible for a critically important set of functions, it only takes a relatively small number of them getting sick for adverse effects to propagate to the entire society.
+In networking, likewise, if a dedicated group of servers maintains critical functions, it only takes one successful targeted attack, physical or by means of malware, to disrupt the whole network.
+
+Keeping this trade-off in mind, let us review the development of P2P networks from file-sharing to blockchains.
+
+
+\subsection{Early file-sharing networks}
+
+The Internet has gained momentum in the developed world, with regular people and businesses exposed for the first time to the possibility of sharing data across the world with little to no pre-moderation.
+Not surprisingly, the most common type of data people wanted to share media content such as movies and music.
+
+File-sharing networks emerged in late 1990s to satisfy this demand, often by illegal means.
+The two important early P2P networks are Napster and Gnutella~\cite{Gummadi2002}.
+Napster -- the first successful music-centered file-sharing network -- was launched in 1999.
+Having quickly gained millions of users, it drew attention from law enforcement, and was shut down in 2001.
+
+An important point in the context of this thesis is that it was \textit{possible} to shut the network down.
+Napster users were downloading content from each others' computers, but a central server was responsible for content search.
+Without it, the network could not operate.
+
+The Napster story emphasized the dilemma that P2P networks face.
+In a file-sharing network, someone has to host the files.
+If there is no central server, regular users must to this.
+But regular users simply want to download a movie and watch it.
+They do not want to take deliberate action "for the good of the network".
+And as P2P network's value grows with the network effect, it is very important to make it simple for end users to use, but still make them contribute, maybe even without realizing it.
+
+We can divide the task of file-sharing into two sub-tasks: locating a file and downloading it.
+One nay argue that as long as a user knows where the required file is located, it is only a technical matter to download it efficiently.
+A more crucial task, which Napster failed to implement in a resilient fashion, is content discovery.
+
+Using a server for this task introduces a central point of failure and renders the network vulnerable.
+Gnutella, on the other hand, went to the other extreme and used a flooding technique.
+A user would forward the query to its neighbors, each of which would either reply with the requested content, or forward the query further.
+While this approach has no single point of failure, it is significantly less efficient.
+
+
+\subsubsection{BitTorrent}
+
+BitTorrent~\cite{Pouwelse2005}, developed and launched in 2001, learned the lessons from both Napster and Gnutella.
+Its design strikes a good balance between efficiency and resilience, without making user experience too unwelcoming.
+
+As in other file-sharing P2P networks, users in BitTorrent download files from each other.
+There are, however, multiple ways to locate the files.
+One common way is \textit{torrent files}, which are distributed by specialized web servers -- \textit{trackers}.
+A torrent file contains information about the file, its checksum, and addresses of some peers that likely host it.
+This method does not make the whole network dependent on a single server, but a certain degree of centralization remains.
+Alternatively, BitTorrent users may locate files with \textit{magnet links}, which utilize a modification of Kademlia~\cite{Maymounkov2002} -- a distributed hash table.
+
+A distributed hash table (DHT) is a method of addressing content in a P2P network.
+It randomly distributes content among nodes and allows for efficient querying.
+It also requires only a minimal network restructuring when nodes leave or join.
+
+
+\subsection{Incentives}
+
+P2P file-sharing networks depended to a large extent on the users' goodwill.
+They provided little monetary incentive for users to distribute files, let alone upload new content onto the network.
+However, in contradiction to naive economical models, file-sharing networks gave birth to the \textit{warez scene} -- a community of people sharing content, mostly illegally, but with altruistic rather than profit-seeking motivations~\cite{Rehn2004}.
+Regular users of file-sharing users were encouraged to share by trackers (in case of BitTorrent): for instance, by enforcing a ratio between what a user downloaded and uploaded.
+However, such metrics are inherently vulnerable, as file-sharing network lack a strong identity system.
+A tracker can force upload ratios for each account, but preventing users from signing up multiple times is tricky.
+Protecting against such cheating -- Sybil attacks -- inevitably required an identity server, which would introduce a central point of failure.
+
+Bitcoin solved the problem of Sybil protection in a decentralized network by using \textit{proof of work}.
+\todo{Where should we introduce Bitcoin basics?}
+
+
+
+
+
+\subsection{Design goals of a cryptocurrency P2P network}
+
+BitTorrent remains the primary example of a computer network which no one was able to fully stop.
+Despite multiple lawsuits against large torrent trackers, such as the Pirate Bay, as well as against regular users, law enforcers were unable to stop BitTorrent.
+One may argue that this is impossible in principle: BitTorrent is just a protocol, in other words -- a language.
+As long as the specifications are widely available, and there are two computers in the world willing to communicate according to its rules, BitTorrent is not dead.
+
+This resiliency makes it similar to Bitcoin.
+However, Bitcoin is not \textit{only} a set of rules -- it is a protocol that maintains specific \textit{state}.
+While BitTorrent is agnostic to the format and semantics of the date being shared, Bitcoin's P2P layer is intended to share a concrete dataset -- the blockchain -- specific to the system at large.
+This in the reason behind important distinctions between the design goals of a file-sharing networks (exemplified by BitTorrent for concreteness) and a cryptocurrency, exemplified by Bitcoin.
+
+
+\subsubsection{Blockchain as a common dataset}
+
+BitTorrent has no global state.
+Users wishing to download a file join a \textit{swarm} of users who have (at least parts of) this file and have no interest in how other files are shared.
+
+The goal of Bitcoin's P2P network is to share the single global state of the system.
+The series of confirmed blocks contains the single source of truth on which key controls how many bitcoin.
+Each user is interested in obtaining this dataset.
+If Bob is expecting Alice to send him a payment for goods or services, he wants to make sure that she is not cheating.
+To ensure that the received coins are genuine, Bob must check that they originate from a transaction in a confirmed block, and that transaction links back to another confirmed transactions, and so on, until the coinbase transactions that brought the coin to life by rewarding a miner.
+Bob can only do so if he has the full dataset of all transactions that happened since the launch of the system.
+(It is possible to get weaker assurances by performing simplified verification, but we omit these details for clarity.)
+
+Sharing one global state means that content addressing is not a problem in Bitcoin.
+There is no question about who has the required file, because every (full) node has it.
+However, Bitcoin nodes generally do not want to get eclipsed.
+\todo{Move to own subsubsection?}
+
+
+
+
+
+\subsubsection{Logical properties of blockchain data}
+
+BitTorrent is agnostic to the semantics or format of the files being shared.
+In Bitcoin, the data has a logical order.
+Each block depends on the previous block.
+A Bitcoin node (assuming the most conservative threat model) should download the blockchain sequentially, verifying every block.
+
+
+\subsubsection{Timing requirements}
+
+BitTorrent file-sharing is process bounded in time: a user downloads a file, and leaves the network.
+In contrast, cryptocurrency P2P networks perform constant synchronization, as new transactions and block are being generated.
+
+\todo[inline]{IBD vs keeping in sync; miners vs non-miners}
+
+
+\subsubsection{Incentives and privacy}
+
+BitTorrent seeders are not incentivized by the protocol itself.
+\todo{search J. Backus twitter for links to P2P papers on this}
+While the protocol accounts for the actual bandwidth and assigns a higher internal weight to peer with fast and reliable connections, such in-protocol points are hard to convert into more conventional value systems.
+Some torrent trackers employ reputation systems, where the tracker gives additional privileges to active seeders, but torrent seeders have been largely altruistic.
+
+Bitcoin, on the contrary, is powered by economic incentives.
+Nevertheless, sharing blockchain data is not incentivized directly.
+Nodes get no reward for propagating data to their peers.
+As BitTorrent has shown, this may be sufficient to provide \textit{availability}, but it is not clear whether is also enables \textit{integrity}.
+
+In file-sharing, nodes seldom have incentives to lie.
+Notwithstanding rare examples of "poisoned torrents", BitTorrent users get the content they expect.
+In cryptocurrencies, propagating false data may be a part of an attack.
+An adversary eclipsing a victim with nodes under their control may make them believe that a different state of the blockchain is valid, compared to what the larger world is agreeing upon.
+To prevent this, Bitcoin and other cryptocurrencies deliberately choose neighbors randomly from a large set of possibly live nodes, and additional checks ensure network diversity among one's neighbors.
+
+Privacy (and fungibility as a result) is a crucial property of money.
+The lack of privacy in BitTorrent enabled tracking its users.
+% https://www.vice.com/en_us/article/d3q45v/bittorrent-usage-increases-netflix-streaming-sites
+Bitcoin provide little privacy both on the application layer (the transaction graph) and on the networking layer.
+\todo{Is this really different?}
+
+
+
+
+
+
+\section{Architecture of Bitcoin P2P layer}
+\label{sec:C02_S2_Architecture_Bitcoin_P2P}
+
+In this Section, we describe the architecture of Bitcoin's networking protocol.
+
+\section{Background on cryptocurrency wallets}
+\label{sec:C02_S3_Background_Wallets}
+
+In this Section, we give a background on the types of cryptocurrency wallets and the trade-offs their developers and users face.
+
+
+\section{Our contributions}
+\label{sec:C02_S4_Our_Contributions}
+
+As outlined in~\ref{sec:C02_S2_Architecture_Bitcoin_P2P}, there are two vectors of attacks on privacy: local and global.

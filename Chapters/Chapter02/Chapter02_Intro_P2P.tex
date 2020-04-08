@@ -117,9 +117,6 @@ Bitcoin solved the problem of Sybil protection in a decentralized network by usi
 \todo{Where should we introduce Bitcoin basics?}
 
 
-
-
-
 \subsection{Design goals of a cryptocurrency P2P network}
 
 BitTorrent remains the primary example of a computer network which no one was able to fully stop.
@@ -148,55 +145,109 @@ Bob can only do so if he has the full dataset of all transactions that happened 
 
 Sharing one global state means that content addressing is not a problem in Bitcoin.
 There is no question about who has the required file, because every (full) node has it.
-However, Bitcoin nodes generally do not want to get eclipsed.
-\todo{Move to own subsubsection?}
 
-
+BitTorrent file-sharing is bounded in time: a user downloads a file, and leaves the network.
+In contrast, cryptocurrency P2P networks perform constant synchronization, as new transactions and block are being generated.
+Moreover, mining and non-mining nodes have different requirements regarding synchronization.
 
 
 
 \subsubsection{Logical properties of blockchain data}
 
 BitTorrent is agnostic to the semantics or format of the files being shared.
-In Bitcoin, the data has a logical order.
-Each block depends on the previous block.
+In Bitcoin, the data has a logical order: each block depends on the previous block.
 A Bitcoin node (assuming the most conservative threat model) should download the blockchain sequentially, verifying every block.
 
+The task of blockchain synchronization can be divided into two tasks: the initial blockchain download (IBD) and the ongoing synchronization.
+These tasks have different requirements for two types of users: miners and non-mining nodes.
 
-\subsubsection{Timing requirements}
+\paragraph{Miners and non-miners}
+Satoshi Nakamoto initially envisioned a network where every node could participate in mining, or coin generation.
+Early versions of Bitcoin reference implementation included an option to generate coins.
+But the economic forces quickly lead to mining specialization, and since 2013 mining is a highly specialized business requiring large capital investment~\cite{Kroll2013}.
+This lead to two informal protocol roles emerging.
+Despite not having any special privileges encoded in the protocol, mining nodes have other requirements to the P2P protocol.
+We will outline the differences in the next paragraph with respect to blocks and other message types.
+ 
+\paragraph{Syncing blocks}
+A node performs IBD when it reconnects to the network after a period of absence, or when connecting for the first time.
+This task is relatively similar to the BitTorrent setting, in that there is a finite dataset to pull from a set of peers.
+In BitTorrent, files are split into chunks, which are downloaded in parallel from different peers.
+The order in which the chunks are downloaded is not fixed (though in some clients a user can prioritize first chunks of a video file to start watching it while later chunks are still being fetched).
+In Bitcoin, on the other hand, blocks have a logical structure.
+Downloading later blocks without ensuring the validity of earlier blocks is a risk: if an early blocks turns out to be invalid, all blocks dependent on it are invalid as well.
+Therefore, in the most basic implementation, a Bitcoin node downloads and validates blocks sequentially.
+This process has been optimized in 2015 (Bitcoin~Core~10.0.0) with \textit{headers-first} download~\cite{Core2015}.
 
-BitTorrent file-sharing is process bounded in time: a user downloads a file, and leaves the network.
-In contrast, cryptocurrency P2P networks perform constant synchronization, as new transactions and block are being generated.
+Mining and non-mining nodes have different requirements on the speed of block synchronization.
+Miners want to ensure that they get new blocks as fast as possible, and that the block they mine propagate to other miners quickly.
+Mining on top of an outdated block, or letting one's block get orphaned by another simultaneously mined block, leads to direct financial losses\footnote{There is a counter-intuitive strategy of not immediately broadcasting a newly found block (selfish mining~\cite{Eyal2018}), put even selfish miners presumably want be technically able to broadcast and fetch blocks as quickly as possible to keep their options open.}.
+This lead to optimizations of block propagation (such as \textit{compact blocks}~\cite{Core2016}) and the emergence of dedicated physical lines for very fast block dissemination among miners~\cite{FALCON, FIBRE}.
+Non-mining nodes generally can tolerate a latency of a few seconds (much smaller than an average block interval of ten~minutes), so they use the regular Bitcoin P2P network.
+	
 
-\todo[inline]{IBD vs keeping in sync; miners vs non-miners}
+\paragraph{Exchanging transactions and other messages}
+Apart from blocks, the Bitcoin P2P protocol disseminates other types of messages, such as unconfirmed transactions and address messages.
+In contrast to confirmed blocks, there is no canonical set of unconfirmed transactions.
+Each node has its own version of this set (the \textit{mempool}).
+Other protocol messages also do not need to be disseminated among all nodes very quickly.
+
+Despite the fact that most wallets show an incoming transaction as soon as it is broadcast in the network, from the protocol point of view unconfirmed transactions are not secure.
+Therefore, strictly speaking, non-mining nodes are only interested in receiving blocks, but not individual unconfirmed transactions.
+They are, however, interested in broadcasting their transactions to miners quickly to get them mined.
+Miners, on the other hand, need to receive unconfirmed transactions quickly to be able to include them in blocks and earn the associated fees.
+
 
 
 \subsubsection{Incentives and privacy}
 
-BitTorrent seeders are not incentivized by the protocol itself.
-\todo{search J. Backus twitter for links to P2P papers on this}
-While the protocol accounts for the actual bandwidth and assigns a higher internal weight to peer with fast and reliable connections, such in-protocol points are hard to convert into more conventional value systems.
-Some torrent trackers employ reputation systems, where the tracker gives additional privileges to active seeders, but torrent seeders have been largely altruistic.
+While many BitTorrent seeders are profit-driven~\cite{Rumin2010}, their rewards do not come from the protocol directly.
+While the P2P protocol accounts for the actual bandwidth and assigns a higher internal weight to peers with fast and reliable connections, such in-protocol points are hard to convert into more conventional value systems.
+Some torrent trackers employ reputation systems, where the tracker gives additional privileges to active seeders, but torrent seeders have been largely altruistic~\cite{Rehn2004}.
+In file-sharing, nodes seldom have incentives to lie.
+As a user knows the hash of the content they search for in advance, it is impossible to violate the integrity of the file\footnote{It is possible to distribute malicious content (i.e.,~via \textit{poisoned} torrents~\cite{Lou2006}) but its harmful properties manifest itself outside of the file-sharing protocol.}.
 
-Bitcoin, on the contrary, is powered by economic incentives.
+
+Bitcoin is powered by economic incentives.
 Nevertheless, sharing blockchain data is not incentivized directly.
 Nodes get no reward for propagating data to their peers.
-As BitTorrent has shown, this may be sufficient to provide \textit{availability}, but it is not clear whether is also enables \textit{integrity}.
 
-In file-sharing, nodes seldom have incentives to lie.
-Notwithstanding rare examples of "poisoned torrents", BitTorrent users get the content they expect.
+We distinguish three requirements for a blockchain P2P layer based on tasks a user may wish to perform.
+Namely, a user may wish to read the blockchain, write to the blockchain (i.e.,~send transactions), and prevent others from observing these interactions (privacy).
+
+\paragraph{Reading the blockchain}
 In cryptocurrencies, propagating false data may be a part of an attack.
 An adversary eclipsing a victim with nodes under their control may make them believe that a different state of the blockchain is valid, compared to what the larger world is agreeing upon.
-To prevent this, Bitcoin and other cryptocurrencies deliberately choose neighbors randomly from a large set of possibly live nodes, and additional checks ensure network diversity among one's neighbors.
 
-Privacy (and fungibility as a result) is a crucial property of money.
+Bitcoin's proof-of-work makes it difficult for an adversary to feed a fake blockchain to a user: malicious blocks must also contain a valid proof-of-work that is expensive to generate.
+Eclipsing can facilitate other attacks, including ones on privacy.
+To prevent this, Bitcoin and other cryptocurrencies deliberately choose neighbors randomly from a large set of possibly live nodes, and additional checks ensure network diversity among one's neighbors, ensuring that not too many neighbors are from the same subnet, as evident from their IP addresses.
+Compare this to file-sharing, which optimizes for an opposite outcome: for instance re-trackers allow users to connect to peers in their immediate physical proximity, achieving faster downloads by using their ISP's internal infrastructure instead of the global Internet~\cite{Yoshida2012,Wang2012}.
+
+\paragraph{Writing to the blockchain}
+Arguably the most important quality that Bitcoin and other decentralized cryptocurrencies provide is censorship resistance.
+In contrast to centralized banking, where clients are often subject to arbitrary account freezes or are not allowed to open an account in the first place, it is (or at least should be) very hard to prevent a cryptocurrency user from spending their coins.
+In the most extreme scenario, censorship becomes a form of theft: despite having the private keys, a user would essentially lose coins.
+Luckily, complete censorship is hard to perform\footnote{Assuming a non-custodial wallet, i.e.,~the user holding their own private keys.}.
+Even if a user's node is eclipsed, they can sign a transaction and broadcast it without directly talking to the Bitcoin P2P network, using a third-party web service such as~\cite{Blockstream} (which can be accessed through Tor).
+
+\paragraph{Privacy}
 The lack of privacy in BitTorrent enabled tracking its users.
-% https://www.vice.com/en_us/article/d3q45v/bittorrent-usage-increases-netflix-streaming-sites
-Bitcoin provide little privacy both on the application layer (the transaction graph) and on the networking layer.
-\todo{Is this really different?}
+Though mass surveillance and prosecution of users engaged in file-sharing is technically possible, there are not too much incentives to do so.
+The major reason why the share of P2P file-sharing traffic on the Internet has fallen sharply since early 2000s was the emergence of centralized streaming services that ultimately provided a better user experience legally and for a reasonable price\footnote{However, the proliferation of streaming services and the fragmentation of content between them has lead to a rise in BitTorrent usage in late 2010s~\cite{Bode2018}.} rather than law enforcement.
+This trend suggests that privacy is not of crucial importance for P2P file-sharing.
 
+For money, however, privacy is a crucial property.
+In addition to ethical opposition to surveillance enabled by centralized digital payment systems, the requirement for privacy is motivated by the fact that a good currency has fungibility.
+Each monetary unit should be valued the same as any other.
+If this is not the case, a currency fails to implement its major function as a unit of account, as economic agents waste resources applying discounts for their incoming payments based the origin of concrete coins involved.
+The ultimate way to enable fungibility is to make coins technically indistinguishable.
+Bitcoin does a relatively poor job at that, as the transaction graph is public and saved in the blockchain.
+The fact that Bitcoin addresses are not linked to real-world identities and can be generated anew for every transaction provides only a weak protection.
+This design decision was motivated by a simple observation that, in the absence of a trusted third party, "[t]he only way to confirm the absence of a transaction is to be aware of all transactions"~\cite{Nakamoto2008}.
+Novel cryptographic algorithms (zero-knowledge proofs) have been developed since that might allow to alleviate this limitation, but they remain experimental and unlikely to be incorporated in Bitcoin in the foreseeable future (while other cryptocurrencies, such as Zcash~\cite{BenSasson2014}, take advantage of them).
 
-
+Keeping all these considerations in mind, in the next Section we outline the design of Bitcoin's P2P networking protocol.
 
 
 

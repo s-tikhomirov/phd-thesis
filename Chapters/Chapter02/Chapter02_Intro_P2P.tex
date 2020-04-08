@@ -29,15 +29,10 @@ Satoshi Nakamoto, the creator of Bitcoin, wrote: "Governments are good at cuttin
 \todo{Make an chapter or part epigraph?}
 However, the goal of disseminating cryptocurrency data has important distinctions compared to file-sharing.
 
-This introductory motivates our study of privacy issues of Bitcoin's P2P protocol and puts it in a historical context.
-In~\ref{sec:C02_S1_Background_P2P}, we provide a historical overview of P2P networks and outline the similarities and differences in the functions of a file-sharing network and a P2P network powering a blockchain such as Bitcoin.
-In~\ref{sec:C02_S2_Architecture_Bitcoin_P2P}, we describe the architecture of the networking layer of Bitcoin.
-In~\ref{sec:C02_S3_Background_Wallets}, we describe the different types of cryptocurrency wallets.
-Finally,~\ref{sec:C02_S4_Our_Contributions} puts our contributions, to be presented in detail in the following chapters of this part, into context.
+This introductory Chapter motivates our study of privacy issues of Bitcoin's P2P protocol and puts it in a historical context.
 
 
 \section{Background on P2P networks}
-\label{sec:C02_S1_Background_P2P}
 
 As any network, computer networks comprise of nodes.
 An important question that network architects have to face is whether nodes are equal in their functions, or all nodes can perform the common set of tasks.
@@ -61,7 +56,7 @@ The Internet has gained momentum in the developed world, with regular people and
 Not surprisingly, the most common type of data people wanted to share media content such as movies and music.
 
 File-sharing networks emerged in late 1990s to satisfy this demand, often by illegal means.
-The two important early P2P networks are Napster and Gnutella~\cite{Gummadi2002}.
+The two important early P2P networks are Napster and Gnutella~\cite{Saroiu2003}.
 Napster -- the first successful music-centered file-sharing network -- was launched in 1999.
 Having quickly gained millions of users, it drew attention from law enforcement, and was shut down in 2001.
 
@@ -251,18 +246,21 @@ Keeping all these considerations in mind, in the next Section we outline the des
 
 
 
-\section{Architecture of Bitcoin P2P layer}
-\label{sec:C02_S2_Architecture_Bitcoin_P2P}
-
-In this Section, we describe the architecture of Bitcoin's networking protocol.
-
-\section{Background on cryptocurrency wallets}
-\label{sec:C02_S3_Background_Wallets}
-
-In this Section, we give a background on the types of cryptocurrency wallets and the trade-offs their developers and users face.
-
-
 \section{Our contributions}
 \label{sec:C02_S4_Our_Contributions}
 
-As outlined in~\ref{sec:C02_S2_Architecture_Bitcoin_P2P}, there are two vectors of attacks on privacy: local and global.
+In the next Chapter, we present our contributions towards better understanding of privacy of Bitcoin and other cryptocurrencies on the networking layer.
+\todo{add Refs to chapters}
+
+First, we explore the scenario of a global passive adversary.
+We tackle the following question: can an adversary infer relationships between transactions based solely on their propagation pattern in the network?
+We review the Bitcoin's P2P protocol and propose an algorithm that allows us to distinguish transactions issued from the same node from transactions issued from different nodes (with s certain degree of accuracy).
+We implement and test our method on Bitcoin and three other cryptocurrencies focused on privacy: Dash, Monero, and Zcash.
+We also test the same technique on transactions issued from mobile wallets, which are studied in more detail in the subsequent chapter.
+
+Then, we study mobile wallets.
+With smartphones vastly outnumbering desktops and laptops and being the primary or only computing device for hundreds of millions of people.\todo{add cite}
+The security of cryptocurrency wallets is therefore of high importance.
+We systematize various privacy-related characteristics of mobile applications that are relevant for cryptocurrency wallets, and compare a selection of \missing{XX} wallets for Android -- the most prevalent mobile OS.
+Our results show that the majority of wallets do not follow all security and privacy guidelines.
+

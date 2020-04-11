@@ -31,6 +31,8 @@
 *-blx.aux
 *-blx.bib
 *.run.xml
+# Jabref bibliography
+references
 
 ## Build tool auxiliary files:
 *.fdb_latexmk

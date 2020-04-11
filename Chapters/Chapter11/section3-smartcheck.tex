@@ -1,0 +1,83 @@
+\section{Automated analysis of smart contracts}
+
+\subsection{Approaches to code analysis}
+
+Dynamic code analysis runs the program and considers only a subset of all execution paths on some input data~\cite{Liu2012}.
+Static code analysis may guarantee full coverage without executing the program and may run fast enough on code of reasonable size.
+Static analysis usually includes three stages:
+\begin{enumerate}
+	\item building an intermediate representation (IR), such as abstract syntax tree or three-address code, for a deeper analysis compared to analyzing text;
+	\item enriching the IR with additional information~\cite{Woegerer2005} using algorithms such as control- and dataflow analysis (synonym, constant, and type propagation~\cite{Aho1986}), taint analysis~\cite{Tripp2009}, symbolic execution, abstract interpretation;
+	\item vulnerability detection w.r.t. a database of patterns, which define vulnerability criteria in IR terms.
+\end{enumerate}
+In this paper, we do not consider formal verification methods, as they require a rarely available formal specification of the contract's intended functionality.
+
+	
+\subsection{SmartCheck}
+
+We propose SmartCheck -- a static analysis tool for Ethereum smart contracts implemented in Java.
+SmartCheck runs lexical and syntactical analysis on Solidity source code.
+It uses ANTLR~\cite{Parr} and a custom Solidity grammar to generate an XML parse tree~\cite{Aho1986} as an intermediate representation (IR).
+We detected vulnerability patterns by using XPath~\cite{Liu2009} queries on the IR.
+Thus SmartCheck provides full coverage: the analyzed code is fully translated to the IR, and all its elements can be reached with XPath matching.
+Line numbers are stored as XML attributes and help localize findings in source code.
+IR attributes can be enriched with additional information when new analysis methods are implemented.
+The tool can be extended to support other smart contact languages by adding an ANTLR grammar and a pattern database (IR-level algorithms remain unchanged).
+
+As an example, consider the Balance equality issue~(\ref{SolidityBalanceEquality}).
+We aim to detect constructions that test the contract's balance for equality, for instance:
+
+\begin{lstlisting}[language=Solidity]
+if (this.balance == 42 ether){...}.
+\end{lstlisting}
+
+The parse tree of this construction is shown in Figure~\ref{ParseTree}.
+
+\begin{figure}
+	\caption{Parse tree for the Balance equality code example}
+	\Tree [.ifStatement 
+		{\texttt{if}}
+		[.ifCondition
+			[.expression 
+				[.expression [.envVarDef {\texttt{this.balance}} ] ]
+				{\texttt{==}}
+				[.expression [.moneyExpr [.primaryExpr [.numberLiteral {\texttt{42}} ] ] {\texttt{ether}} ] ]
+			]
+		]
+		[.block { \{ } {\ldots} { \} } ]
+	]
+	\label{ParseTree}
+ \end{figure}
+
+The corresponding XPath pattern is shown in Listing~\ref{XPathListing}.
+
+\begin{minipage}{\linewidth} % https://tex.stackexchange.com/a/73305/142924
+\begin{lstlisting}[caption={XPath pattern for the Balance equality issue},label={XPathListing},language=XML]
+//expression[expression//envVarDef
+[matches(text()[1],"^this.balance$")]]
+[matches(text()[1],"^==|!=$")]
+\end{lstlisting}
+\end{minipage}
+
+In this case we do not expect false positives, as we are able to precisely describe the target construction in XPath\footnote{Assuming that ANTLR builds the AST correctly based on the Solidity grammar.}.
+
+More complex rules can not be precisely described with XPath, which leads to false positives.
+Consider the Re-entrancy issue~(\ref{SolidityReentrancyExternalCall}).
+SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which does not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
+
+\begin{lstlisting}[caption={Violation of CEI not leading to re-entrancy},label={ReentrancyListing},language=Solidity]
+pragma solidity 0.4.19;
+contract Foo {
+	bool inBar = false;
+	function bar(address someAddress) {
+		if (inBar) throw;
+		inBar = true;
+		someAddress.transfer(0);
+		inBar = false;
+	}
+}
+\end{lstlisting}
+
+%TODO: add this info info in the table
+%Table~\ref{AllPatternsTable} shows which of the issue under consideration lead to false positives.
+

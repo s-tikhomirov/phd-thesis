@@ -2,4 +2,45 @@
 
 \label{Chapter11_SmartCheck}
 
+
+\input{Chapters/Chapter11/solidity-highlighting}
+\input{Chapters/Chapter11/rules}
+
 We present SmartCheck -- a static analysis tool for smart contracts in Solidity.
+
+Ethereum is a major blockchain-based platform for smart contracts -- Turing complete programs that are executed in a decentralized network and usually manipulate digital units of value.
+Solidity is the most mature high-level smart contract language.
+Ethereum is a hostile execution environment, where anonymous attackers exploit bugs for immediate financial gain.
+Developers have a very limited ability to patch deployed contracts.
+Hackers steal up to tens of millions of dollars from flawed contracts, a well-known example being ``The DAO``, broken in June~2016.
+Advice on secure Ethereum programming practices is spread out across blogs, 
+papers, and tutorials.
+Many sources are outdated due to a rapid pace of development in this field.
+Automated vulnerability detection tools, which help detect potentially problematic language constructs, are still underdeveloped in this area.
+
+We provide a comprehensive classification of code issues in Solidity and implement SmartCheck -- an extensible static analysis tool that detects them\footnote{The source code is available at \url{https://github.com/smartdec/smartcheck}.}.
+SmartCheck translates Solidity source code into an XML-based intermediate representation and checks it against XPath patterns.
+We evaluated our tool on a big dataset of real-world contracts and compared the results with manual audit on three contracts.
+Our tool reflects the current state of knowledge on Solidity vulnerabilities and shows significant improvements over alternatives.
+SmartCheck has its limitations, as detection of some bugs requires more sophisticated techniques such as taint analysis or even manual audit.
+We believe though that a static analyzer should be an essential part of contract developers' toolbox, letting them fix simple bugs fast and allocate more effort to complex issues.
+
+%%%% SECTION 1: INTRODUCTION %%%%
+\input{Chapters/Chapter11/section1-introduction.tex}
+
+%\input{smartcheck-code-correctness-approaches.tex}
+
+%%%% SECTION 2: CLASSIFICATION %%%%
+\input{Chapters/Chapter11/section2-classification.tex}
+
+%%%% SECTION 3: SMARTCHECK %%%%
+\input{Chapters/Chapter11/section3-smartcheck.tex}
+
+%%%% SECTION 4: RESULTS %%%%
+\input{Chapters/Chapter11/section4-results.tex}
+
+%%%% SECTION 5: RELATED WORK %%%%
+\input{Chapters/Chapter11/section5-related-work.tex}
+
+%%%% SECTION 6: CONCLUSION %%%%
+\input{Chapters/Chapter11/section6-conclusion.tex}

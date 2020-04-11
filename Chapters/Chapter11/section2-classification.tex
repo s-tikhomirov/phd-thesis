@@ -1,0 +1,534 @@
+\section {Classification of issues in Solidity code}
+
+We classify Solidity code issues as follows (based on~\cite{Henney2003}):
+\begin{itemize}
+	\item \textbf{Security} issues lead to exploits by a malicious user account or contract;
+	\item \textbf{Functional} issues cause the violation of the intended functionality\footnote{Though without a specification we only assume what the intended functionality is.};
+	\item \textbf{Operational} issues lead to run-time problems, e.g.,~bad performance;
+	\item \textbf{Developmental} issues make code difficult to understand and improve.
+\end{itemize}
+We differentiate between functional and security issues: the former pose problems even without an adversary (though an external malicious actor can aggravate the situation), while the latter do not. Our primary sources are~\cite{Consensys2016, Solidity2017, Atzei2017, Delmolino2016, Chen2017, OpenZeppelin2017a}.
+See Table~\ref{AllPatternsTable} for a summary of all issues (the second column denotes severity: 3 -- high, 2 -- medium, 1 -- low).
+
+\subsection{Security issues}
+
+
+%% SOLIDITY_BALANCE_EQUALITY
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityBalanceEquality:name \let\letcs\etoolboxletcs}
+\label{SolidityBalanceEquality}
+
+Avoid checking for strict balance equality: an adversary can forcibly send ether to any account by mining or via \texttt{selfdestruct}.
+\begin{lstlisting}[language=Solidity]
+if (this.balance == 42 ether) { /* ... */} // bad
+if (this.balance >= 42 ether) { /* ... */} // good
+\end{lstlisting}
+
+The pattern detects comparison expressions with \texttt{==} which contain \texttt{this.balance} as either left- or right-hand side.
+
+%% SOLIDITY_UNCHECKED_CALL
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedCall:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedCall}
+
+Expect calls to external contract to fail.
+When \texttt{send}ing ether, check for the return value and handle errors.
+The recommended way of doing ether transfers is \texttt{transfer} (see Section~\ref{SoliditySend}).
+\begin{lstlisting}[language=Solidity]
+addr.send(42 ether); // bad
+if (!addr.send(42 ether)) revert; // better
+addr.transfer(42 ether); // good
+\end{lstlisting}
+
+The pattern detects an external function call (\texttt{call}, \texttt{delegatecall}, or \texttt{send}) which is not inside an \texttt{if}-statement.
+
+%% SOLIDITY_DOS_WITH_THROW
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityDosWithThrow:name \let\letcs\etoolboxletcs} \label{SolidityDosWithThrow}
+
+A conditional statement (\texttt{if}, \texttt{for}, \texttt{while}) should not depend on an external call: the callee may permanently fail (\texttt{throw} or \texttt{revert}), preventing the caller from completing the execution.
+
+In the following example, the caller expects the oracle to return an integer value (\texttt{badOracle.answer()}), but the actual oracle implementation may throw an exception in some or all cases.
+
+\begin{lstlisting}[language=Solidity]
+function dos(address oracleAddr) public {
+	badOracle = Oracle(oracleAddr);
+	if (badOracle.answer() < 42) { revert; }
+	// ...
+}
+\end{lstlisting}
+
+This rule contains multiple patterns:
+\begin{itemize}
+	\item an \texttt{if}-statement with an external function call in the condition and a \texttt{throw} or a \texttt{revert} in the body;
+	\item a \texttt{for}- or an \texttt{if}-statement with an external function call in the condition.
+\end{itemize}
+
+%% SOLIDITY_SEND
+\subsubsection{\let\letcs\texapiletcs \usevalue SoliditySend:name \let\letcs\etoolboxletcs} \label{SoliditySend}
+
+The recommended way to perform ether payments is \texttt{addr.transfer(x)}, which automatically throws an exception if the transfer is unsuccessful, preventing the problem described in Section~\ref{SolidityUncheckedCall}.
+The pattern detects the \texttt{send} keyword.
+
+%% SOLIDITY_REENTRANCY_EXTERNAL_CALL
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityReentrancyExternalCall:name \let\letcs\etoolboxletcs} \label{SolidityReentrancyExternalCall}
+
+%A function call from contract \texttt{A} to contract \texttt{B} (including ether transfers) passes control from \texttt{A} to \texttt{B}, which can call \texttt{A} back before returning.
+Consider the following code:
+
+\begin{lstlisting}[language=Solidity]
+pragma solidity 0.4.19;
+contract Fund {
+	mapping(address => uint) balances;
+	function withdraw() public {
+		if (msg.sender.call.value(balances[msg.sender])())
+		balances[msg.sender] = 0;
+	}
+}
+\end{lstlisting}
+
+The contract at \texttt{msg.sender} can get multiple refunds and retrieve all \texttt{Fund}'s ether by recursively calling \texttt{withdraw} before its share is set to \texttt{0}.
+Besides, it can modify the state of some third contract, which \texttt{Fund} depends on.
+Use the ``checks -- effects -- interactions`` pattern: first check the invariants, then update the internal state, then communicate with external entities (see also Section~\ref{SoliditySend}):
+\begin{lstlisting}[language=Solidity]
+function withdraw() public {
+	uint balance = balances[msg.sender];	
+	balances[msg.sender] = 0;
+	msg.sender.transfer(balance);
+	// state reverted, balance restored if transfer fails
+}
+\end{lstlisting}
+
+The pattern detects an external function call which is followed by an internal function call.
+
+%% SOLIDITY_MALICIOUS_LIBRARIES
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityMaliciousLibraries:name \let\letcs\etoolboxletcs} \label{SolidityMaliciousLibraries}
+
+Third-party libraries can be malicious.
+Avoid external dependencies or ensure that third-party code implements only the intended functionality.
+The pattern simply detects the \texttt{library} keyword (and thus produces some false positives).
+
+%% SOLIDITY_TX_ORIGIN
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityTxOrigin:name \let\letcs\etoolboxletcs} \label{SolidityTxOrigin}
+
+Contracts can call each others' public functions.
+\texttt{tx.origin} is the first account in the call chain (always an externally owned one, i.e.,~not a contract); \texttt{msg.sender} is the immediate caller.
+For instance, in a call chain \texttt{A} $\rightarrow$ \texttt{B} $\rightarrow$ \texttt{C}, from the \texttt{C}'s viewpoint, \texttt{tx.origin} is \texttt{A}, and \texttt{msg.sender} is \texttt{B}.
+
+Use \texttt{msg.sender} instead of \texttt{tx.origin} for authentication.
+Consider a wallet:
+
+\begin{lstlisting}[language=Solidity]
+pragma solidity 0.4.19;
+contract TxWallet {
+    address private owner;
+    function TxWallet() { owner = msg.sender; }
+    function transferTo(address dest, uint amount) public {
+        require(tx.origin == owner);	// authentication
+        dest.transfer(amount);
+    }
+}
+\end{lstlisting}
+
+User sends ether to the address of the \texttt{TxAttackerWallet}, which forwards the call to a \texttt{TxWallet} and obtains all funds, acting as the user (\texttt{tx.origin}):
+
+\begin{lstlisting}[language=Solidity]
+pragma solidity 0.4.19;
+interface TxWallet {
+    function transferTo(address dest, uint amount);
+}
+contract TxAttackerWallet {
+    address private owner;
+    function TxAttackerWallet() { owner = msg.sender; }
+    function() payable {
+        TxWallet(msg.sender).transferTo(owner, msg.sender.balance);
+    }
+}
+\end{lstlisting}
+
+The pattern detects the environmental variable \texttt{tx.origin}.
+
+%% SOLIDITY_CALL_VALUE
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityCallValue:name \let\letcs\etoolboxletcs} \label{SolidityCallValue}
+
+Solidity provides many ways to transfer ether (see Section~\ref{SoliditySend}).
+\texttt{addr.call.value(x)()} transfers \texttt{x} ether and forwards all gas to \texttt{addr}, potentially leading to vulnerabilities like re-entrancy (see Section~\ref{SolidityReentrancyExternalCall}).
+The recommended way to transfer ether is \texttt{addr.transfer(x)}, which only provides the callee with a ``stipend`` of 2300 gas.
+The pattern detects functions whose name is \texttt{call.value} and whose argument list is empty.
+
+
+\subsection{Functional issues}
+
+%% SOLIDITY_INTEGER_DIVISION
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityIntegerDivision:name \let\letcs\etoolboxletcs} \label{SolidityIntegerDivision}
+
+Solidity supports neither floating-point nor decimal types.
+For integer division, the quotient is rounded down.
+Account for it, especially when calculating ether or token amounts.
+The pattern detects division (\texttt{/}) where the the numerator and the denominator are number literals.
+
+%% SOLIDITY_LOCKED_MONEY
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityLockedMoney:name \let\letcs\etoolboxletcs} \label{SolidityLockedMoney}
+
+Contracts programmed to receive ether should implement a way to withdraw it, i.e.,~call \texttt{transfer} (recommended), \texttt{send}, or \texttt{call.value} at least once.
+The patterns detects contracts that contain a \texttt{payable} function but contain neither of the withdraw-enabling functions mentioned above.
+
+%% SOLIDITY_UNCHECKED_MATH
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedMath:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedMath}
+
+Solidity is prone to integer over- and underflow\footnote{Referred to as simply overflow for brevity.}.
+Overflow leads to unexpected effects and can lead to loss of funds if exploited by a malicious account.
+Use the SafeMath library\footnote{See Section~\ref{SolidityMaliciousLibraries} for advice on library usage.} that checks for overflows (multiple implementations exist, e.g.~\cite{OpenZeppelin2017}).
+The pattern detects arithmetic operations \texttt{+}, \texttt{-}, \texttt{*}, which are not inside a conditional statement.
+This rule was temporarily muted for testing (Section~\ref{SectionResults}) due to a high false positive rate.
+
+
+%% SOLIDITY_TIMESTAMP_DEPENDENCE
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityTimestampDependence:name \let\letcs\etoolboxletcs} \label{SolidityTimestampDependence}
+
+Miners can manipulate environmental variables and are likely to do so if they can profit from it.
+Consider a lottery that distributes prizes depending on whether \texttt{now} (alias for \texttt{block.timestamp}) is odd or even:
+
+\begin{lstlisting}[language=Solidity]
+	if (now % 2 == 0) winner = pl1; else winner = pl2;
+\end{lstlisting}
+
+A miner can tweak the timestamp and gain unfair advantage.
+Use block numbers and average time between blocks to estimate the current time.
+Use secure sources of randomness, such as RANDAO~\cite{RANDAO2017}.
+The pattern detects the environmental variable \texttt{now}.
+
+%% SOLIDITY_VAR
+\subsubsection{\let\letcs\texapiletcs \usevalue SolidityVar:name \let\letcs\etoolboxletcs} \label{SolidityVar}
+
+Solidity supports type inference: the type of \texttt{i} in \texttt{var i = 42;} is the smallest integer type sufficient to store the right-hand side value (\texttt{uint8}).
+Consider a \texttt{for}-loop:
+
+\begin{lstlisting}[language=Solidity]
+for (var i = 0; i < array.length; i++) { /*...*/ }
+\end{lstlisting}
+
+The type of \texttt{i} is inferred to \texttt{uint8}.
+If \texttt{array.length} is bigger than \texttt{256}, an overflow will occur.
+Explicitly define the type when declaring integer variables:
+
+\begin{lstlisting}[language=Solidity]
+for (uint256 i = 0; i < array.length; i++) { /*...*/ }
+\end{lstlisting}
+
+The pattern detects assignments where the left-hand side is a \texttt{var} and the right-hand side is an integer (matches \texttt{\^{}[0-9]+\$}).
+
+\subsection{Operational issues}
+
+%% SOLIDITY_BYTES_BYTE
+\subsubsection{\usevalue SolidityBytesByte:name } \label{SolidityBytesByte}
+
+Use \texttt{bytes} instead of \texttt{byte[]} for lower gas consumption.
+The pattern detects the construction \texttt{byte[]}.
+
+%% SOLIDITY_GAS_LIMIT_AND_LOOPS
+\subsubsection{\usevalue SolidityGasLimitAndLoops:name } \label{SolidityGasLimitAndLoops}
+
+Ethereum is a very resource-constrained environment.
+Prices per computational step are orders of magnitude higher than with centralized cloud providers.
+Moreover, Ethereum miners impose a limit on the total number of gas consumed in a block.
+In the following example, if \texttt{array.length} is large enough, the function exceeds the block gas limit, and transactions calling it will never be confirmed:
+
+\begin{lstlisting}[language=Solidity]
+for (uint256 i = 0; i < array.length; i++) { costlyF(); }
+\end{lstlisting}
+
+This becomes a security issue, if an external actor influences \texttt{array.length}.
+E.g.,~if \texttt{array} enumerates all registered addresses, and registration is open, an adversary can register many addresses, causing denial of service.
+The rule includes two patterns:
+\begin{itemize}
+	\item a \texttt{for}-statement with a function call or an identifier inside the condition;
+	\item a \texttt{while}-statement with a function call inside the condition.
+\end{itemize}
+
+\subsection{Developmental issues}
+
+%% SOLIDITY_ERC20_API_VIOLATION
+\subsubsection{\usevalue SolidityErc20ApiViolation:name } \label{SolidityErc20ApiViolation}
+
+ERC20 is the de-facto standard API for implementing \textit{tokens} -- transferable units of value managed by a contract.
+Exchanges and other third-party services may struggle to integrate a token that does not conform to it.
+Certain ERC20 functions (\texttt{approve}, \texttt{transfer}, \texttt{transferFrom}) return a \texttt{bool} indicating whether the operation succeded.
+It is not recommended to throw exceptions (\texttt{revert}, \texttt{throw}, \texttt{require}, \texttt{assert}) inside those functions.
+Note that library functions may also throw exceptions (see Section~\ref{SolidityMaliciousLibraries}).
+
+\begin{lstlisting}[language=Solidity]
+function transferFrom(address _spender, uint _value)
+returns (bool success) {
+	require (_value < 20 wei);
+	// ...
+}
+\end{lstlisting}
+
+The pattern detects a contract inherited from a contract with a name including the word ``token``, which may throw exceptions from inside one of the functions mentioned above.
+
+%% SOLIDITY_PRAGMAS_VERSION
+\subsubsection{\usevalue SolidityPragmasVersion:name } \label{SolidityPragmasVersion}
+
+Solidity source files indicate the versions of the compiler they can be compiled with:
+\begin{lstlisting}[language=Solidity]
+pragma solidity ^0.4.19;	// bad: 0.4.19 and above
+pragma solidity 0.4.19;		// good: 0.4.19 only
+\end{lstlisting}
+It is recommended to follow the latter example, as future compiler versions may handle certain language constructions in a way the developer did not foresee.
+The pattern detects the version operator~\texttt{\^{}} in the \texttt{pragma} directive.
+
+%% SOLIDITY_PRIVATE_MODIFIER
+\subsubsection{\usevalue SolidityPrivateModifier:name } \label{SolidityPrivateModifier}
+
+Contrary to a popular misconception, the \texttt{private} modifier does not make a variable invisible.
+Miners have access to all contracts' code and data.
+Developers must account for the lack of privacy in Ethereum.
+The pattern detects state variable declarations with a  \texttt{private} modifier.
+
+%% SOLIDITY_REDUNDANT_FALLBACK_REJECT
+\subsubsection{\usevalue SolidityRedundantFallbackReject:name } \label{SolidityRedundantFallbackReject}
+
+Contracts should reject unexpected payments (see Sections~\ref{SolidityBalanceEquality}, \ref{SolidityLockedMoney}).
+Before Solidity 0.4.0, it was done manually:
+\begin{lstlisting}[language=Solidity]
+function () payable { throw; }
+\end{lstlisting}
+Starting from Solidity 0.4.0, contracts without a fallback function automatically revert payments, making the code above redundant.
+The pattern detects the described construction (only if the \texttt{pragma} directive indicates the compiler version not lower than 0.4.0).
+
+
+%% SOLIDITY_STYLE_GUIDE_VIOLATION
+\subsubsection{\usevalue SolidityStyleGuideViolation:name } \label{SolidityStyleGuideViolation}
+
+In Solidity, function\footnote{With the exception of constructors: they must share the name with the contract and thus usually start with an uppercase letter.} and event names usually start with a lower- and uppercase letter respectively:
+\begin{lstlisting}[language=Solidity]
+function Foo(); // bad
+event logFoo(); // bad
+function foo(); // good
+event LogFoo(); // good
+\end{lstlisting}
+Violating the style guide decreases readability and leads to confusion.
+The pattern detects the described constructions.
+
+%% SOLIDITY_VISIBILITY
+\subsubsection{\usevalue SolidityVisibility:name } \label{SolidityVisibility}
+
+The default function visibility level in Solidity is \texttt{public}.
+Explicitly define function visibility to prevent confusion.
+\begin{lstlisting}[language=Solidity]
+function foo() { /*...*/ } // bad
+function foo() public { /*...*/ } // good
+function bar() private { /*...*/ } // good
+\end{lstlisting}
+
+The pattern detects function and variable definitions without a visibility modifier.
+
+\definecolor{lightlightgray}{gray}{0.90}
+
+\begin{table}[]
+	\centering
+	\caption{Code issues detected by SmartCheck \\ (gray background -- false positives  possible)}
+%	\resizebox{0.5\textwidth}{!}{
+	\begin{tabular}{|p{0.25\linewidth}|p{0.03\linewidth}|p{0.64\linewidth}|}
+	%\begin{tabular}{|c|c|c|}
+		\hline
+		\textbf{Name} & \textbf{S.} & \textbf{Description} \\
+		\hline
+		%% SOLIDITY_BALANCE_EQUALITY
+		\usevalue SolidityBalanceEquality:name ~(\ref{SolidityBalanceEquality})
+		&
+		\usevalue SolidityBalanceEquality:severity 
+		&
+		Adversary can manipulate contract logic by forcibly sending it ether.
+		Use non-strict inequality on balances
+		\\
+		\hline
+		%% SOLIDITY_UNCHECKED_CALL
+		\rowcolor{lightlightgray}
+		\usevalue SolidityUncheckedCall:name ~(\ref{SolidityUncheckedCall})
+		&
+		\usevalue SolidityUncheckedCall:severity 
+		&
+		The return value is not checked.
+		Always check return values of functions
+		\\
+		\hline
+		%% SOLIDITY_DOS_WITH_THROW
+		\rowcolor{lightlightgray}
+		\usevalue SolidityDosWithThrow:name ~(\ref{SolidityDosWithThrow})
+		&
+		\usevalue SolidityDosWithThrow:severity 
+		&
+		Expect external calls to deliberately \texttt{throw}
+		\\
+		\hline
+		%% SOLIDITY_SEND
+		\rowcolor{lightlightgray}
+		\usevalue SoliditySend:name ~(\ref{SoliditySend})
+		&
+		\usevalue SoliditySend:severity 
+		&
+		The return value of \texttt{send} should be checked.
+		Use \texttt{transfer}, which is equivalent to \texttt{if~(!send())~throw;}
+		\\
+		\hline
+		%% SOLIDITY_REENTRANCY_EXTERNAL_CALL
+		\rowcolor{lightlightgray}
+		\usevalue SolidityReentrancyExternalCall:name ~(\ref{SolidityReentrancyExternalCall})
+		&
+		\usevalue SolidityReentrancyExternalCall:severity 
+		&
+		External contracts should be called after all local state updates
+		\\
+		\hline
+		%% SOLIDITY_MALICIOUS_LIBRARIES
+		\rowcolor{lightlightgray}
+		\usevalue SolidityMaliciousLibraries:name ~(\ref{SolidityMaliciousLibraries})
+		&
+		\usevalue SolidityMaliciousLibraries:severity 
+		&
+		Using external libraries may be dangerous.
+		Avoid external code dependencies, audit all code that is part of the project
+		\\
+		\hline
+		%% SOLIDITY_TX_ORIGIN
+		\usevalue SolidityTxOrigin:name ~(\ref{SolidityTxOrigin})
+		&
+		\usevalue SolidityTxOrigin:severity 
+		&
+		A malicious contract can act on a user's behalf.
+		Use \texttt{msg.sender} for authentication
+		\\
+		\hline
+		%% SOLIDITY_CALL_VALUE
+		\rowcolor{lightlightgray}
+		\usevalue SolidityCallValue:name ~(\ref{SolidityCallValue})
+		&
+		\usevalue SolidityCallValue:severity 
+		&
+		\texttt{a.call.value()()} forwards all gas, allowing the callee to call back.
+		Use \texttt{a.transfer()}: it only provides the callee with 2300~gas (insufficient for a callback)
+		\\
+		\hline
+		%% SOLIDITY_INTEGER_DIVISION
+		\rowcolor{lightlightgray}
+		\usevalue SolidityIntegerDivision:name ~(\ref{SolidityIntegerDivision})
+		&
+		\usevalue SolidityIntegerDivision:severity 
+		&
+		The quotient is rounded down.
+		Account for it, especially for ether and token amounts
+		\\
+		\hline
+		%% SOLIDITY_LOCKED_MONEY
+		\rowcolor{lightlightgray}
+		\usevalue SolidityLockedMoney:name ~(\ref{SolidityLockedMoney})
+		&
+		\usevalue SolidityLockedMoney:severity 
+		&
+		The contract receives ether, but there is no way to withdraw it.
+		Implement a withdraw function or reject payments
+		\\
+		\hline
+		%% SOLIDITY_UNCHECKED_MATH
+		\usevalue SolidityUncheckedMath:name ~(\ref{SolidityUncheckedMath})
+		&
+		\usevalue SolidityUncheckedMath:severity 
+		&
+		Without extra checks, integer over- and underflow is possible.
+		Use \hbox{SafeMath}
+		\\
+		\hline
+		%% SOLIDITY_TIMESTAMP_DEPENDENCE
+		\rowcolor{lightlightgray}
+		\usevalue SolidityTimestampDependence:name ~(\ref{SolidityTimestampDependence})
+		&
+		\usevalue SolidityTimestampDependence:severity 
+		&
+		Miners can alter timestamps.
+		Make critical code independent of the environment
+		\\
+		\hline
+		%% SOLIDITY_VAR
+		\rowcolor{lightlightgray}
+		\usevalue SolidityVar:name ~(\ref{SolidityVar})
+		&
+		\usevalue SolidityVar:severity 
+		&
+		Type inference choses the smallest integer type possible.
+		Explicitly specify types
+		\\
+		\hline
+		%% SOLIDITY_BYTES_BYTE
+		\usevalue SolidityBytesByte:name ~(\ref{SolidityBytesByte})
+		&
+		\usevalue SolidityBytesByte:severity 
+		&
+		\texttt{byte[]} requires more than \texttt{bytes}
+		\\
+		\hline
+		%% SOLIDITY_GAS_LIMIT_AND_LOOPS
+		\rowcolor{lightlightgray}
+		\usevalue SolidityGasLimitAndLoops:name ~(\ref{SolidityGasLimitAndLoops})
+		&
+		\usevalue SolidityGasLimitAndLoops:severity 
+		&
+		Expensive computation inside loops may exceed the block gas limit.
+		Avoid loops with big or unknown number of steps
+		\\
+		\hline
+		%% SOLIDITY_ERC20_API_VIOLATION
+		\rowcolor{lightlightgray}
+		\usevalue SolidityErc20ApiViolation:name ~(\ref{SolidityErc20ApiViolation})
+		&
+		\usevalue SolidityErc20ApiViolation:severity 
+		&
+		The contract \texttt{throw}s where the ERC20 standard expects a \texttt{bool}.
+		Return \texttt{false} instead
+		\\
+		\hline
+		%% SOLIDITY_PRAGMAS_VERSION
+		\usevalue SolidityPragmasVersion:name ~(\ref{SolidityPragmasVersion})
+		&
+		\usevalue SolidityPragmasVersion:severity 
+		&
+		Contract compiles with future compiler versions.
+		Specify the exact compiler version
+		\\
+		\hline
+		%% SOLIDITY_PRIVATE_MODIFIER
+		\rowcolor{lightlightgray}
+		\usevalue SolidityPrivateModifier:name ~(\ref{SolidityPrivateModifier})
+		&
+		\usevalue SolidityPrivateModifier:severity 
+		&
+		The \texttt{private} modifier does not hide the variable's value, only prevents external contracts from editing it
+		\\
+		\hline
+		%% SOLIDITY_REDUNDANT_FALLBACK_REJECT
+		\usevalue SolidityRedundantFallbackReject:name ~(\ref{SolidityRedundantFallbackReject})
+		&
+		\usevalue SolidityRedundantFallbackReject:severity 
+		&
+		The payment rejection fallback is redundant.
+		Remove the function to save space: payments are rejected automatically
+		\\
+		\hline
+		%% SOLIDITY_STYLE_GUIDE_VIOLATION
+		\usevalue SolidityStyleGuideViolation:name ~(\ref{SolidityStyleGuideViolation})
+		&
+		\usevalue SolidityStyleGuideViolation:severity 
+		&
+		Unfamiliar capitalization style causes confusion.
+		Start function names with lowercase, events with uppercase
+		\\
+		\hline
+		%% SOLIDITY_VISIBILITY
+		\usevalue SolidityVisibility:name ~(\ref{SolidityVisibility})
+		&
+		\usevalue SolidityVisibility:severity 
+		&
+		Functions are \texttt{public} by default.
+		Avoid ambiguity: explicitly declare visibility level
+		\\
+		\hline
+	\end{tabular}
+	\label{AllPatternsTable}
+\end{table}

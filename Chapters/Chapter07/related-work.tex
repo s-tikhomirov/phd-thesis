@@ -1,0 +1,32 @@
+\section{Related work}
+\label{sec:related-work}
+
+%We can roughly divide the related literature in two groups: academic analyses of the concept of payment-channel networks (PCN)
+%and experimental analyses of the Lightning Network data.
+
+Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019}, privacy~\cite{Malavolta2017, HerreraJoancomarti2019}, concurrency~\cite{Malavolta2017}, routing~\cite{Malavolta2017a, Roos2018, Sivaraman2018, Prihodko2016}, liquidity~\cite{Dandekar2011,MorenoSanchez2018}, efficiency~\cite{Decker2018}, and incentive compatibility~\cite{Engelmann2017}.
+These works mainly share the lack of a quantitative analysis of the impact of their findings in the current LN.
+%In tour work , we have empirically analyzed the potential severity of the wormhole attack, 
+%as well as attacks on value privacy and relationship anonymity, in the current Lightning Network. 
+
+A group of papers more closely related to ours conveys experimental analyses of various aspects of the LN.
+Herrera-Joancomart\'{i} et al.~\cite{HerreraJoancomarti2019} describe an adversarial 
+strategy to determine the current balance of a channel in the network.
+Tang et al.~\cite{Tang2019} study 
+the tradeoffs between balance privacy and routing effectiveness. 
+Martinazzi~\cite{Martinazzi2019} and Seres et al.~\cite{Seres2019} study the evolution of topological aspects of the LN graph.
+Conoscenti et al.~\cite{Conoscenti2019} study the dependency of the LN on payment hubs 
+and the rebalancing mechanisms that ameliorate the effect of depleted channels.
+Tochner et al.~\cite{Tochner2019} analyze a DoS attack vector based on route hijacking. 
+P{\'{e}}rez{-}Sol{\`{a}} et al.~\cite{PerezSola2019} introduce the LockDown attack where the adversary 
+prevents a LN node from transacting by depleting the capacity in all its channels.
+In comparison, our HTLC depletion attack achieves the same result (a victim node can not forward payments), but exploits the HTLC limit at each channel rather than its capacity.
+%\todo[inline]{Pedro:I would not put this text in a footnote. We need to say why related work is different from this}
+%Our experiments show that the isolation of a node (or part of a network) 
+%exploiting the HTLC limit is cheaper for the adversary than the attack proposed by P{\'{e}}rez{-}Sol{\`{a}} et al. 
+Finally, concurrently to our research, Mizrahi and Zohar~\cite{Mizrahi2020} study the HTLC limit and its effects.
+Their work, however, does not account for the way LN handles payments below the dust limit.
+%\todo[inline]{Pedro: Same here. What's the difference with this work? Aren't they missing the point that 1satoshi payments are not carried out with HTLC?}
+
+
+%their estimated cost of attacking one node is $15$~EUR ($16.5$~USD), whereas the cost of attacking the whole LN in our case is estimated at $3000$~USD, i.e.,~around $0.6$~USD per node.

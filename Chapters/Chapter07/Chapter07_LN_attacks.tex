@@ -3,3 +3,39 @@
 \label{Chapter07_LN_attacks}
 
 We evaluate the possibility of various attacks on Lightning, considering various subsets of nodes potentially compromised.
+
+\todo[inline]{Update with camera-ready version}
+\todo[inline]{Split between Chapter 05, 07,08}
+
+Payment channel networks have been introduced to mitigate the scalability issues inherent to permissionless decentralized cryptocurrencies such as Bitcoin.
+Launched in 2018, the Lightning Network (LN) has 
+been gaining popularity and 
+consists today of more than $5000$ nodes and $30000$ payment channels 
+that jointly hold $895$~bitcoins ($7.6M$~USD as of February~2020).
+This adoption has motivated research from both academia and industry.
+
+Payment channels suffer from security vulnerabilities, such as the wormhole attack~\cite{Malavolta2019}, anonymity issues~\cite{Malavolta2017}, and scalability limitations related to  the upper bound on the number of concurrent payments per channel~\cite{EmelyanenkoK2017}, which have been pointed out by the scientific community but never quantitatively analyzed. 
+
+In this work, we first analyze the proneness of the LN to the wormhole attack and attacks against anonymity. 
+We observe that an adversary needs to control only $2\%$ of LN nodes to learn sensitive payment information (e.g., sender, receiver and payment amount) or to carry out the wormhole attack. 
+Second, we study the management of concurrent payments in the LN and quantify its negative effect on scalability. 
+We observe that for micropayments, the forwarding capability of up to $50\%$ of channels is restricted to 
+a value smaller than the overall channel capacity.
+This phenomenon not only hinders scalability but also opens the door for DoS attacks: We estimate that 
+a network-wide DoS attack costs within $1.5M$~USD, while isolating the biggest community from the rest of the network costs only $225k$~USD.
+
+Our findings should prompt the LN community to consider the security, privacy and scalability issues of the network studied in this work 
+when educating users about path selection algorithms, as well as to adopt multi-hop payment protocols that provide stronger security, privacy and 
+scalability guarantees. 
+
+\input{Chapters/Chapter07/background}
+
+\input{Chapters/Chapter07/datasets}
+
+\input{Chapters/Chapter07/resilience}
+
+\input{Chapters/Chapter07/attacks}
+
+\input{Chapters/Chapter07/related-work}
+
+\input{Chapters/Chapter07/conclusions}

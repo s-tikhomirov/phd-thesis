@@ -1,6 +1,6 @@
 \chapter{Findel: Secure derivative contracts for Ethereum}
 
-\label{Chapter10_Findel}
+\label{Chapter10Findel}
 
 We introduce a declarative language for financial derivatives on top of Solidity.
 
@@ -40,23 +40,21 @@ Thus we take the best of both worlds: unambiguity and composability of a concise
 %Users should be able to rigorously prove properties of contracts and thus understand what they are agreeing to.
 %A contract in a well-designed financial DSL should be composed of simple parts and be both human- and machine-readable.
 
-We introduce \textbf{Findel} (Financial Derivatives Language) -- a declarative financial DSL (Section~\ref{sec:Ch10_Findel_Syntax}) capable of expressing most common derivatives (Section~\ref{sec:Ch10_Findel_Examples}).
-We implement an Ethereum contract that manages Findel contracts (Section~\ref{sec:Ch10_Findel_Implementation}) and prove our approach viable in terms of cost (Section~\ref{sec:Ch10_Findel_Testing}).
+We introduce \textbf{Findel} (Financial Derivatives Language) -- a declarative financial DSL (Section~\ref{sec:Ch10FindelSyntax}) capable of expressing most common derivatives (Section~\ref{sec:Ch10FindelExamples}).
+We implement an Ethereum contract that manages Findel contracts (Section~\ref{sec:Ch10FindelImplementation}) and prove our approach viable in terms of cost (Section~\ref{sec:Ch10FindelTesting}).
 
 %%%% SECTION 2 %%%%
 
-\section{Findel contracts syntax} \label{sec:Ch10_Findel_Syntax}
+\section{Findel contracts syntax} \label{sec:Ch10FindelSyntax}
 
-\subsection{Definitions} \label{sec:Ch10_Findel_Definitions}
+\subsection{Definitions} \label{sec:Ch10FindelDefinitions}
 
-\begin{definition} \label{def:Ch10_Findel_FindelContract}
+\begin{definition} \label{def:Ch10FindelFindelContract}
 	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and $O$ is the \textbf{owner} (collectively called parties). 
 \end{definition}
 
-\begin{definition} \label{def:Ch10_Findel_Description}
+\begin{definition} \label{def:Ch10FindelDescription}
 	A \textbf{description} of a Findel contract is a tree with \textbf{basic primitives} as leaves and \textbf{composite primitives} as internal nodes. The following BNF~grammar defines primitives:
-	\todo{Solve issue 22 with grammar package}
-	\iffalse
 	\begin{grammar}
 		
 		<basic> ::= "Zero" | "One" "(" <currency> ")"
@@ -80,7 +78,6 @@ We implement an Ethereum contract that manages Findel contracts (Section~\ref{se
 		<primitive> ::= <basic> | <composite>
 		
 	\end{grammar}
-	\fi
 \end{definition}
 
 We distinguish between composite and basic primitives, because the former contain other primitives as sub-nodes while the latter do not.
@@ -94,9 +91,9 @@ In our model, Findel contracts represent signed copies while their descriptions 
 Traditional contracts usually contain clauses that regulate sub-ideal situations, i.e.,~a breach of contract.
 Findel does not distinguish between ''ideal'' and ''sub-ideal'' situations.
 All right and obligations are expressed uniformly.
-Section~\ref{sec:Ch10_Findel_Enforcement} discusses issues related to contract enforcement.
+Section~\ref{sec:Ch10FindelEnforcement} discusses issues related to contract enforcement.
 
-Table~\ref{tab:Ch10_Findel_Semantics} informally defines the primitives' execution semantics.
+Table~\ref{tab:Ch10FindelSemantics} informally defines the primitives' execution semantics.
 
 \begin{table}[ht]
 	\centering
@@ -128,10 +125,10 @@ Table~\ref{tab:Ch10_Findel_Semantics} informally defines the primitives' executi
 		\hline
 	\end{tabular}
 	\caption{Findel contract primitives}
-	\label{tab:Ch10_Findel_Semantics}
+	\label{tab:Ch10FindelSemantics}
 \end{table}
 
-Table~\ref{tab:Ch10_Findel_Composability} illustrates the composability of Findel\footnote{$INF$ is a symbol representing infinite time, i.e.,~$t_0 < INF$ for every $t_0$. $\delta$ is an implementation dependent constant intended for handling imperfect precision of time signal in distributed networks.}.
+Table~\ref{tab:Ch10FindelComposability} illustrates the composability of Findel\footnote{$INF$ is a symbol representing infinite time, i.e.,~$t_0 < INF$ for every $t_0$. $\delta$ is an implementation dependent constant intended for handling imperfect precision of time signal in distributed networks.}.
 
 \begin{table}%[h!]
 	\centering
@@ -149,12 +146,12 @@ Table~\ref{tab:Ch10_Findel_Composability} illustrates the composability of Finde
 		\hline
 	\end{tabular}
 	\caption{Examples of custom Findel contracts}
-	\label{tab:Ch10_Findel_Composability}
+	\label{tab:Ch10FindelComposability}
 \end{table}
 
 
 
-\subsection{Execution model} \label{sec:Ch10_Findel_ExecutionModel}
+\subsection{Execution model} \label{sec:Ch10FindelExecutionModel}
 
 Findel contracts have the following lifecycle:
 
@@ -234,7 +231,7 @@ We now show how \(c_{zcb}\) is executed step by step.
 
 %%%% SECTION 3 %%%%
 
-\section{Implementation} \label{sec:Ch10_Findel_Implementation}
+\section{Implementation} \label{sec:Ch10FindelImplementation}
 
 We develop an Ethereum smart contract, referred to as marketplace, that keeps track of users' balances and lets them create, trade, and execute Findel contracts.
 The Findel DSL is network-agnostic and can be implemented on top of any blockchain with sufficient programming capabilities.
@@ -259,7 +256,7 @@ If an exception (including "out of gas") occurs, all changes are reverted, but t
 
 \subsubsection{Users and balances}
 
-We implement the objects defined in Section~\ref{sec:Ch10_Findel_Definitions} with struct data types \texttt{Description} and \texttt{Fincontract}.
+We implement the objects defined in Section~\ref{sec:Ch10FindelDefinitions} with struct data types \texttt{Description} and \texttt{Fincontract}.
 We also introduce the \texttt{User} type that contains the user's Ethereum address and balances in all supported currencies.
 Users, descriptions and contracts are stored in their respective mappings (a generic key-value storage type in Solidity) in the marketplace's storage.
 
@@ -275,13 +272,13 @@ Our current implementation does not enforce any constraints on users' balances t
 
 \subsubsection{Ownership transfer}
 
-In addition to \texttt{issuer} and \texttt{owner} (see Definition~\ref{def:Ch10_Findel_FindelContract}), a \texttt{Fincontract} contains an auxiliary \texttt{proposedOwner} field.
+In addition to \texttt{issuer} and \texttt{owner} (see Definition~\ref{def:Ch10FindelFindelContract}), a \texttt{Fincontract} contains an auxiliary \texttt{proposedOwner} field.
 On contract creation, \texttt{issuer}, \texttt{owner}, and \texttt{proposedOwner} are initialized to \texttt{msg.sender}.
 To transfer ownership, the owner sets \texttt{proposedOwner} either to the address of the proposed new owner or to \texttt{0x0}.
 Only the proposed owner can (but does not have to) \texttt{join} the contract; \texttt{0x0} means anyone can do so\footnote{Beware of front-runners: Bob can monitor the network and try to join a contract as soon as he sees Alice's attempt to do so. Depending on the network latency and miner's behavior, either transaction can be confirmed.}.
 
 
-\subsubsection{Data sources and gateways} \label{def:Ch10_Findel_Gateways}
+\subsubsection{Data sources and gateways} \label{def:Ch10FindelGateways}
 
 Ethereum contracts are intentionally isolated from the broader Internet and can not pull data from the Web, as it can not be consistently replicated~\cite{Greenspan2016}.
 Asynchronous requests usually solve the problem: a smart contract records an Ethereum event with request parameters properly encoded.
@@ -322,17 +319,17 @@ Authenticity of data sources is guaranteed by a secure connection (e.g.,~TLS) an
 Gateways without publicly available source code should not be trusted.
 
 
-\subsubsection{Execution implementation} \label{sec:Ch10_Findel_ExecutionImplementation}
+\subsubsection{Execution implementation} \label{sec:Ch10FindelExecutionImplementation}
 
-The \texttt{executeRecursively} function implements the execution logic defined in Section~\ref{sec:Ch10_Findel_ExecutionModel} and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
+The \texttt{executeRecursively} function implements the execution logic defined in Section~\ref{sec:Ch10FindelExecutionModel} and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
 The execution of an expired contract ($t_0 < now$) returns \texttt{true} unconditionally\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\).} and deletes the contract\footnote{An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}.
 Every step in the life cycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
 
-Our implementation deviates from the model (Section~\ref{sec:Ch10_Findel_Syntax}) in that the execution of contracts is not guaranteed.
+Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
 Ethereum contracts can not act on their own: the owner must issue a transaction to trigger execution.
 The owner may be unable to do so due to either opportunistic behavior, or technical problems, such as loss of connectivity or lack of ether.
 Thus we presume that Findel contracts are not guaranteed to execute\footnote{Compare to~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We can not force a user to make this decision.}.
-We discuss this issue in Section~\ref{sec:Ch10_Findel_Enforcement}.
+We discuss this issue in Section~\ref{sec:Ch10FindelEnforcement}.
 
 We model unbounded Findel contracts (i.e.,~with $INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
 Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~10~years).
@@ -342,9 +339,9 @@ Every Findel contract in the Ethereum implementation can only be executed within
 
 We now discuss the shortcomings of our model and ways to improve it.
 
-\subsubsection{Enforcement} \label{sec:Ch10_Findel_Enforcement}
+\subsubsection{Enforcement} \label{sec:Ch10FindelEnforcement}
 
-As mentioned in Section~\ref{sec:Ch10_Findel_ExecutionImplementation}, Findel contracts are not guaranteed to execute.
+As mentioned in Section~\ref{sec:Ch10FindelExecutionImplementation}, Findel contracts are not guaranteed to execute.
 At first sight, it is a major problem, as contract must impose obligations on parties.
 In traditional finance, a trusted third party and, ultimately, the state law enforcement are responsible for punishing violators.
 The closest we can arguably get to enforcement is a conditional penalty implemented inside a Findel contract itself.
@@ -463,7 +460,7 @@ Moreover, Solidity lacks type parameters, which could be useful for Gateways (i.
 
 %%%% SECTION 4 %%%%
 
-\section{Gas costs} \label{sec:Ch10_Findel_Testing}
+\section{Gas costs} \label{sec:Ch10FindelTesting}
 
 Every computational step in Ethereum is charged in terms of gas.
 Despite the use of expensive permanent storage operations, the cost of running our implementation is not prohibitively high for a proof-of-concept.
@@ -496,7 +493,7 @@ For testing purposes, we implement a gateway that uses the current timestamp as 
 		\hline
 	\end{tabular}
 	\caption{Cost of setup and helper functions (in gas units)}
-	\label{tab:Ch10_Findel_Cost}
+	\label{tab:Ch10FindelCost}
 \end{table}
 
 
@@ -532,7 +529,7 @@ We also do not account for gateway update costs.
 		\hline
 	\end{tabular}
 	\caption{Cost of handling Findel contracts for common derivatives (in gas units)}
-	\label{tab:Ch10_Findel_Cost_2}
+	\label{tab:Ch10FindelCost2}
 \end{table}
 
 As of January~2017, the gas cost~$10^{-9}$~ether per unit~\cite{Ethstats}; the price of ether fluctuated around~\$10~\cite{Worldcoinindex}.
@@ -585,7 +582,7 @@ Programmers who wish to implement a usable smart contract for handling financial
 
 
 
-\section{Examples} \label{sec:Ch10_Findel_Examples}
+\section{Examples} \label{sec:Ch10FindelExamples}
 
 \begin{itemize}
 	\item A \textbf{fixed-rate currency exchange}: the owner sells \EUR{10} for~\$11.

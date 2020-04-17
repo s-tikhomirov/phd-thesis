@@ -1,6 +1,6 @@
 \chapter{Privacy of cryptocurrency wallets}
 
-\label{Chapter04_Wallets}
+\label{Chapter04Wallets}
 
 In this chapter, we review the privacy-related aspects of cryptocurrency wallets for Android.
 
@@ -31,14 +31,14 @@ To provide stronger privacy, SPV nodes issue queries using Bloom filters with a 
 
 We are using the term "privacy" to denote the situation where details of a person's cryptocurrency transactions are hidden from third parties.
 Related concepts are anonymity and confidentiality.
-In Section~\ref{section:Ch04_Initial_privacy_criteria}, we consider wallet developers as adversaries trying to collect data about their users' transactions.
+In Section~\ref{section:Ch04Initialprivacycriteria}, we consider wallet developers as adversaries trying to collect data about their users' transactions.
 Through studying the features of prominent mobile wallet, we try to estimate the amount of personal information their developers can collect.
 We evaluate the security and privacy of popular Android wallets for various cryptocurrencies.
 We formulate four criteria for a minimally privacy-preserving wallet and apply them to a selection of wallets.
-Then, in Section~\ref{section:Ch04_Analysis}, we study the source code of selected wallets, both manually and using static analysis tools, to detect potential to privacy violations.
-Finally, Section~\ref{section:Ch04_Conclusion} concludes.
+Then, in Section~\ref{section:Ch04Analysis}, we study the source code of selected wallets, both manually and using static analysis tools, to detect potential to privacy violations.
+Finally, Section~\ref{section:Ch04Conclusion} concludes.
 
-\subsection{Initial privacy criteria} \label{section:Ch04_Initial_privacy_criteria}
+\subsection{Initial privacy criteria} \label{section:Ch04Initialprivacycriteria}
 
 Paying with cryptocurrency involves signing a transaction and sending it to the P2P network for miners to confirm.
 To preserve privacy, a user should not be required to provide any information to the wallet provider.
@@ -56,7 +56,7 @@ Zcash has no Android wallets that satisfy our privacy criteria.
 No multi-currency wallets satisfy our criteria.
 
 
-\section{Analysis of selected wallets} \label{section:Ch04_Analysis}
+\section{Analysis of selected wallets} \label{section:Ch04Analysis}
 
 We compare the wallets which passed our initial criteria manually and using static analysis tools.
 
@@ -384,7 +384,7 @@ See Table~\ref{tab:privacy-policies} for the full results (BW -- Bitcoin wallet,
 	\label{tab:source-code}
 \end{table}
 
-\section{Conclusion} \label{section:Ch04_Conclusion}
+\section{Conclusion} \label{section:Ch04Conclusion}
 
 We studied Android wallets for Bitcoin and the major privacy focused cryptocurrencies.
 Most wallets do not satisfy our initial privacy criteria.

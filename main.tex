@@ -81,10 +81,11 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{mathtools}
 \usepackage[noabbrev, capitalize]{cleveref}
 
+\usepackage{syntax}
+
 %\usepackage{underscore}
 \usepackage{hyperref} % as per its manual, must be added last
 
-%\usepackage{syntax}
 
 % for Findel, KYC
 % https://tex.stackexchange.com/a/61266/142924
@@ -136,7 +137,7 @@ headsepline, % Uncomment to get a line under the header
 
 \begin{document}
 
-\input{before_chapters}
+\input{BeforeChapters}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
@@ -149,27 +150,27 @@ headsepline, % Uncomment to get a line under the header
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
-\include{Chapters/Chapter01/Chapter01_Introduction}
+\include{Chapters/Chapter01/Chapter01Introduction}
 
 \part{Network-level privacy of Bitcoin and privacy focused cryptocurrencies}
-\include{Chapters/Chapter02/Chapter02_Intro_P2P}
-\include{Chapters/Chapter03/Chapter03_Clustering}
-\include{Chapters/Chapter04/Chapter04_Wallets}
+\include{Chapters/Chapter02/Chapter02IntroP2P}
+\include{Chapters/Chapter03/Chapter03Clustering}
+\include{Chapters/Chapter04/Chapter04Wallets}
 
 \part{Privacy of the Lightning Network}
-\include{Chapters/Chapter05/Chapter05_Intro_Lightning}
-\include{Chapters/Chapter06/Chapter06_LN_probing}
-\include{Chapters/Chapter07/Chapter07_LN_attacks}
-\include{Chapters/Chapter08/Chapter08_HTLC_limit}
+\include{Chapters/Chapter05/Chapter05IntroLightning}
+\include{Chapters/Chapter06/Chapter06LNprobing}
+\include{Chapters/Chapter07/Chapter07LNattacks}
+\include{Chapters/Chapter08/Chapter08HTLClimit}
 
 \part{Security of smart contracts on Ethereum}
-\include{Chapters/Chapter09/Chapter09_Intro_contracts}
-\include{Chapters/Chapter10/Chapter10_Findel}
-\include{Chapters/Chapter11/Chapter11_SmartCheck}
-\include{Chapters/Chapter12/Chapter12_KYC}
+\include{Chapters/Chapter09/Chapter09Introcontracts}
+\include{Chapters/Chapter10/Chapter10Findel}
+\include{Chapters/Chapter11/Chapter11SmartCheck}
+\include{Chapters/Chapter12/Chapter12KYC}
 
 \bookmarksetupnext{level=chapter}
-\include{Chapters/Chapter13/Chapter13_Conclusion}
+\include{Chapters/Chapter13/Chapter13Conclusion}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

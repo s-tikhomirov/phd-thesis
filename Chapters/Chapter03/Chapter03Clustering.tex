@@ -1,6 +1,6 @@
 \chapter{Deanonymization of cryptocurrency transactions with network analysis} % Main chapter title
 
-\label{Chapter03_Clustering}
+\label{Chapter03Clustering}
 
 We present a novel technique to analyze the public traffic in a P2P network of Bitcoin and other cryptocurrencies and extract information about the senders of transactions.
 
@@ -53,18 +53,18 @@ Even if the latter step gains no insight, the clustering data used in combinatio
 Moreover, our technique does not simply produce a binary decision (whether two transactions are related), but also allows for manual visual inspection of transaction clusters using heatmaps.
 
 The rest of the paper is organized as follows.
-Section~\ref{sec:Ch03_Background} provides an overview of the propagation mechanisms in various cryptocurrencies.
-Section~\ref{sec:Ch03_Our_approach} describes our approach to transaction clustering based on propagation timing.
+Section~\ref{sec:Ch03Background} provides an overview of the propagation mechanisms in various cryptocurrencies.
+Section~\ref{sec:Ch03Ourapproach} describes our approach to transaction clustering based on propagation timing.
 We implement and evaluate our technique on real-world cryptocurrencies.
 We were able to cluster our own transactions in Bitcoin and Zcash with high levels of precision and recall.
 In particular, in the case of Zcash, we can cluster transactions involving both transparent and shielded addresses.
 We also show that our technique is applicable to Dash and Monero.
 We provide rough calculations of the necessary resources and the monetary cost of an attack on the Bitcoin mainnet.
 We discuss attack scenarios for different types of wallets, and give a number of recommendations for users who want to preserve their privacy, as well as for developers of cryptocurrency protocols and wallets who want to give users an easier way to do so.
-Section~\ref{sec:Ch03_Related_work} provides an overview of related work, and Section~\ref{sec:Ch03_Conclusion} summarizes and suggests future work.
+Section~\ref{sec:Ch03Relatedwork} provides an overview of related work, and Section~\ref{sec:Ch03Conclusion} summarizes and suggests future work.
 
 
-\section{Background} \label{sec:Ch03_Background}
+\section{Background} \label{sec:Ch03Background}
 
 \subsection{Propagation of messages in cryptocurrency networks}
 
@@ -144,7 +144,7 @@ Monero~\cite{Monero} implements the CryptoNote protocol~\cite{Saberhagen2013}.
 Monero is not based on the Bitcoin~Core codebase.
 The Monero community recognizes the threat of deanonymization through network analysis~\cite{user36432017, manontheinside2016, expez2016, Cameron2016}.
 The developers are integrating an I2P router into Monero (the Kovri project~\cite{Kovri}), but it is not yet deployed as of November~2018.
-Monero does not have any broadcast randomization such as trickling or diffusion.\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net_node.inl\#L1515}.}%, which is called in \texttt{relay\_post\_notify} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}, which is called in \texttt{relay\_transactions} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}.}.
+Monero does not have any broadcast randomization such as trickling or diffusion.\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net\_node.inl\#L1515}.}%, which is called in \texttt{relay\_post\_notify} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}, which is called in \texttt{relay\_transactions} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}.}.
 Further inspection of the source code and an answer on a Monero-related Q\&A site reveals that Monero nodes do not limit the number of incoming connections by default~\cite{user363032016}.
 Monero is the only one of the three privacy-preserving currencies which is private by default: users do not have to explicitly choose the "private" option (such as a shielded address in Zcash and PrivateSend in Dash).
 In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
@@ -161,7 +161,7 @@ BitcoinJ and BRD broadcast a new transaction to a subset of entry nodes and wait
 %See Appendix \ref{appendix} for references to source code.
 
 
-\section{Our approach}  \label{sec:Ch03_Our_approach}
+\section{Our approach}  \label{sec:Ch03Ourapproach}
 
 \subsection{Our approach}
 
@@ -231,7 +231,7 @@ k^{tx}_{opt} = \frac{t^{tx}_{med}}{\sqrt{-\ln(0.5)}}
 This choice of $k$ distributes the weights for any $t^{tx}$: they neither stay close to one nor quickly fall to zero (see examples in Figure~\ref{fig:weight}).
 \begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{weight_function_example.png}
+	\includegraphics[width=\columnwidth]{weight-function-example.png}
 	\caption{Weight functions for three timestamp vectors}\label{fig:weight}
 \end{figure}
 For each transaction, we evaluate the vector of weights:
@@ -427,12 +427,12 @@ The joint experiments which combined information from three geographically distr
 	\centering
 	\begin{minipage}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541509693_California.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541509693-California.png}
 		\caption{Bitcoin testnet (California)}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541511845_Tokyo.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541511845-Tokyo.png}
 		\caption{Bitcoin testnet (Tokyo)}
 	\end{minipage}\hfill
 	\label{fig:bitcoin-testnet-1}
@@ -442,12 +442,12 @@ The joint experiments which combined information from three geographically distr
 	\centering
 	\begin{minipage}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541513977_Frankfurt.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541513977-Frankfurt.png}
 		\caption{Bitcoin testnet (Frankfurt)}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541516997_combined.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541516997-combined.png}
 		\caption{Bitcoin testnet (combined)}
 	\end{minipage}\hfill
 	\label{fig:bitcoin-testnet-2}
@@ -481,7 +481,7 @@ An experiment on Bitcoin mainnet showed that transactions also exhibit the "clus
 We used learning and control transaction sets of 20~transactions each; 5 transactions from the control set were assumed "known" for anonymity degree calculation.
 
 \begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{bitcoin-mainnet-1542054034_fig-correlations_202-txcl_006-N_Rand_best.png}
+	\includegraphics[width=\columnwidth]{bitcoin-mainnet-1542054034-fig-correlations-202-txcl-006-N-Rand-best.png}
 	\caption{Bitcoin mainnet}
 	\label{fig:bitoin-mainnet}
 \end{figure}
@@ -500,7 +500,7 @@ Note than a resourceful adversary may overcome this limitation by purchasing add
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472_Frankfurt.png}
+	\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-Frankfurt.png}
 	\caption{Zcash}
 	\label{fig:zcash-mainnet}
 \end{figure}
@@ -565,7 +565,7 @@ The goal of the experiment is to check whether we observe a block-diagonal struc
 We connected to 200 nodes (with a single connection per node) and received 124~transactions in a 38~minute window (see Figure~\ref{fig:monero}).
 
 \begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{monero-mainnet-005_fig-correlations_012-txcl_003-N_Rand_best.png}
+	\includegraphics[width=\columnwidth]{monero-mainnet-005-fig-correlations-012-txcl-003-N-Rand-best.png}
 	\caption{Monero}
 	\label{fig:monero}
 \end{figure}
@@ -602,32 +602,32 @@ We can then associate transactions in the network with popular wallets.
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1542895555_fig-corr_032-txcl_005-N_Rand.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1542895555-fig-corr-032-txcl-005-N-Rand.png}
 		\caption{Mycelium (testnet)}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-testnet-1537202356_fig-corr_008-txcl_003-N_Rand.png}
+		\includegraphics[width=\columnwidth]{bitcoin-testnet-1537202356-fig-corr-008-txcl-003-N-Rand.png}
 		\caption{Bitcoin wallet (testnet)}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537365306_fig-corr_202-txcl_007-N_Rand.png}
+		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537365306-fig-corr-202-txcl-007-N-Rand.png}
 		\caption{Bitcoin wallet}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537377559_fig-corr_102-txcl_004-N_Rand.png}
+		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537377559-fig-corr-102-txcl-004-N-Rand.png}
 		\caption{BRD}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537951300_fig-corr_100-txcl_004-N_Rand.png}
+		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537951300-fig-corr-100-txcl-004-N-Rand.png}
 		\caption{Coinomi}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-		\includegraphics[width=\columnwidth]{zcash-mainnet-1543922496_fig-corr_005-txcl_003-N_Rand.png}
+		\includegraphics[width=\columnwidth]{zcash-mainnet-1543922496-fig-corr-005-txcl-003-N-Rand.png}
 		\caption{Coinomi (Zcash)}
 	\end{subfigure}
 	\caption[short]{Experimental results (Bitcoin unless specified)}
@@ -780,10 +780,10 @@ We leave this research direction for future work.
 
 Cryptocurrency developers should introduce privacy enhancing measures at the network level, especially if the currency is meant to be privacy-preserving.
 As our results show, trickling and diffusion, as they are implemented in Bitcoin and its forks, are not sufficient.
-A promising proposal for anonymous peer-to-peer broadcast is Dandelion~\cite{Venkatakrishnan2017, Fanti2018} (see Section~\ref{sec:Ch03_Related_work} for an overview).
+A promising proposal for anonymous peer-to-peer broadcast is Dandelion~\cite{Venkatakrishnan2017, Fanti2018} (see Section~\ref{sec:Ch03Relatedwork} for an overview).
 
 
-\section{Related work}  \label{sec:Ch03_Related_work}
+\section{Related work}  \label{sec:Ch03Relatedwork}
 
 \subsection{Privacy in cryptocurrencies}
 
@@ -869,7 +869,7 @@ The authors conclude that for the majority of users network-based deanonymizatio
 
 
 
-\section{Conclusion and future work} \label{sec:Ch03_Conclusion}
+\section{Conclusion and future work} \label{sec:Ch03Conclusion}
 
 We study the state of anonymity of cryptocurrencies on the network level.
 We describe and implement a novel kind of transaction clustering based on the analysis of propagation times.
@@ -893,7 +893,7 @@ Consequently, our quality metric may poorly reflect the reality on large network
 One direction of future research may be deriving an anonymity metric which works better under these circumstances.
 
 \subsection{Direct comparison of relay randomization techniques}
-As described in Section~\ref{sec:Ch03_Background}, cryptocurrencies use different relay randomization techniques aimed at improving privacy: trickling, diffusion, or no randomization.
+As described in Section~\ref{sec:Ch03Background}, cryptocurrencies use different relay randomization techniques aimed at improving privacy: trickling, diffusion, or no randomization.
 A natural question would be to measure the relative effectiveness of these methods.
 Unfortunately, we cannot use a direct comparison between cryptocurrencies that use diffusion and trickling to make a conclusion about relative effectiveness of these methods, as the real-world networks also differ in many other parameters (such as the number of nodes and transaction rate) that also influence the attack results.
 A possible direction for future research may be to quantify the effects of trickling and diffusion on privacy properties of a Bitcoin-like cryptocurrency with respect to our attack technique, holding all other parameters equal.

@@ -150,6 +150,7 @@ headsepline, % Uncomment to get a line under the header
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
 
+%\iffalse
 \include{Chapters/Chapter01/Chapter01Introduction}
 
 \part{Network-level privacy of Bitcoin and privacy focused cryptocurrencies}
@@ -164,6 +165,7 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter08/Chapter08HTLClimit}
 
 \part{Security of smart contracts on Ethereum}
+\input{solidity-highlighting}
 \include{Chapters/Chapter09/Chapter09Introcontracts}
 \include{Chapters/Chapter10/Chapter10Findel}
 \include{Chapters/Chapter11/Chapter11SmartCheck}
@@ -171,7 +173,7 @@ headsepline, % Uncomment to get a line under the header
 
 \bookmarksetupnext{level=chapter}
 \include{Chapters/Chapter13/Chapter13Conclusion}
-
+%\fi
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
 %----------------------------------------------------------------------------------------

@@ -5,9 +5,16 @@
 We describe a technique for cheaply and quickly probing intermediate balances of Lightning channels -- information which is considered private.
 
 
-Payment channel networks (PCN) have been introduced to solve scalability problem of permissionless blockchains such as Bitcoin.
-The Lightning Network (LN) is a prominent PCN built on top of Bitcoin launched in 2018.
-As of March~2020, LN consists of over 11~thousand nodes and 36~thousand channels, collectively holding nearly $900$~bitcoins ($7.8M$~USD).
+In this work, we show that an attacker can easily discover channel balances using probing.
+This takes under a minute per channel and requires moderate capital commitment and no expenditures (the attacker's funds are only temporarily locked).
+We describe the algorithm and test our proof-of-concept implementation on Bitcoin's testnet.
+We argue that LN's balance between privacy and routing efficiency is suboptimal: channel balances are neither well protected nor utilized.
+
+We outline two ways for LN to evolve in respect to this issue.
+To emphasize privacy, we propose a modification of error handling that hides details of the erring channel from the sending node.
+This would break our probing technique but make routing failures more common, as the sender would not know which channel from the attempted route has failed.
+To improve efficiency, we propose a new API call that would let the sender query balances of channels that it is not a party of.
+We argue that combining these approaches can help LN take the best of both worlds: hide private data when feasible, and utilize public data for higher routing efficiency.
 
 A payment channel allows two parties to lock funds in a multisignature address and then modify the distribution of funds in nearly instant transactions, without confirming them in the blockchain.
 Contrary to Bitcoin, LN transactions are not broadcast and not publicly stored.
@@ -21,56 +28,7 @@ As local channel balances are not public, payments often fail due to insufficien
 In that case, the payment is attempted along multiple routes until it succeeds.
 This constitutes a privacy-efficiency tradeoff: hidden balances improve privacy but hinder routing efficiency.
 
-In this work, we show that an attacker can easily discover channel balances using probing.
-This takes under a minute per channel and requires moderate capital commitment and no expenditures (the attacker's funds are only temporarily locked).
-We describe the algorithm and test our proof-of-concept implementation on Bitcoin's testnet.
-We argue that LN's balance between privacy and routing efficiency is suboptimal: channel balances are neither well protected nor utilized.
-
-We outline two ways for LN to evolve in respect to this issue.
-To emphasize privacy, we propose a modification of error handling that hides details of the erring channel from the sending node.
-This would break our probing technique but make routing failures more common, as the sender would not know which channel from the attempted route has failed.
-To improve efficiency, we propose a new API call that would let the sender query balances of channels that it is not a party of.
-We argue that combining these approaches can help LN take the best of both worlds: hide private data when feasible, and utilize public data for higher routing efficiency.
-
-
-\section{Introduction} \label{sec:introduction}
-Bitcoin~\cite{Nakamoto2008} is the first digital currency to solve the double spending problem without a trusted third party.
-The permissionless nature of Bitcoin's consensus algorithm imposes severe restrictions on transaction throughput, with a theoretical maximum of tens of transactions per second~\cite{Croman2016}.
-Addressing this problem in a naive way (such as increasing the block size) would endanger Bitcoin's key properties, such as the ability of participants to validate all transactions in real time using consumer hardware.
-Another scaling approach that doesn't affect Bitcoin's properties but builds on top of them is \textit{off-chain scaling}.
-Off-chain, or \textit{second layer} (\textit{L2}) protocols allow parties to exchange transactions without broadcasting them to the blockchain, but in case of a conflict the blockchain (called \textit{layer one} in this context) is used for dispute resolution.
-We refer the reader to a comprehensive overview of off-chain approaches in~\cite{Gudgeon2019}.
-
-The (Lightning Network) LN has gained significant traction as a major Bitcoin scaling solution.
-First introduced in 2016~\cite{Poon2016} and launched on mainnet in early~2018, it is being implemented by several independent teams based on a common set of specifications called BOLTs (for Basics of Lightning Technology).
-
-The basic building block of LN is a \textit{payment channel}.
-A payment channel is a protocol for off-chain transactions based on the initial \textit{funding transaction}, which locks coins in a 2-of-2 multisignature address.
-%The key feature of a (bidirectional) payment channel is that it lets users send funds in both directions (as opposed to earlier unidirectional designs).
-A channel operates in three stages: opening (two parties lock the coins), operating (exchanging off-chain transactions), and closing (broadcasting the most recent channel state to the blockchain).
-A channel partner may try to cheat by trying to close the channel with an earlier state.
-In this case, the counterparty is guaranteed to get all funds from the channel if they react within a timeout.
-
-LN nodes gossip about newly opened channels that are marked as available for routing.
-Based on this information, each node maintains a local view of the network, and uses it to calculate routes to the receiver.
-As total channel capacities are known, the sender only considers channels with the capacity larger than $X$ for a payment of amount $X$.
-However, this is insufficient to prevent routing failures, because the distribution of funds in channels is not known.
-The ability of channel parties to send or forward payments is limited by their \textit{local} channel balances.
-Initially, if Alice opens a channel with Bob, all funds are on her side.
-This means that she can send up to the total capacity, but she can not receive.
-As the local balances change, the routing capabilities of the channels in both directions are also changing.
-
-In case of payment failure, the sender is notified by an error message which channel has failed, and will presumably re-launch route generation function with the failed channel excluded.
-This procedure repeats for a pre-set number of tries, or until a payment succeeds.
-Given the external constraints it is sill not clear that a better approach than systematically probing for paths exist even though active research is being conducted in this area~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
-
-Another aspect of LN relevant for this work is privacy.
-Bitcoin is pseudonymous: while blockchain addresses are not linked to real world identity, and users are encouraged to not reuse them, the transaction graph can be extracted and analyzed.
-In contrast, LN payments are only sent to a short chain of randomly chosen nodes along the route from a sender to a receiver.
-Due to onion routing, each intermediary node only knows the previous and the next hops, but not the whole route and even not its position in the route.
-This supports the presumption that Lightning payments provide more privacy than layer-one Bitcoin transactions.
-However, a probing attack described in~\cite{Dam2019} showed that it is possible for an attacker to reveal balances of other channels of their channel partner.
-
+\section{Privacy-efficiency tradeoff}
 We see an important tradeoff in LN between routing efficiency and privacy.
 On the one hand, hiding balances from everyone but channel parties is an important privacy measure.
 If an external observer could probe intermediate channel balances, it would be possible to reveal total balances of remote nodes and track payments being routed through channels.
@@ -83,65 +41,6 @@ This greatly reduces the cost of the attack.
 We test our proof-of-concept implementation on Bitcoin testnet and successfully probe a significant portion of channels with high precision.
 We also outline potential countermeasures.
 We leave the formal treatment of the second part of the claim (how utilizing balance information would improve routing) for future work.
-
-The rest of the paper is organized as follows.
-In~\cref{sec:background}, we describe the relevant aspects of LN in more detail.
-In~\cref{sec:probing}, we introduce our probing algorithm.
-In~\cref{sec:results}, we describe the experimental results.
-We discuss the results and propose countermeasures in~\cref{sec:discussion}.
-\cref{sec:related-work} provides a short summary of related work, and~\cref{sec:conclusion} concludes.
-
-
-
-
-\section{Background} \label{sec:background}
-In this section, we introduce the basic concepts of the LN and the details relevant for our work.
-
-Each \textit{LN node} is defined by a private-public key pair.
-A node has a permanent identifier and connects to other nodes in the LN P2P network.
-Nodes exchange information about the currently open channels and their fee policies.
-Nodes communicate with an underlying bitcoin node (such as Bitcoin Core) to receive information on which transactions are confirmed.
-
-To create an \textit{LN channel}, Alice issues a request to Bob via the P2P protocol.
-If the parties agree on channel parameters, they co-sign a \textit{funding transaction} that establishes the initial distribution of funds.
-While in the initial specifications it was assumed that both parties could fund a channel, the current LN channels are single-funded (i.e.,~Alice provides all funds and may optionally "push" some funds to Bob as a gift).
-After the funding transaction gets the sufficient number of confirmations (usually~$3$~to~$6$), the channel is open.
-
-An \textit{LN transaction} is an atomic update of one or multiple channels.
-To send a payment to Bob, Alice negotiates a new channel state.
-Each channel state is reflected in a \textit{commitment transaction} -- a bitcoin transaction that spends the funding transaction and distributes the funds to both parties in some proportion.
-Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
-HTLC is defined by a Bitcoin script that gives the funds either to one party, if it provides a pre-image of a given hash, or to the other party after a timeout.
-For instance, if Alice wants to send $x$ coins to Bob, she first asks him for a \textit{payment hash}.
-Bob generates a random number $r$ and send its hash $H(r)$ to Alice in a message called an \textit{invoice}.
-Alice then \textit{offers} Bob an HTLC that would give him $x$~coins if he provides a preimage of $H(r)$ before time $t$, or return the coins to Alice otherwise.
-Bob must \textit{claim} the payment before time $t$.
-If he provides $r$, the HTLC \textit{resolves}: the balances in the next commitment transaction outputs will reflect the new distribution of channel funds.
-The other way for an HTLC to be resolved is timeout.
-A payment channel can keep track of multiple unresolved HTLCs concurrently.
-
-LN is source routed.
-Nodes exchange information about channels, and each node chooses routes based on the local view of the network graph.
-The graph includes total channel capacities but not local balances of the counterparties.
-Using HTLCs enables atomicity of channel updates in multi-path transactions.
-For instance, Alice can pay Charlie via Bob by using the same hash value along the route.
-If Charlie redeems the payment from Bob, then Bob can use the same pre-image to claim funds from Alice, otherwise no funds move.
-
-The cornerstone of LN security is its \textit{revocation} mechanism.
-The party that initiates the channel closure must wait until their portion of the funds becomes available.
-For instance, if Alice initiates a channel closure, she must wait until her funds become available.
-If the closure is a cheating attempt, Bob can dispute it before the timeout and take control of all channel funds.
-
-Multi-path payments use onion routing to enforce the order of intermediary nodes.
-Each HTLC is onion-encrypted so that each intermediary node only knows the immediate previous and next nodes, but not the final sender or receiver.
-Transaction fees are collected by intermediary nodes as a difference between the amount in the HTLC they receive and the HTLC they send as part of the same transaction.
-Note that if a payment fails, no fees are collected, as all pending balance updates roll back.
-
-%If a node along the path cannot set up the next HTLCs it will send back an error.
-%This error can be utilized \textbf{double check in code / log file! otherwise there is a work around which is slightly more complex and might require patching the node or writing a plugin}
-%Thus by sending a random payment hash for which noone knows the preimage one can without routing fees probe the liquidity of a sequence of channels.
-%This sequence can contain at most 20 paths. \textbf{Would trampoline routing actually be also beneficial for an attacker or just for trampoline nodes}
-
 
 
 \section{Probing algorithm} \label{sec:probing}

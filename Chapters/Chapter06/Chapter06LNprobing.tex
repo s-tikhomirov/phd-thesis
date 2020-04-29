@@ -2,98 +2,116 @@
 
 \label{Chapter06LNprobing}
 
-We describe a technique for cheaply and quickly probing intermediate balances of Lightning channels -- information which is considered private.
-
-
-In this work, we show that an attacker can easily discover channel balances using probing.
-This takes under a minute per channel and requires moderate capital commitment and no expenditures (the attacker's funds are only temporarily locked).
-We describe the algorithm and test our proof-of-concept implementation on Bitcoin's testnet.
-We argue that LN's balance between privacy and routing efficiency is suboptimal: channel balances are neither well protected nor utilized.
-
-We outline two ways for LN to evolve in respect to this issue.
-To emphasize privacy, we propose a modification of error handling that hides details of the erring channel from the sending node.
-This would break our probing technique but make routing failures more common, as the sender would not know which channel from the attempted route has failed.
-To improve efficiency, we propose a new API call that would let the sender query balances of channels that it is not a party of.
-We argue that combining these approaches can help LN take the best of both worlds: hide private data when feasible, and utilize public data for higher routing efficiency.
-
-A payment channel allows two parties to lock funds in a multisignature address and then modify the distribution of funds in nearly instant transactions, without confirming them in the blockchain.
-Contrary to Bitcoin, LN transactions are not broadcast and not publicly stored.
-%, LN has been seen not only as scalability but also as privacy solution.
-The protocol guarantees that only the latest channel state can be confirmed on channel closure.
-LN also supports multi-hop payments, where the balances of multiple channels along a path are moved.
-The atomicity of this process is guaranteed by hash time-locked contracts (HTLC).
-LN nodes gossip about channels available for routing and their total capacities.
-To issue a (multi-hop) payment, the sender creates a route based on its local knowledge of the graph.
-As local channel balances are not public, payments often fail due to insufficient balance at an intermediary hop.
-In that case, the payment is attempted along multiple routes until it succeeds.
-This constitutes a privacy-efficiency tradeoff: hidden balances improve privacy but hinder routing efficiency.
+In this Chapter, we introduce and evaluate a technique for cheaply and quickly probing private balances of channels in the Lightning network (LN).
 
 \section{Privacy-efficiency tradeoff}
-We see an important tradeoff in LN between routing efficiency and privacy.
-On the one hand, hiding balances from everyone but channel parties is an important privacy measure.
+
+As described in~\ref{Chapter05IntroLightning}, a payment channel in the LN allows two parties to lock funds in a multisignature address and then modify the distribution of funds in nearly instant transactions, without confirming them in the blockchain.
+LN nodes gossip about channels available for routing and their total capacities.
+To issue a (multi-hop) payment, the sender creates a route based on its local knowledge of the graph.
+LN, as every L2 protocol, tries to scale throughput by performing transactions off-chain, i.e., without announcing them publicly.
+Therefore the current balances of channels are unknown to outsiders.
+
+From the privacy point of view, L2 constitutes an improvement compared to L1, even though multiple research papers including ours outline privacy drawbacks of LN.
+In L2, all transactions ever made are not conveniently stored in a globally distributed open database, available for future analysis.
+Hiding balances from everyone except for the channel parties is an important privacy measure.
 If an external observer could probe intermediate channel balances, it would be possible to reveal total balances of remote nodes and track payments being routed through channels.
-On the other hand, knowing channel balances would allow senders to avoid trying routes that will fail.
 
-We argue that LN in the current form takes "the worst of both worlds": information about channel balances is neither well protected nor utilized.
-We support the first part of this claim by describing a probing algorithm that reveals channel balances by sending fake payments.
-Contrary to~\cite{Dam2019}, which requires opening channels with both parties of the channel that is being probed, our approach allows to probe the whole network while only establishing a handful of channels.
-This greatly reduces the cost of the attack.
+On the other hand, unknown local balances negatively affect routing.
+LN payments often fail due to insufficient balance at an intermediary hop, because senders choose routes that cannot forward the amount required.
+In that case, the payment is attempted along multiple routes until it succeeds.
+Knowing channel balances in advance could therefore make routing more efficient.
+
+This constitutes a \textit{privacy-efficiency tradeoff}: hidden balances improve privacy but hinder routing efficiency.
+We argue that the way LN is currently addressing this tradeoff suboptimal.
+Channel balances are neither well protected nor utilized.
+
+In this Chapter, we describe a probing algorithm that reveals channel balances by sending fake payments.
+We substantially improve upon similar approaches described in the literature in terms of accuracy and cost.
+Compared to previous approaches, we can probe \textit{remote} channels (i.e.,~without establishing a channel with one of their endpoints).
+This greatly reduces the requirements of the attack both in terms of time and capital.
+With our method, which requires moderate capital commitment, half of the channels can be probed in $21$~seconds.
+The attacker's capital is not spent, but only temporarily locked up.
 We test our proof-of-concept implementation on Bitcoin testnet and successfully probe a significant portion of channels with high precision.
-We also outline potential countermeasures.
-We leave the formal treatment of the second part of the claim (how utilizing balance information would improve routing) for future work.
+%The formal treatment of the second part of the claim (quantifying the effect of utilizing balance information on routing efficiency) is left for future work.
+We also outline potential countermeasures, which include modification in error handling, sharing channel balances explicitly, and just-in-time (JIT) routing.
 
 
-\section{Probing algorithm} \label{sec:probing}
-We describe our algorithm of channel probing.
+\section{Probing overview} \label{sec:probing}
 
-Let us denote the total capacity of a channel as $c$.
-The two parties of a channel are denoted as source (with balance $b_s$) and destination ($b_d$).
-As per BOLT specification, the source is defined as the node with an alphanumerically smaller node ID.
-For concreteness, for each channel, we estimate the balance at source ($b_s$), and refer to it simply as $b$.
+Consider two LN nodes that share a channel.
+Let us denote the total capacity of the channel as $c$.
+LN channels are bidirectional.
+Without loss of generality, let us denote one of the nodes as \textit{source} (with balance $b_s$) an the other as \textit{destination} (with balance $b_d$).
+By definition, $c = b_s + b_d$.
+\footnote{As per BOLT specification, the source is defined as the node with an alphanumerically smaller node ID.}
+Our goal is to determine how $c$ is split between $b_s$ and $b_d$.
+For concreteness, for each channel, we estimate $b_s$, and refer to it simply as $b$.
 
-First, we establish the list of channels we are going to probe.
+In a nutshell, our algorithm consists of the following steps:
+\begin{itemize}
+	\item Set up a node, open channels to a few selected nodes (referred to as \textit{entry channels} and \textit{entry nodes})
+	\item Compile the list of channels for probing;
+	\item For each channel in the list, do a binary search for the true value of $b$ by sending fake payments through routes ending with the chosen channel.
+\end{itemize}
+
+\subsection{Assumptions}
+
+Our method is based on the following assumptions.
+
 To be suitable for probing, the channel must be \textit{active} (available for routing) and \textit{live} (responding to requests).
-As a P2P network, LN has no definitive list of live nodes.
-Therefore, we need heuristics to choose live channels for probing. 
-Probing dead channels would be wasteful: we would have to wait for timeouts, and the probes would leave our channels with "hanging" HTLCs waiting to be redeemed, occupying our capacity.
+We assume that nodes follow the BOLT specification (in particular, return error as prescribed).
 
-We define a channel as active if it is marked as active in at least one of the two directions (this information is available in gossip data).
-To determine liveness, we use two heuristics: temporarily connecting to all nodes, and sending a small amount to all active channels (pre-probing).
-After compiling a list of live and active channels, we probe them by sending payments with randomly generated payment hashes.
-We refer to such payments as \textit{probes}.
-For each channel, we keep a lower ($b_{min}$) and an upper ($b_{max}$) bound for its balance $b$.
-Initially, $b_{min}=0$ and $b_{max}=c$.
-At each probing step, we aim at shrinking this interval by issuing a probe with the amount of $0.5 * (b_{min} + b_{max})$ (binary search).\footnote{If the midpoint between $b_{min}$ and $b_{max}$ is larger than the maximum HTLC amount allowed by the specification, we decrease it to that maximum minus a safety margin.}
+\paragraph{A note on probing directions}
 
-The two directions of a channel can have different properties.
+LN channel are symmetrical.
+Our probing algorithm is agnostic to the direction of probing payments.
+For instance, sending a probe via a route ending in "Alice - Bob" theoretically gives the same information as via a route ending in "Bob - Alice".
+
+However, in practice channel directions can have different properties.
 Each channel partner controls its channel direction: Alice sets the routing policy only in the direction to Bob, while Bob sets the policy only in the direction to Alice.
 It is possible that a channel is only partially active: Alice allows routing to Bob, but Bob does not allow routing to Alice.
-Therefore, we try probing each channel in both directions, taking advantage of the fact that the two local balances sum up to the channel capacity: $b_s + b_d = c$.
-This helps us probe partially active channels.
-It is also helpful for probing large channels: if we do not have enough capacity to probe a channel from the "large" end, we probe it from the "small" end, getting the same information.
+Therefore, probe each channel in both directions, which allows us to probe partially active channels.
+
+Probing from both sides also helps us overcome the technical issue with large channels (discussed below).
+Due to the limitation on LN transaction amount, we cannot probe very large channels.
+However, if a large channel is unbalanced, we get the required information by probing it from the "smaller" end.
 For clarity, we omit this implementation detail from the algorithm description.
 
 We now describe our probing technique more thoroughly.
 
+\paragraph{A note on applicability}
+
+Our experiments are meant to show the feasibility of the probing technique, but the results from testnet can not be directly applied to mainnet.
+In particular, as mainnet LN contains four times more channels than testnet LN, probing the whole mainnet would take days.
+We suggest that even with this limitation, the attacker can target specific channels, for instance, all the channels adjacent to a particular service provider.
+Probing tens or hundreds of such channels is feasible in terms of time and would give the attacker valuable insights into the victim's financial situation.
+
+
+\section{Probing algorithm}
+
 \subsection{Selecting channels for probing}
-%We refer to a channel as \textit{live}, if we can get a response from it while trying to route a payment through it.
-% cref doesn't know this algorithm format
+First, we establish the list of channels we are going to probe.
+We define a channel as active if it is marked as active in at least one of the two directions (this information is available in gossip data).
+To determine liveness, we use two heuristics: temporarily connecting to all nodes, and sending a small payment ($1000$~satoshis) to all active channels (pre-probing).
+
 We use the following heuristics to determine liveness (Algorithm~\ref{alg:select-channels}).
 
-\subsubsection{Heuristic 1: Connecting to nodes}
+\subsubsection*{Heuristic 1: Connecting to nodes}
 For a channel to be live, both its parties must be live.
-We extract a list of nodes from gossip data and establish a P2P connection to each.\footnote{Establishing a P2P connection is nearly instant and does not require coins, unlike opening a channel.}
+We extract a list of nodes from gossip data and establish a P2P connection to each of them.
+\footnote{Establishing a P2P connection is nearly instant and does not require coins, unlike opening a channel.}
 We consider a channel live, if both its parties are live.
 We close all the connections after this step, except for the connections to nodes that we share a channel with.
 
-\subsubsection{Heuristic 2: Pre-probing}
+\subsubsection*{Heuristic 2: Pre-probing}
 To further optimize probing, we introduce an additional pre-probing step.
 We send a probe of $1000$~satoshis to every channel marked as active in the gossip data\footnote{We use the same probing function as for the main probing described below.}.
-If we get a response, we consider the channel live, otherwise we consider it dead and do not consider it it in the main probing step.
+If we get no response, we consider the channel dead and do not consider it it in the main probing step.
 We start the first main round of probing with a list of live channels where a channel is defined live if either heuristic 1 or heuristic 2 detected it as live.
 
-\subsubsection{Heuristic 3: Liveness detected during probing}
-If we issue a probe along the route of channels $c_1, c_2, \dots, c_n$ and receive an error from channel $c_i$, we conclude that all channels $c_j, j<=i$ are live.
+\subsubsection*{Heuristic 3: Liveness detected during probing}
+During the first peobing round, if we issue a probe along the route of channels $c_1, c_2, \dots, c_n$ and receive an error from channel $c_i$, we conclude that all channels $c_j, j<=i$ are live.
 If any of $c_j$ is not on our live channels list, we add it.
 During the second probing round, we use the updated live channels list.
 
@@ -118,7 +136,7 @@ During the second probing round, we use the updated live channels list.
 \end{algorithm}
 
 
-\subsubsection{Channel order}
+\subsubsection*{Channel order}
 Our method is agnostic to the order in which the channels are probed.
 However we probe the "closer" and "more important" channels first.
 The rationale behind this is that knowing the balances of channels often used as intermediary hops allows us to avoid sending payments that are known to fail early due to insufficient balance at some hop (note that the standard routing does not know about the funds distribution within channels).
@@ -135,20 +153,26 @@ We probe channels in the following order:
 
 \subsection{Probing}
 
-\subsubsection{Probing a single channel}
-The key idea behind our method is that by sending a payment of amount $a$ to a channel, we can use the type of error it returns to infer whether its balance is higher or lower than $a$.
-We use a randomly generated value as a payment hash, therefore, the payment fails in any case.
-Due to onion routing, intermediary nodes can not distinguish randomly generated and genuine payment hashes.
-They will therefore forward our payments as usual.
-If all channels along a route have sufficient capacity, the payment will only fail at the last step, where the final recipient finds out that it does not know the preimage for the payment hash.
-If any channel has insufficient capacity, the payment fails before it reaches the final recipient.
+After compiling a list of live and active channels, we probe them by sending payments with randomly generated payment hashes.
+We refer to such payments as \textit{probes}.
+For each channel, we keep a lower ($b_{min}$) and an upper ($b_{max}$) bound for its balance $b$.
+Initially, $b_{min}=0$ and $b_{max}=c$.
+At each probing step, we aim at shrinking this interval with binary search, i.e.,~by issuing a probe with the amount of $\frac{1}{2} (b_{min} + b_{max})$.\footnote{If the midpoint between $b_{min}$ and $b_{max}$ is larger than the maximum HTLC amount allowed by the specification, we decrease it to that maximum minus a safety margin.}
 
-Let $c_1, c_2, \dots, c_n$ be a route we use, and $b_i$ be their respective balances.
+\subsubsection*{Probing a route}
+The key idea behind our method is that by sending a payment of amount $a$ through a channel, we can use the type of error it returns to infer whether its balance is higher or lower than $a$.
+We use a randomly generated value as a payment hash, therefore, the payment fails in any case.
+\footnote{Intermediary nodes can not distinguish randomly generated and genuine payment hashes.
+They will therefore forward our probes as usual payments.}
+If all channels along a route have sufficient capacity, the payment will only fail at the last step, where the final recipient finds out that it does not know the preimage for the payment hash.
+If any channel has insufficient capacity, the payment fails at that channel, before reaching the final recipient.
+
+Let $c_1, c_2, \dots, c_n$ be a sequence of channels in a route, and $b_i$ be their respective balances.
 Let $c_j$ be the erring channel.
-After each probe with an amount $a$, we obtain the following information: 
+After each probe with an amount $a$, we obtain the following information:
 \begin{itemize}
 	\item $b_i > a$ for $i<j$;
-	\item $b_j < a$ if the error is "insufficient capacity", or $b_j > a$ if the error is "unknown preimage"\footnote{The latter is only possible if $j=n$.}.
+	\item $b_j < a$ if the error is "insufficient capacity", or $b_j > a$ if the error is "unknown preimage".\footnote{The latter is only possible if $j=n$.}
 \end{itemize}
 
 The probing algorithm for a single route is presented in Algorithm~\ref{alg:probe-route}.
@@ -204,21 +228,20 @@ The algorithm for all channels selected for probing is presented in Algorithm~\r
 \end{algorithm}
 
 
-\subsubsection{Choosing routes}
-We rely on the built-in functionality of our LN node (c-lightning) to calculate routes to target channels.
-LN implementations use Dijkstra algorithm for path finding.
-In particular, c-lightning allows to customize route search, offering an option to exclude specified nodes and channels.
-We use this functionality to pre-filter suggested routes based on the information we have obtained through probing.
+\subsubsection*{Choosing routes}
+The goal of our route selection is to generate routes that:
+\begin{itemize}
+	\item the chosen \textit{target channel} is the last channel in the route;
+	\item all previous channels in the route have sufficient balances to forward the amount of the next probe.
+\end{itemize}
+
+We rely on the built-in functionality of our LN node (c-lightning) to calculate routes.
+\footnote{Internally, it uses Dijkstra algorithm.}
+The API of our node allows us to customize routes, offering an option to exclude specified nodes and channels.
+We use this functionality to pre-filter suggested routes based on the information we have obtained through probing so far.
 If we know that a balance of some channel in a suggested route is insufficient, we exclude such channel from consideration for the current probe and repeat route search (Algorithm~\ref{alg:find-route}).
+This allows us to avoid sending probes through routes with insufficient balance in intermediary channels, hence speeding up our algorithm.
 
-A more efficient way to implement this filtering would be to modify the path finding function in the c-lightning code.
-We consider our approach sufficiently effective for a proof-of-concept, as it does not require modifying and re-compiling our LN node.
-In our main experiment, we performed $12895$ payments and rejected $96768$ routes because of low balance -- that is, we filtered out around 8~routes per payment.
-But considering that route generation is a local operation, one route generations takes under 10~ms, which means that route generation with filtering is an order of magnitude lower than the time it takes for the response to arrive.
-
-Optimizing route length presents a trade-off.
-Choosing longer routes allows to collect more information per probe, but we are less likely to reach the target channel, as the probability that some intermediary channel fails is higher.
-For our purposes, we limit the length of routes to $10$~hops (the protocol limit is $20$~hops).
 
 \begin{algorithm}
 	\KwData{target channel, amount $a$}
@@ -247,61 +270,47 @@ For our purposes, we limit the length of routes to $10$~hops (the protocol limit
 	\label{alg:find-route}
 \end{algorithm}
 
-\subsubsection{Second probing pass}
+\subsubsection*{Second probing pass}
 We discovered that some channels we thought were dead are in fact live, as our payments were successfully routed through them (liveness heuristic 3 described earlier).
 We mark such channels as live and repeat the probing the second time taking them into consideration.
 
 \subsection{Channel information coefficient}
-To measure the effectiveness of our technique, we introduce the channel information coefficient.
+To measure the effectiveness of our technique, we introduce the \textit{channel information coefficient}.
 For a given channel, it is defined as:
 
 \[i = 1 - \frac{b_{max} - b_{min}}{c}\]
 
 where $c$ is the original channel capacity, and $b_{max}$ and $b_{min}$ are our upper and lower bound estimates for $b$.
-Thus $i=0$ would mean that we do not know any extra information about $b$ compared to public knowledge.
+Thus $i=0$ means that we do not know any extra information about $b$ in addition to public knowledge.
 The value $i=1$ means that we know $b$ precisely.
-In practice, if no unexpected error occurs, after $7$ probings we shrink the interval between the minimum and the maximum estimates to $1/128$ of the initial estimates, that is, we determine the channel balance with the precision better than $1\%$.
 
 
-\subsection{Implementation details}
+
+
+
+\section{Experimental setup}
 
 We implemented the algorithm described in~\cref{sec:probing} as a c-lightning plugin.
-C-lightning~\cite{clightning} is one of the three major LN implementations, alongside LND~\cite{LND} and Eclair~\cite{Eclair}.
+%C-lightning~\cite{clightning} is one of the three major LN implementations, alongside LND~\cite{LND} and Eclair~\cite{Eclair}.
 The plugin functionality allows developers to integrate their code in Python with the c-lightning node~\cite{clightningPlugins}.
-We used five~entry channels opened to handpicked nodes with high connectivity and liquidity.
-Four of our channels had the maximum allowed capacity of $0.167$~BTC, and one channel had the capacity of $0.043$~BTC.
-%Analyzing the results from this setup  we figured out that we ran into dead ends and spotted that there was a node announced on gossip with $17$ channels in the largest connected component of announced nodes and channels  about we knew nothing.
-%We thus opened a payment channel to that node.
-
-\subsubsection*{Ethical considerations}
 For ethical reasons and to be in compliance with privacy-related regulations, we only collected data from Bitcoin~testnet.
-%For the same reason we also decided against sharing the code that would enable people to collect this personal information.
+
+We aim to perform at least $7$ probings per channel.
+This means that in a successful probing we shrink the $[b_{min}, b_{max}]$ interval to $1/128$ of its initial length, hence determining $b$ with the precision better than $1\%$.
 
 
+\subsection{Preliminary steps}
 
-\section{Results} \label{sec:results}
-\subsection{State of Bitcoin testnet}
-
-At the time of the experiment (2020-02-26), Bitcoin~testnet contained $1974$ nodes and $5884$ channels (including $2527$ announced as active).
-The initial estimate showed that $207$ nodes and $1625$ channels were live.
-We detected $3$ additional live channels during the main probing phase.
-The strongly connected component of the live subgraph contained $1489$ channels.
-The other $139$ channels where pointing towards nodes for which we could not get meaningful error messages.
-
-%To the best of our knowledge which we concluded from studying the error messages and timouts of sending onions the remainding channels are connected to nodes which are offline or disappeared.
-%We thus believe that we have been able to fully probe the active and live part of the network.
-%Despite the fact that onionins can be send out concurrently we decided for simplicity and to avoid errors from side effects (e.g. accidentially sending htlcs concurrently through the same channel) to run our code sequentually.
-
-
-\subsection{Conducting the probing}
-
-We launched the code that implements the algorithm described in~\cref{sec:probing}.
-
-In total we sent out $12895$ onions: $3153$ ($24.45\%$) during the pre-probing and $9742$ ($75.55\%$) during the main probing).
-Out of $9742$ onions in the main probing, $8256$ ($84.75\%$) returned errors which we could use to improve the estimates of balances on payment channels (namely, "channel temporary unavailable", which we interpret as "insufficient balance", and "payment details unknown", which we interpret as "preimage unknown").
-Our code was running for~$14$ hours and~$6$~minutes. % 50770 seconds
-Probing $1628$ live channels took $65\%$ of the time (roughly $9$ hours), while the rest of the time was spent on slow responding channels or channels which replied with an unexpected error.
-%Due to the sequential way of conducting the experiment we cannot speak of a snapshot of the lightning network. %\todo[inline]{we could actually compare the balance maps from previous runs to get an idea how stable funds are and how often the network changes if my time permits this}
+We establish our own LN node\footnote{c-lightning version \texttt{v0.8.0-40-g899f5de}.} and fund it with (testnet) coins.
+Then, we establish a few channels to to a few selected nodes.
+We used five~entry channels opened to handpicked nodes with high connectivity and liquidity.
+Four of our channels had the maximum standard\footnote{Some LN nodes can open larger channels, also known as \textit{wumbo} channels, if both peers support it.} capacity of $0.167$~BTC, and one channel had the capacity of $0.043$~BTC.
+We choose nodes to connect to based on the following requirements (as reported by 1ML~\cite{1MLTopConnected}):
+\begin{itemize}
+	\item well-connected and well-capitalized;
+	\item physically located relatively close to our node (i.e.,~in Europe).
+\end{itemize}
+We assumed that as the first hop of all of our probing payments will be to one of the five~nodes we have channels with, it is worth decreasing ping times to them.
 
 \subsection{Probing parameters}
 One of the decisions we had to make is to set a timeout after which we declare a channel unresponsive and move to the next one.
@@ -311,44 +320,73 @@ Therefore, to probe all channels in reasonable time, we have to set a timeout in
 For the main probing, we choose a $10$~seconds timeout.
 Our later results show that this is a reasonable tradeoff between probing speed and accuracy.
 
-\subsection{Distribution of probing times}
+\subsection{Route selection}
+
+As described earlier, we generate routes with standard c-lightning \texttt{getroute} routine, and filter out routes with low-balance channels.
+We argue that this approach may be improved with a custom route generation, but works well enough for a proof-of-concept implementation.
+Note that route generation is a local operation (one route generations takes under $10$~ms), which is two orders of magnitude lower than the time it takes for the response to arrive (around $3$~seconds).
+In our main experiment, we performed $12895$ payments and rejected $96768$ routes because of low balance -- that is, we filtered out around 8~routes per payment.
+Hence generating routes with \texttt{getroute} and filtering them does not increase the time of our experiment significantly.
+It may be the case though that generating routes ourselves w.r.t. to the needs of our task would be even more efficient.
+Improving this aspect of our algorithm is left for future work.
+
+Another trade-off we had to address is the maximum route length.
+The LN protocol limits the length of a path to $20$~channels (hops).
+Choosing longer routes allows to collect more information per probe, but some of the intermediary channels would fail with a higher probability.
+For our purposes, we limit the length of routes to $10$~channels.
+
+
+
+
+\section{Results} \label{sec:results}
+
+At the time of the experiment (2020-02-26), LN on Bitcoin~testnet contained $1974$ nodes and $5884$ channels (including $2527$ announced as active).
+The initial estimate showed that $207$ nodes and $1625$ channels were live.
+We detected $3$ additional live channels during the main probing phase.
+The strongly connected component of the live subgraph contained $1489$ channels.
+The other $139$ channels where pointing towards nodes for which we could not get meaningful error messages.
+
+In total we sent out $12895$ onions: $3153$ ($24.45\%$) during the pre-probing and $9742$ ($75.55\%$) during the main probing).
+Out of $9742$ onions in the main probing, $8256$ ($84.75\%$) returned errors which we could use to improve the estimates of balances on payment channels ("channel temporary unavailable" and "incorrect or unknown payment details").
+Our code was running for~$14$ hours and~$6$~minutes. % 50770 seconds
+Probing $1628$ live channels took $65\%$~of the time (roughly $9$ hours), while the rest was spent on slow-responding channels or channels which replied with an unexpected error.
+
+
+\subsection{Probing times}
+
+First, we consider probing times of individual probes (onions).
 Figure~\ref{fig:route-length-timings} shows the distribution of probing times for various route lengths.
-Nearly all onions of $1$, $2$ or $3$ hops return within $10$ seconds.
-The median of the $8256$ onions is at $3.36$ seconds.
+Nearly all onions $3$~hops and shorter return within $10$~seconds.
+The median of the $8256$ onions is at $3.36$~seconds.
 %\todo[inline]{Understand what it means}
 Recalling that $15.25\%$ of the onions timed out or gave a non usable error back, we computed the corrected median without the timed out and erring onions, which is $3.93$ seconds. 
-We conclude that the cutoff at $10$ seconds is an acceptable tradeoff.
-Note that the diameter of the strongly connected component on the LN is just $3$.\footnote{Note however, that it is often impossible to use the shortest route, as it may not have sufficient balances in all channels on the side of the sender.}
+We conclude that the cutoff at $10$~seconds presents an acceptable tradeoff.
+Note also that the diameter of the strongly connected component on the LN is just $3$.\footnote{It is not always possible to use the shortest route, as it may not have sufficient balances in all channels.}
 
 \begin{figure}[]
 	\centering
-	\includegraphics[scale=0.45]{route-length-timings.png}
+	\includegraphics[width=0.8\textwidth]{route-length-timings.png}
 	\caption{Distribution of probing timings on an onion level also drilled down depending on the distance in the route where the onion failed.}
 	\label{fig:route-length-timings}
 \end{figure}
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Time to probe a channel}
-
-We look at the cumulative distribution function of times spent on channels in Figure~\ref{fig:channel-timings-CDF}.
+Next, we consider the time it takes to probe a single channel.
+With the parameters we have chose, each probing can not take longer than $70$~seconds ($7$ probes of up to $10$~seconds each).
+This is reflected in Figure~\ref{fig:channel-timings-CDF}, which shows the cumulative distribution function of times spent on channels.
+We furthermore observe that $50\%$ of channels can be probed in less than $21.2$~seconds.
 
 \begin{figure}[]
 	\centering
-	\includegraphics[scale=0.45]{channel-timings-CDF.png}
+	\includegraphics[width=0.8\textwidth]{channel-timings-CDF.png}
 	\caption{Distribution of probing timings on a channel level}
 	\label{fig:channel-timings-CDF}
 \end{figure}
 
-All channels can be probed within $1$ minute.
-This is very plausible considering the timeout of $10$ seconds for onions and the fact that we did only $7$ steps in binary search, so the expected worst case probing time is $70$ seconds.
-However it is very unlikely that we have $7$ onions which are all short below $10$ seconds.
-We furthermore observe that $50\%$ of channels can be probed in less than $21.2$~seconds.%\footnote{Regarding the fact that the number $21$ has a special semantic in bitcoin we note that we double and triple checked this particular result.}
-%funny, but would distract the reader, world is full of coincidences.
 
-\subsection{Probing results}
+
+
+\subsection{Probing coefficients}
 
 We used the channel information coefficient as introduced in Figure~\ref{fig:cdf-channel-coefficients} to measure how much information we obtained for all the channels that we probed.
 We separated the channels into small and large channels.
@@ -356,19 +394,32 @@ We labeled as small channels those with capacity less then two times the maximum
 
 \begin{figure}[]
 	\centering
-	\includegraphics[scale=0.45]{cdf-channel-coefficients.png}
+	\includegraphics[width=0.8\textwidth]{cdf-channel-coefficients.png}
 	\caption{Distribution how often channel information coefficients shows that we can reveal full balance information for a majority of the attacked channels.}
 	\label{fig:cdf-channel-coefficients}
 \end{figure}
 
 We obtained full information about the channel balance on over~$1000$ of~$1628$ channels.
-Also we note the jump at $0.5$~for the large channels.
-This is expected, as large channels have roughly $4$~times the capacity of the maximum HTLC amount limit, therefore if we probe $25\%$~from each side, this leaves us with a channel information coefficient of $0.5$~for the channels that have more than $25\%$~of the capacity on either side.
-%There is a small noise in small channels for which we can't say anything.
-%We suspect that this is due to the fact that we could not find higher capacity paths to those channels. %\todo[inline]{can you test this?}
+Note that the jump at $0.5$~for the large channels is expected.
+Large channels have roughly $4$~times the capacity of the maximum HTLC amount limit, therefore if we probe $25\%$~from each side, this leaves us with a channel information coefficient of $0.5$~for the channels that have more than $25\%$~of the capacity on either side.
 
+Finally, we wanted to understand how often we send onions through each channel.
+As Figure~\ref{fig:channel-frequency-distribution} shows, most of our routes go through a small number of channels.
+It is partially explained by the fact that all routes by definition pass through one of our own entry channels.
+We suggest that this distribution, which seems to follow the power law, is consistent with the properties of a small world network with a small diameter.
+% We suspect that the power law this distribution seems to follow is coming from the structure of the network which as a small world network with small diameter also follows a power law.
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=0.8\textwidth]{channel-frequency-distribution.png}
+	\caption{Distribution how often channels have been used in routes seems to follow a power law.}
+	\label{fig:channel-frequency-distribution}
+\end{figure}
+
+
+\subsection{How balanced are the channels?}
 The notion of channels being \textit{balanced} is important for LN.
-Intuitively, a channel is \textit{balanced} if it has roughly comparable balances on either side.
+Intuitively, a channel is \textit{balanced} if the parties have roughly equal balances.
 If the two balances differ significantly, the channel is \textit{unbalanced}.
 We introduce the \textit{balance coefficient} to quantify this.
 The balance coefficient represents the distance from the actual channel balance to $0.5$~of the total capacity, where $b$ is the estimated local balance and $c$ is the total channel capacity:
@@ -384,22 +435,9 @@ Note, however, that the picture may change if we consider large channels, and th
 
 \begin{figure}[]
 	\centering
-	\includegraphics[width=0.4\textwidth]{balance-coeff-histogram.pdf}
+	\includegraphics[width=0.8\textwidth]{balance-coeff-histogram.pdf}
 	\caption{A large portion of channels is unbalanced (coefficient close to zero).}
 	\label{fig:balance-coeff-histogram}
-\end{figure}
-
-Finally, we wanted to understand how often we send onions through each channel.
-As Figure~\ref{fig:channel-frequency-distribution} shows, most of our routes go through a small number of channels.
-It is partially explained by the fact that all routes by definition pass through one of our own entry channels.
-We suggest that this distribution, which seems to follow the power law, is consistent with the properties of a small world network with a small diameter.
-% We suspect that the power law this distribution seems to follow is coming from the structure of the network which as a small world network with small diameter also follows a power law.
-
-\begin{figure}[]
-	\centering
-	\includegraphics[scale=0.45]{channel-frequency-distribution.png}
-	\caption{Distribution how often channels have been used in routes seems to follow a power law.}
-	\label{fig:channel-frequency-distribution}
 \end{figure}
 
 
@@ -423,6 +461,7 @@ Of course, such techniques can be tricked: an adversary can connect to Bob via A
 
 
 \subsection{Prioritizing privacy}
+
 We argue that it is infeasible to reliably protect balance information of LN channels.
 This conclusion comes from the following observations:
 \begin{itemize}
@@ -432,7 +471,7 @@ This conclusion comes from the following observations:
 
 However, we can modify the protocol to make the latter assumption to not hold.
 
-\subsubsection{Merging error types}
+\subsubsection*{Merging error types}
 To preserve privacy, we propose a modification to LN error handling.
 
 We should account for the fact that the erring cases the attacker can distinguish differ in two ways: the errors have different error codes and originate from different nodes.
@@ -446,9 +485,10 @@ A similar countermeasure has already been implemented (see note about error type
 % this is not true:
 %as a response to the privacy attack described in~\cite{herrera2019difficulty}.
 The drawback of this method is a decrease in payment reliability: as the sender does not know which channel has failed the payment, this channel can not be excluded in the subsequent route search.
+However, the payment reliability problem may become less pressing when multi-part payments are widely used, splitting large payments into smaller parts that increases routing flexibility.
 %We leave evaluation of this proposal for future work.
 
-\subsubsection{Additional loops}
+\subsubsection*{Additional loops}
 Another potential countermeasure would be for intermediary nodes to add extra hops to the route.
 Currently LN is source-routed: the route is chosen by the sender and enforced with onion routing.
 Intermediary nodes can not change the sequence of nodes that a payment goes through (though they can choose a channel to the next node, if multiple channels are available).
@@ -459,11 +499,11 @@ Possible drawbacks of this approach include a more complex fee structure and the
 In addition,~\cite{Malavolta2019} argues that source routing is necessary for LN security.
 %will it really require to modify onion routing in the current LN?
 
-\subsubsection{JIT routing}
+\subsubsection*{JIT routing}
 JIT routing can be an effective countermeasure against channel probing attacks.
 
-Just In Time Routing (JIT-routing) algorithm was originally proposed to improve payment reliability~\cite{Pickhardt2019}.
-In JIT routing, forwarding nodes send a circular payment to themselves if the balance of a channel is insufficient to forward a payment (channel rebalancing).
+Just In Time Routing (JIT-routing) algorithm was originally proposed to improve payment reliability~\cite{Pickhardt2019, Pickhardt2019a}.
+In JIT routing, forwarding nodes send a circular payment to themselves if the balance of a channel is insufficient to forward a payment (\textit{channel rebalancing}).
 In the probing scenario, a JIT-supporting node will not send an error message back if it is lacking funds on the attacked (probed) channel.
 Rather, it will interrupt the routing process, rebalance its channels, and continue forwarding the payment.
 The attacker would interpret this as a signal that the target channel has sufficient funds (the same holds if the channel is probed from the other side).
@@ -472,23 +512,20 @@ This can be established by ensuring that the max flow in the network is sufficie
 
 As JIT routing takes additional time, there is a possibility for a timing attack. 
 However, the attacker has no control over where on the probed path JIT routing operations take place. 
-%Further research would need to be investigated to make sure that no statistical measures can be taken to conduct timing attacks against rebalancing operations.
-We leave the evaluation of this proposal for future work.
-We suggest to start by looking at the proactive channel rebalancing proposal~\cite{Pickhardt2019a} that can be reused to engage in various JIT-routing strategies. 
+
 
 \subsection{Prioritizing routing efficiency}
+
 If one concludes that it is infeasible to protect channel balances, then one may decide not to consider this information secret and utilize it to improve routing efficiency.
 
-A common cause for routing failure in LN is the lack of balance information at the sender's node.
-Routes are chosen under the assumption that a channel with capacity $c$ can route payments up to $c$, which is very optimistic.
-The sender could filter out unsuitable routes if it knows the balances of all channels (as we do in Algorithm~\ref{alg:find-route}).
-Broadcasting all intermediate balances to all nodes is unfeasible, as it would introduce a large networking overhead and structurally replicate the layer one (Bitcoin) gossip, where each transaction must reach every node.
-This puts severe limitations on layer one scalability, which is the very problem LN is meant to solve.
+\subsubsection*{Sharing balance data}
 
-We propose to develop reasonable means for nodes to share information about balances with other nodes, that does not overwhelm the network.
+Broadcasting all intermediate balances to all nodes is unfeasible, as it would introduce a large networking overhead.
+% and structurally replicate the layer one (Bitcoin) gossip, where each transaction must reach every node.
+%This puts severe limitations on layer one scalability, which is the very problem LN is meant to solve.
+We propose to develop reasonable means for nodes to selectively share information about their balances.
 This information would help nodes make better path-finding decisions or recognize how to allocate their funds to newly created payment channels.
 
-\subsubsection{Sharing balance data}
 Instead of sharing all the balances, we propose adding an API call that would let the sender query the balance of a channel it wants to route a payment through.
 In this scenario, a sender would create a preliminary route and query the nodes along this route on whether they have sufficient balance.
 If some of them do not, the sender re-calculates the route until a suitable route is found.
@@ -496,7 +533,7 @@ This would eliminate or at least improve upon the current LN payment workflow, w
 Nodes could come up with policies regarding balances, for instance, only reveal balances to trusted nodes, or only to nodes that pay a fee.
 The ability of a node to reveal a channel balance for routing purposes may also be subject to negotiation between channel partners during channel establishment.
 We should also think about ways to prevent abuse of this system.
-We leave a more detailed analysis of this proposal and the evaluation of its efficiency to future work.
+We leave a more detailed analysis of this proposal and the evaluation of its efficiency, security,and privacy to future work.
 
 
 
@@ -504,19 +541,11 @@ We leave a more detailed analysis of this proposal and the evaluation of its eff
 
 Now we discuss the limitations of our approach and potential ways to improve it.
 
-\subsubsection{Following the protocol}
-We assume nodes follow the specifications and reply truthfully (i.e., intermediary nodes do not deliberately fail the payment if they have sufficient balance to forward it).
-
-\subsubsection{Inactive channels}
-
-We can only probe channels that allow routing through them (i.e., \textit{active} channels).
-The routing function does not consider channels marked as not active.
-
-\subsubsection{Private channels}
+\subsubsection*{Private channels}
 
 LN channels do not have to be announced.
 In particular, casual users on mobile devices are not supposed to announce their channels.
-These channels are called \textit{private}.
+Such unannounced channels are called \textit{private}.
 According to a recent study~\cite{BitMEXPrivateChannels}, $28\%$ of LN~channels are private.
 Private channels are not prone to our probing methodology.
 
@@ -525,7 +554,7 @@ In particular, each channel has a short ID composed of the number of the block, 
 Scanning the blockchain for the outputs of the corresponding form and cross-referencing it with the LN gossip may show private channels.
 This attack has been reported and is in the process of being mitigated~\cite{Pickhardt2020}.
 
-\subsubsection{No route for the required amount}
+\subsubsection*{No route for the required amount}
 
 We can not probe a route if we could not find a suitable route to a target channel.
 In particular, we can not probe a high-capacity channel if it is connected to the rest of the network only through a low-capacity channel.
@@ -534,10 +563,7 @@ Instead, we could probe such channels with a smaller amount.
 In the initial version of our algorithm, we did not do it for simplicity.
 In any case, our probing capacity for the high-capacity target channel is limited by the capacity of (smaller) intermediary channels.
 
-
-\subsubsection{Error types}
-
-Our interpretation of error messages may not always be correct.
+\subsubsection*{Error interpretation}
 
 Our method uses two types of errors, which have a broader semantics than our method is aware of.
 \texttt{temporary\_channel\_failure} (\texttt{UPDATE|7}) is returned if a forwarding node "was unable to handle this HTLC, but may be able to handle it, or others, later".
@@ -551,20 +577,20 @@ Experiments on our own channels showed that these types of errors are indeed ret
 %Interpreting errors more accurately may improve the results.
 %This can be achieved by inspecting the source code of LN~implementations and understanding exactly under which circumstances each error type is returned.
 
-\subsubsection{Concurrency, large channels, and probing time}
+\subsubsection*{Concurrency, large channels, and probing time}
 
 Our algorithm prescribes that each next probing amount cuts $[b_{min}, b_{max}]$ in half.
 For large channels, this is not always possible, as our current method only sends out one HTLC at a time to a specific route.
 
 Lightning implementations impose limits on the maximal amount transferred in one HTLC.
 This amount is approximately $0.043$~BTC.\footnote{4294967295 millisatoshis.}
-The total channel capacity also has a soft limit of  $0.167$~BTC.\footnote{A soft limit means that it is a default restriction in the implementations, a node administrator can manually override it and open a larger channel is the counterparty agrees.}
-This means that we can not perform the initial probe (with the amount $c / 2$) on channels larger than $0.086$~ BTC.
-For such channels, we decrease the first probing amount to the maximum HTLC amount minus a safety margin.
-\footnote{Trying to probe with exactly the maximum amount lead to errors, as we must also account for fees and possible safety margins at other nodes. In our code, we use the local maximum HTLC amount of $0.042$~BTC.}
-If the capacity distribution is more unequal than around 1:3, we can continue probing, otherwise we admit that the true capacity distribution is in the interval which we can not probe with one HTLC.
+The total channel capacity also has a soft limit of $0.167$~BTC.
+This means that we can not perform the initial probe (with the amount $c / 2$) on channels larger than $0.086$~BTC.
+For such channels, we decrease the first probing amount to the maximum HTLC amount minus a safety margin to account for fees.
+\footnote{We use the local maximum HTLC amount of $0.042$~BTC.}
+If the capacity distribution is more unequal than around 1:3, we can continue probing, otherwise we admit that the true capacity distribution is in the interval which we can not probe with a single HTLC.
 
-However one can overcome this limitation by probing such channels with multiple concurrent HTLCs.
+However, we can overcome this limitation by probing such channels with multiple concurrent HTLCs.
 Our current algorithm is not concurrent, because we only control the sender, but not the receiver.
 Therefore, if the receiver is live, an error returns quickly, and the capacity is unblocked.
 To probe large channels, we need to block funds for longer.
@@ -580,11 +606,14 @@ However, adding concurrency is a non trivial task, as parallel probings may inte
 For example, if a channel with a balance $X$ is concurrently probed with amount $0.7X$ by two probing instances, it would return "insufficient capacity" to one of them, though it could have forwarded two probes of $0.7X$ each sequentially.
 It is possible to parallelize the probing, but one has to ensure that the parallel probing agents do not interfere with each other.
 
+Note also that some realistic attack scenarios do not involve probing the whole network.
+For example, an adversary can choose one LN hub and probe all its channels relatively quickly, thus obtaining the information that may constitute a business secret of the hub operator.
 
-\subsubsection{Parallel channels and non-strict forwarding}
+\subsubsection*{Parallel channels and non-strict forwarding}
 
-Our method is based on an assumption that the payment is being forwarded through the channels as determined by the sender.
+Our method is based on an assumption that the payment is being forwarded through the \textit{channels} as determined by the sender.
 However, the LN specification only guarantees that the sequence of \textit{nodes} is followed.
+
 We denote channels shared by the same pair of nodes as \textit{parallel}.
 A forwarding node is free to choose a channel from all parallel channel to the next node in the route.
 This provides more flexibility, as an intermediary node can choose an optimal channel based on balance restrictions.
@@ -594,14 +623,13 @@ The probe may be forwarded through a parallel channel.
 This is also true for all channels along the route.
 We accept this as a limitation of our approach.
 
-As seen from our LN snapshot from 2020-02-25, the testnet LN contained 1438 parallel channels (out of total of 5948 channels), or $7.83$\% of channels.
-The mainnet contained $1438$ parallel channels ($17.64$\% of all channels), which indicates that the effects on the probing precision would be larger on mainnet\footnote{There may be private parallel channels, we can not estimate their effect on our results.}.
-In both cases, the majority of node pairs have no more than one channel, and can be probed using our method.
+As seen from our LN snapshot from 2020-02-25, the mainnet LN contained $1438$ parallel channels ($17.64$\% of all channels), which indicates that the effects on the probing precision could be significant on mainnet\footnote{There may be private parallel channels, we can not estimate their effect on our results.}.
+However, the vast majority of \textit{node pairs} have no more than one channel, and can be probed using our method.
 
 Note also that while the LN specification (BOLT) allows non-strict forwarding, the c-lightning implementation that we use does not allow creating multiple channels to the same node.
 The other two popular implementations, LND and Eclair, allow parallel channels.
 
-\subsubsection{Hanging in-flight HTLCs}
+\subsubsection*{Hanging in-flight HTLCs}
 
 Our method assumes that for each probe an error is returned quickly (within seconds, as Figure~\ref{fig:route-length-timings} shows).
 If some intermediary hop does not return an error, we are left with an HTLC that we call \textit{hanging}.
@@ -609,15 +637,11 @@ Hanging HTLCs occupy the capacity of our channels, preventing us from probing wi
 %For example, in a channel of 10~million satoshis, two hanging HTLCs of 4.3~million satoshis each (the maximum amount for a single HTLC) decrease our effective channel capacity to 1.4~million satoshis.
 In that case, we must issue smaller probes and, as a result, obtain less information.
 Hanging HTLCs are hard to get rid of: the protocol does not allow to cancel them unilaterally, and closing a channel involves long timeouts until the funds are available and can be put into a new channel.
-This issue is at the core of the denial-of-service attack described in~\cite{Mizrahi2020}.
+This issue is similar to our own attack presented in~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
 
-\subsubsection{Applicability for mainnet}
-Our experiments are meant to show the feasibility of the probing technique, but the results from testnet can not be directly applied to mainnet.
-In particular, as mainnet LN is contains four times more channels than testnet LN, probing the whole mainnet would take days.
-We suggest that even with this limitation, the attacker can target specific channels, for instance, all the channels adjacent to a particular service provider.
-Probing tens or hundreds of such channels is feasible in terms of time and would give the attacker valuable insights into the victim's financial situation.
 
-\subsection{Estimating the attack cost}
+
+\section{Estimating the attack cost}
 
 The attack requires moderate resources.
 The attacker only needs to commit funds to open entry channels.
@@ -643,18 +667,8 @@ However, the attacker still bears the opportunity cost: the bitcoins committed t
 Herrera{-}Joancomart{\'{\i}} et al.~\cite{HerreraJoancomarti2019} propose a balance probing attack.
 Their approach is similar to ours, but only allows the attacker to probe the channels immediately adjacent to the node it has opened a channel with.
 In contrast, our algorithm only requires opening a few entry channels for probing the whole network using arbitrarily long routes.\footnote{Up to the protocol limitation of 20~hops.}
-%\todo[inline]{Check that this is true!}
 
-% IMPORTANT: this fix is unrelated:
-% https://github.com/ElementsProject/lightning/pull/2519/
-
-%An adversary leverages the fact that Lightning nodes report different types of errors depending on the reason why a payment failed.
-%An adversary establishes a channel and sends a payment with a fake payment hash to the chosen destination.
-%This payment will fail because of one of the two reasons.
-%If all intermediate channel balances are sufficient to route it to the final receiver, the receiver discovers that there is no pre-image to the payment hash, and fails the payment.
-%If one of the intermediary channels does not have enough capacity, it fails the payment with the corresponding error type, and the payment never reaches the recipient.
-%Extracting the information from the error type, an adversary can perform a binary serach on the target channel balance.
-%This issue has been fixed by returning the same error type irrespective of the reason of the failure.
+Van Dam~\cite{Dam2019} et al. describe a similar technique to reveal balances of remote LN channels.
 
 Conoscenti et al.~\cite{Conoscenti2019} analyzed the influence of hubs on LN and proposed a channel rebalancing algorithm.
 
@@ -664,18 +678,15 @@ Tang et al.~\cite{Tang2019} showed that introducing noise in payment channel bal
 
 Mizrahi and Zohar~\cite{Mizrahi2020} describe a denial-of-service attack on LN based on creating and not redeeming HTLCs along long routes.
 
-% TODO: add more recent related work?
 
 \section{Conclusion} \label{sec:conclusion}
 LN is a promising off-chain scaling solution for Bitcoin.
 One of the major issues LN is yet to solve is routing efficiency: senders must choose routes with no information on balance distributions, causing payment failures.
-Balance information can not be shares universally because of scalability and privacy reasons.
+Balance information can not be shared universally because of scalability and privacy reasons.
 However, despite the intuitive impression that LN provides a high level of privacy by using onion routing and not broadcasting transactions, we argue that LN channel balances are not well protected.
-Our experiments show that a low-resource attacker can probe the balances of the majority of live and active channels, revealing their balances and potentially tracking the flow of value through selected channels in near real time.
+
+Our experiments show that a low-resource attacker can probe the balances of the majority of live and active channels with a high precision.
+%, revealing their balances and potentially tracking the flow of value through selected channels in near real time.
 We implement and evaluate our technique on the Bitcoin testnet, successfully probing a large portion of channels.
-%and outline ways to improve it.
 We consider the tradeoff between balance privacy and routing efficiency, and describe multiple directions for future work that would evaluate the ways to find the right balance between the two.
-
-%The future work includes addressing the limitations of our probing algorithm (\ref{sec:probing}) and evaluating the proposed changes to the protocol (\ref{sec:discussion}).
-
 

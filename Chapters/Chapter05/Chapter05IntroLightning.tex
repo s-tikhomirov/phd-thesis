@@ -17,7 +17,7 @@ Let us consider ways in which open blockchain protocols such as Bitcoin can be u
 
 \subsection{Soft forks and hard forks}
 Blockchain networks have a unique property compared to other software in how they are updated.
-In a decentralized network, there is not master switch that can force users to update.
+In a decentralized network, there is no master switch that can force users to update.
 Instead, Bitcoin's updates must achieve consensus among the majority of interested parties: full node operators, miners, businesses, wallet developers, and so on.
 Moreover, the development philosophy of Bitcoin strictly opposes breaking changes.
 The rationale is that all coins must be spendable under the same conditions as at the time they had been locked.
@@ -28,7 +28,7 @@ In a soft fork, the rules of the protocol become more strict.
 Therefore, a non-updated node would still perceive blocks created under the new rules as valid, though it may not understand all of the new semantics.
 In practice, soft forks are often implemented by enhancing one of the \texttt{OP_NOP} opcodes with the new semantics.
 
-A breaking updated is referred to as a \textit{hard fork}.
+A breaking update is referred to as a \textit{hard fork}.
 A hard fork broadens the set of valid blocks.
 This means that a block created under the new rules may be invalid from the viewpoint of old nodes.
 Increasing the block size is an example of such change: if the limit is raised (like in Bitcoin~Cash), an 7~MB block, which fits under the new limit, is rejected by old node.
@@ -37,7 +37,8 @@ Increasing the block size is an example of such change: if the limit is raised (
 
 This restriction is manifested in Bitcoin's code with the \textit{block size limit}.
 In 2010, Satoshi Nakamoto introduced a 1~MB limit on the block size~\cite{Nakamoto2010}.
-With the growth of the Bitcoin ecosystem, dismantling this restriction has become less and less likely due to the disruption it would cause.
+With the growth of the Bitcoin ecosystem, dismantling this restriction without a major disruption has become less and less likely.
+Coordinating an upgrade in a large set of heterogeneous players is hard.
 
 A subset of the Bitcoin community viewed the 1~MB restriction as a limiting factor for Bitcoin's adoption in retail.
 To make Bitcoin a common means of payment worldwide, one would argue, the system would have to handle more transactions than under the 1~MB limit.
@@ -52,14 +53,15 @@ This thesis focuses on the scaling approach taken by Bitcoin~Core\footnote{While
 \subsection{Segregated witness}
 
 SegWit was an important milestone in the evolution of Bitcoin.
-This protocol change, as the name suggests, \textit{segregated} the \textit{witness} (that is, the transaction signatures) from the part of the blockchain data used to calculate transaction hashes).
+This protocol change, as the name suggests, \textit{segregated} the \textit{witness} (that is, the transaction signatures) from the part of the blockchain data used to calculate transaction hashes.
 The block size has been replaced by block \textit{weight} -- a synthetic metric which assigns different parts of a transaction different weights when counting towards the total weight of a block.
 The old block \textit{size} limit has been internally converted to block \textit{weight} limit.
 This resulted in the actual block size limit being increased to 4~MB without a hard fork.
 
 More importantly for our work, SegWit solved the \textit{transaction malleability} issue.
 This has been a fundamental roadblock that has been holding back the development of layer-two protocols.
-Due to the qualities of ECDSA signatures and their implementation in OpenSSL library used in Bitcoin, and also to properties of Bitcoin scripts, it was possible for an attacker, given a signed transaction, to modify it and this change its hash without changing its semantics.
+Due to the qualities of ECDSA signatures and their implementation in OpenSSL library used in Bitcoin, it was possible for an attacker, given a signed transaction, to modify it and this change its hash without changing its semantics.
+%\todo[inline]{script malleability is also possible but is irrelevant here?}
 
 In the context of L2 protocols, this is a critical drawback.
 L2 inherits its security properties from L1, assuming that parties can check whether an event of interest has happened on L1.
@@ -76,12 +78,15 @@ We will describe the mechanics of the Lightning protocol in detail later in this
 \subsection{L2 protocols in Ethereum and other blockchains}
 
 While this part of the thesis focuses on Bitcoin's L2 protocols and LN in particular, payment channels are only one type of layer-two protocols.
-For completeness let us mention some of the related developments in the Ethereum ecosystem.
+The principles of the LN can be used to improve the scalability of other cryptocurrencies. 
 
-Ethereum is \textit{the} other major open blockchain alongside Bitcoin\footnote{It is second in the market capitalization and first in the number of transactions~\cite{Coinmetrics}. Due to the differences in transaction mechanics and semantics, meaningfully comparing the metrics of these two major blockchain networks is a separate research question.}.
+
+For completeness, let us mention some of the related developments in the Ethereum ecosystem.
+
+Ethereum is \textit{the} other major open blockchain alongside Bitcoin.\footnote{It is second in the market capitalization and first in the number of transactions~\cite{Coinmetrics}. Due to the differences in transaction mechanics and semantics, meaningfully comparing the metrics of these two major blockchain networks is a separate research question.}
 Ethereum makes many architectural decisions differently from Bitcoin.
 It incorporates a \textit{Turing-complete programming language}, supports \textit{zero-knowledge cryptography}, and is explicitly \textit{stateful}.
-This complexity of the base protocol is reflected in a wider space of layer-two designs, which include refereed computation protocols (Arbitrum~\cite{Kalodner2018}, Truebit~\cite{Teutsch2017}), state channels (Sprites~\cite{Miller2019}, Perun~\cite{Dziembowski2017}), Plasma~\cite{Poon2017}, and rollups (optimistic~\cite{Floersch2019}, zk-rollups~\cite{Gluchowski2019}).
+This complexity of the base protocol is reflected in a wider space of layer-two designs, which include channels (Raiden~\cite{RaidenWebsite}), refereed computation protocols (Arbitrum~\cite{Kalodner2018}, Truebit~\cite{Teutsch2017}), state channels (Sprites~\cite{Miller2019}, Perun~\cite{Dziembowski2017}), Plasma~\cite{Poon2017}, and rollups (optimistic~\cite{Floersch2019}, zk-rollups~\cite{Gluchowski2019}).
 
 
 \section{Evolution of payment channels in Bitcoin}
@@ -97,12 +102,12 @@ To put our work on the Lightning Network in historical context, we now describe 
 
 \subsection{Transaction replacement with sequence numbers}
 
-Satoshi Nakamoto proposed what was arguably the first protocol for re-negotiating a transaction without broadcasting it.
+Satoshi Nakamoto proposed the first protocol for re-negotiating a transaction without broadcasting it.
 This mechanism takes advantage of two Bitcoin features: transaction sequence number (\texttt{nSequence}) and time lock (\texttt{nLockTime}).
 
 Bitcoin initially implemented a mechanism for replacing unconfirmed transactions.
 Each transaction has an \texttt{nSequence} field, which acts as a counter.
-The protocol prescribed miners to give priority to transactions with higher sequence numbers (regardless of fees).
+The protocol prescribes miners to give priority to transactions with higher sequence numbers (regardless of fees).
 The time lock field (\texttt{nLockTime}) mandates a time before which a transaction cannot be confirmed in a block, expressed as a timestamp or a block height.
 The transaction replacement protocol would prescribe the two parties to sign a series of transactions with an increasing sequence number and a timelock at some point in the future.
 The final state would be confirmed after the timelock expires.
@@ -127,13 +132,13 @@ Shortly before the timelock of the refund transaction expires, the merchant broa
 
 This protocol has a number of drawbacks.
 First, it is unidirectional: the customer can pay the merchant but not vice versa.
-Second, the lifetime of a channels is limited by the timelock of the refund transactions.
+Second, the lifetime of a channels is limited by the timelock of the refund transaction.
 
 Note that the protocol is not secure if transactions are malleable.
-In particular, an adversary modifying the funding transaction without invalidating it would invalidate the refund transaction~\cite{Harding2016}.
-After SegWit activation this is no longer the case, if the customer is using SegWit outputs.
+In particular, an adversary can modify the funding transaction without invalidating it, which would change its hash and thus invalidate the refund transaction~\cite{Harding2016}.
+After SegWit activation, this attack vector is mitigated by using SegWit outputs.
 
-A similar design of unidirectional payment channels takes advantage of \texttt{OP\_CHECKLOCKTIMEVERIFY} (CLTV) -- a new opcode added in 2015~\cite{Todd2014}, which allows to specify absolute timelocks on an output level (as opposed to transaction level for \texttt{nLockTime}).
+A similar design of unidirectional payment channels takes advantage of \texttt{OP\_CHECKLOCKTIMEVERIFY} (CLTV) -- an opcode added to Bitcoin script in 2015~\cite{Todd2014}, which allows to specify absolute timelocks at the output level (rather than at the transaction level, as \texttt{nLockTime} does).
 This allows to implement Spillman channels without the malleability vulnerability.
 \footnote{Note that CLTV was implemented in 2015, before SegWit (2017).}
 
@@ -165,18 +170,28 @@ The transactions reflecting channel states are constructed in such a way that ea
 Despite the fact that all intermediate states are valid Bitcoin transactions (and can be broadcast and confirmed on the blockchain), broadcasting any state except the latest one by one party allows the other party to withdraw \textit{all} funds from the channel, punishing the cheater.
 We will describe the Lightning protocol in more detail later.
 
+\todo[inline]{Mention milestones of LN development?}
 
-\subsubsection{Future of Lightning}
+The development of the LN is guided by a set of request for comments (RFC) documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, 
+which are then followed by several implementation teams.
+The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
+Other implementations at earlier stages of development include
+Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
+
+As of April~2020, LN facilitates the off-chain exchange of more than $950$~BTC.
+Lightning Network also operates with Litecoin~\cite{1MLLitecoin} -- an alternative cryptocurrency very similar to Bitcoin.
+
+\subsubsection*{Future of Lightning}
 
 As of 2020,~LN is being used in production but is still under heavy development.
 Some of the ideas to improve LN depend on modifications in the Bitcoin protocol, which usually take a long time to implement, test, and roll out.
 
 \paragraph{Schnorr-Taproot}
-As of early 2020, the Bitcoin community is waiting for the implementation and rollout of the \textit{Schnorr-Taproot} update.
-This would allow for another type of signatures (Schnorr signatures in addition to ECDSA), which allow for arithmetic on signatures.
+As of early 2020, the implementation and rollout of the \textit{Schnorr-Taproot} update to Bitcoin is in progress.
+This would add another type of signatures (Schnorr signatures in addition to ECDSA), which allow for arithmetic on signatures.
 
 For Lightning Network, this allows for better privacy.
-The current HTLC mechanism maintains atomicity of multi-path transfers by using the same payment hash along the whole route.
+The current HTLC mechanism maintains atomicity of multi-path transfers by using the same payment hash along the route.
 This breaks relationship anonymity: an attacker controlling two nodes along the route can trivially learn that the two channel updates are part of the same transaction.
 To address this attack, new cryptographic constructions replacing HTLC have been proposed.
 Atomic multi-hop locks (AMHL)~\cite{Malavolta2019} and Payment points~\cite{Kohen2019} allow for the same functionality as HTLC but with randomized payment secrets for every hop in the route.
@@ -185,25 +200,19 @@ These improvements can be implemented after Schnorr-Taproot is activated, which 
 \paragraph{eltoo}
 An alternative payment channel proposal, eltoo, has been proposed by Decker, Russell, and Osuntokun~\cite{Decker2018}, as Lightning has been already established as a major Bitcoin scaling effort.
 Eltoo proposes an arguably more efficient revocation mechanism, where intermediary transactions are linked to each other linearly (as opposed to all of them spending the same output of the funding transaction in the current LN), and only on channel closure the final transaction is "re-attached" to the funding transaction's output.
-This requires a new \textit{signing flag} (\texttt{SIGHASH\_NOINPUT}~\cite{Decker2017}) not yet implemented.
+This requires a new \textit{signing flag} (\texttt{SIGHASH\_NOINPUT}~\cite{Decker2017}) which not yet available.
 \footnote{A signing flag specifies whether a signature commits to all or only some of a transaction's inputs. Allowing a transaction to \textit{not} commit to any input allows for "re-attaching" a signed transaction to a compatible output, which eltoo uses for channel state revocation.}
 If \texttt{SIGHASH\_NOINPUT} is implemented, eltoo revocation mechanism can be used in LN or in a separate payment channel network.
 
 \paragraph{Privacy-preserving channels}
-A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technilogy (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatbility with Bitcoin-like blockchains (including Bitcoin itself) and renamed to zkChannels~\cite{Akinyele2020}.
+A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technilogy (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatibility with Bitcoin-like blockchains (including Bitcoin itself) and renamed to zkChannels~\cite{Akinyele2020}.
 
 
 \section{Lightning network overview}
 
-The Lightning Network (LN) has emerged as the alternative to the scalability issue of Bitcoin with the highest adoption in practice~\cite{Cuen2019}.
-%LN has experienced rapid growth since its launch in early 2018~, 
-As of February~2020, LN facilitates the off-chain exchange of nearly $900$~BTC.
-The principles of the LN can be used to improve the scalability of other cryptocurrencies. 
-For instance, similar networks operate with Litecoin~\cite{1MLLitecoin} and Ethereum~\cite{RaidenWebsite}. 
+We now describe the key details of the Lightning Network architecture.
 
-
-
-\subsection{Nodes and channels}
+\subsection{Nodes}
 
 Each \textit{LN node} is defined by an ECDSA private-public key pair.
 A persistent \textit{node identifier} is derived from the hash of the public key. 
@@ -217,25 +226,35 @@ Nodes exchange information about the currently open channels and their fee polic
 Nodes communicate with an underlying bitcoin node (such as Bitcoin~Core) to receive information on the confirmed transactions.
 \footnote{Some LN implementations partially support \textit{pruned} nodes~\cite{LNDInstall}.}
 
-The basic building block of LN is a \textit{payment channel}.
-A payment channel is a protocol for off-chain transactions based on the initial \textit{funding transaction}, which locks coins in a 2-of-2 multisignature address.
+
+\subsection{Channels}
+
+A \textit{payment channel} is a protocol for off-chain transactions.
 A channel operates in three stages: opening (two parties lock the coins), operating (exchanging off-chain transactions), and closing (broadcasting the most recent channel state to the blockchain).
 
-The capacity of the channel is determined by the amount of coins deposited when created.
-While the total capacity of the channel stays constant during its lifetime,
-the balance of each counterparty varies according to two operations:
-(i) single channel updates, where the two users agree on an updated balance; and 
-(ii) multi-hop transactions, where the balance 
-of several channels forming a path are simultaneously updated. 
 
-To create an LN channel, Alice issues a request to Bob via the P2P protocol.
+\subsubsection*{Channel opening}
+
+Opening a channel consists of several steps.
+To open a channel to Bob, Alice establishes a connection to Bob in the P2P network and issues a request to open a channel.
 If the parties agree on channel parameters, they co-sign a \textit{funding transaction} that establishes the initial distribution of funds.
-While in the initial specifications~\cite{Poon2016} it was assumed that both parties could fund a channel, the current LN channels are single-funded (i.e.,~Alice provides all funds and may optionally "push" some funds to Bob as a gift).
+\footnote{While in the initial specifications~\cite{Poon2016} it was assumed that both parties could fund a channel, the current LN channels are single-funded (i.e.,~Alice provides all funds and may optionally "push" some funds to Bob as a gift).}.
+The funding transaction creates a 2-of-2 multisignature output that can be spent by Alice and Bob together if they agree to do so.
+
 After the funding transaction gets the sufficient number of confirmations (usually~$3$~to~$6$), the channel is open.
+The capacity of the channel is determined by the amount of coins deposited when created and stays constant during its lifetime.
+\footnote{Not accounting for LN fees.}
 
+\subsubsection*{Channel updates}
 
+An \textit{LN transaction} is an atomic update of one or multiple channels.
+The balance of each counterparty varies according to two operations:
+\begin{enumerate}
+	\item single channel updates, where the two users agree on an updated balance;
+	\item multi-hop transactions, where the balance of several channels forming a path are simultaneously updated.
+\end{enumerate}
 
-\subsection{Transactions}
+Internally, both types of updates are implemented with the same mechanism based on hash time-locked contracts (HTLCs).
 
 \begin{figure*}[tb]
 	\includegraphics[width=\textwidth]{htlc-figure}
@@ -243,40 +262,21 @@ After the funding transaction gets the sufficient number of confirmations (usual
 		Here we assume that each node charges a fee of $0.1$ and time is measured in days.\label{fig:htlc}}
 \end{figure*}
 
-\subsubsection*{Single channel updates}
+\paragraph{Single-channel transactions}
 
-An \textit{LN transaction} is an atomic update of one or multiple channels.
 To send a payment to Bob, Alice negotiates a new channel state.
-Each channel state is reflected in a \textit{commitment transaction} -- a bitcoin transaction that spends the funding transaction and distributes the funds to both parties in some proportion.
+Each channel state is reflected in a \textit{commitment transaction}.
+A commitment transaction spends the output of the funding transaction and re-distributes the coins between Alice and Bob.
+
+More precisely, each channel state is encoded in a \textit{pair} of commitment transactions: one for Alice and one for Bob.
+These transactions are symmetric: they enforce a timelock on the party that holds the transaction.
+In particular, Alice's version of commitment transactions allow her to redeem her output only after a timeout, and Bob's version imposes analogous restrictions on his output.
+This enables the revocation mechanism (described below), which provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
+
 Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
 HTLC is defined by a Bitcoin script that gives the funds either to one party, if it provides a pre-image of a given hash, or to the other party after a timeout.
-For instance, if Alice wants to send $x$ coins to Bob, she first asks him for a \textit{payment hash}.
-Bob generates a random number $r$ and send its hash $H(r)$ to Alice in a message called an \textit{invoice}.
-Alice then \textit{offers} Bob an HTLC that would give him $x$~coins if he provides a preimage of $H(r)$ before time $t$, or return the coins to Alice otherwise.
-Bob must \textit{claim} the payment before time $t$.
-If he provides $r$, the HTLC \textit{resolves}: the balances in the next commitment transaction outputs will reflect the new distribution of channel funds.
-The other way for an HTLC to be resolved is timeout.
-A payment channel can keep track of multiple unresolved HTLCs concurrently.
 
-The cornerstone of LN security is its \textit{revocation} mechanism.
-A channel partner may try to cheat by trying to close the channel with an earlier state.
-In this case, the counterparty is guaranteed to get all funds from the channel if they react within a timeout.
-The party that initiates the channel closure must wait until their portion of the funds becomes available.
-For instance, if Alice initiates a channel closure, she must wait until her funds become available.
-If the closure is a cheating attempt, Bob can dispute it before the timeout and take control of all channel funds.
-
-
-\subsubsection*{Multi-channel updates}
-
-Multi-path payments use onion routing to enforce the order of intermediary nodes.
-Each HTLC is onion-encrypted so that each intermediary node only knows the immediate previous and next nodes, but not the final sender or receiver.
-Transaction fees are collected by intermediary nodes as a difference between the amount in the HTLC they receive and the HTLC they send as part of the same transaction.
-Note that if a payment fails, no fees are collected, as all pending balance updates roll back.
-
-A multi-hop transaction leverages a path of channels between a sender and a receiver (who might not share a channel between them).
-A transaction must ensure the atomicity of the transfer: either all balances along the path are updated or none of them are.
-For that, the LN relies on Hash Time-Lock Contracts (HTLCs), 
-excerpts from the Bitcoin's scripting language that 
+An HTLC is an excerpt from the Bitcoin's scripting language that 
 permit a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$ and $u_2$) 
 and release them according to the encoded conditions.
 The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, 
@@ -285,39 +285,74 @@ an amount $x$ of coins, and a timeout $t$, as follows:
 (i) If $u_2$ reveals a value $r$ such that $H(r) = y$ before $t$ expires, $u_1$ pays $x$ to $u_2$; 
 (ii) if $t$ expires, $u_1$ receives $x$ back.
 
-LN relies on HTLCs to enable multi-hop transactions. 
-All HTLCs along the path use the same hash value $y=H(r)$ aiming to achieve atomicity expecting that 
-none of the intermediate balances can be updated before the receiver reveals $r$, and all of them can be updated after that.
-An illustrative example of an HTLC-based transaction is depicted in~\cref{fig:htlc}.
-Here, the user $u_1$ transfers $1$ bitcoin to $u_5$ using $u_2$, $u_3$ and $u_4$ as intermediaries. 
-For that, $u_5$ locally chooses a value $r$ 
-uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, 
-and sends $y$ to the sender (step 1).
-The message encoding $y$ is called an \textit{invoice}.
-Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, 
-starting from the sender, establishes an HTLC using $y$.
-After the commit phase is finished, the transaction enters the release phase.
-Here, the receiver reveals $r$ to $u_4$ to fulfill the contract (step 6), 
-triggering thereby the release phase where every pair of nodes fulfills their 
-contract from the receiver to the sender (steps 6-9).
+For instance, if Alice wants to send $x$ coins to Bob, she first asks him for a \textit{payment hash}.
+Bob generates a random number $r$ and send its hash $H(r)$ to Alice in a message called an \textit{invoice}.
+Alice then \textit{offers} Bob an HTLC that would give him $x$~coins if he provides the preimage of $H(r)$ before time $t$, or return the coins to Alice otherwise.
+Therefore an HTLC can be \textit{resolved} in one of two ways: either Bob provides the preimage and \textit{redeems} the coins before time $t$, or Alice gets the coins back.
+A payment channel can keep track of multiple unresolved HTLCs concurrently, which are also called \textit{in-flight} HTLCs.
 
-It is important to note two aspects here.
-First, every intermediary user charges a fee for the forwarding service provided. 
-For instance, $u_2$ receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins. 
-Second, the time parameter of the contracts throughout the path is decreasing to ensure that no user loses coins. 
-For instance, the HTLC between $u_1$ and $u_2$ sets a timeout of four days 
-whereas the timeout in the HTLC between $u_2$ and $u_3$ is only three days.
-This facilitates that 
-$u_2$ has enough time to settle the contract with $u_1$ after receiving $r$ from $u_3$.
-There is an inherent trade-off: channels with short timelocks open the risk of not being able to dispute a fraudulent transaction in case of blockchain congestion, and long timelocks open up a DoS vector, where an attacker can route many unsettled payments through a channel and effectively block it until the timelock expires.
+
+\paragraph{Multi-channel transactions}
+
+A multi-channel transaction leverages a path of channels between a sender and a receiver (who might not share a channel between them).
+%A chain of single-channel updates are set up using HTLCs with the \textit{same} hash value.
+%This ensures atomicity: either all channels are re-balanced or none of them are.
+
+LN relies on HTLCs to enable multi-hop transactions. 
+The final recipient generates a random $r$ and sends its hash $H(r)$ to the initial sender.
+All HTLCs along the path use the same hash value $y=H(r)$ aiming to achieve atomicity expecting that none of the intermediate balances can be updated before the receiver reveals $r$, and all of them can be updated after that.
+The receiver redeems the payment from the last channel by revealing $r$, which in turn allows all intermediary channels to be re-balanced accordingly.
+
+An illustrative example of an HTLC-based transaction is depicted in~\cref{fig:htlc}.
+Here, the user $u_1$ transfers $1$~coin to $u_5$ using $u_2$, $u_3$ and $u_4$ as intermediaries.
+For that, $u_5$ locally chooses a value $r$ uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$ to the sender in an \textit{invoice} (step 1).
+Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, starting from the sender, establishes an HTLC using $y$.
+After the commit phase is finished, the transaction enters the release phase.
+Here, the receiver reveals $r$ to $u_4$ to fulfill the contract (step 6), triggering the release phase where every pair of nodes fulfills their contract from the receiver to the sender (steps 6-9).
+
+Intermediary users may charge a fee for the forwarding service provided. 
+For instance, $u_2$ receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins.
+No fees are collected if a payment fails, as all pending balance updates roll back.
+In the actual LN protocol, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the value being transferred.
+\footnote{Note that LN fee structure is different from fees on L1, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the amount of value being transferred. This may result in the economics of LN fees being significantly different from that in Bitcoin. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
+
+Note that the time parameter of the contracts along the path is decreasing to ensure a safety margin between HTLC timeouts.
+For instance, the HTLC between $u_1$ and $u_2$ sets a timeout of four days, whereas the timeout in the HTLC between $u_2$ and $u_3$ is only three days.
+This ensures that $u_2$ has enough time to settle the contract with $u_1$ after receiving $r$ from $u_3$, even if $u_3$ reveals the preimage just before the corresponding timeout expires.
+There is an inherent trade-off regarding timeout lengths.
+Channels with short timeouts open the risk of not being able to dispute a fraudulent transaction in case of blockchain congestion, and long timelocks open up a DoS vector, where an attacker can route many unsettled payments through a channel and effectively block it until the timelock expires.
+
+Multi-path payments use onion routing to enforce the order of intermediary nodes.
+Each intermediary node only knows the immediate previous and next nodes, but not the final sender or receiver and not its position in the path.
+
+
+\subsubsection*{Channel closure}
+
+A channel is closed when a transaction that spends the funding transaction's output gets confirmed on-chain.
+This may happen in one of three ways:
+
+\begin{itemize}
+	\item Collaborative closure. Alice signals the intent to close the channel, and Bob cooperates in signing the transaction that reflects the latest channel state. This results in one on-chain transaction to close a channel, and no delays for both parties. Both parties must be online and cooperating.
+	\item Non-cooperative closure without breach. Alice signals the intent to close the channel, but Bob does not respond. In this case, Alice commits the latest commitment transaction on the blockchain. Bob can redeem his output immediately, but Alice has to wait until a timeout expires. This is a safety measure to provide Bob with an opportunity to broadcast a \textit{justice transaction} (see below).
+	\item Non-cooperative closure with breach. Alice broadcasts an old commitment transaction in an attempt to close the channel with an outdated distribution of funds (thus potentially stealing from Bob). If Bob does not react before the timelock on Alice's output expires, Alice can redeem her output, and the channel is closed.\footnote{From the on-chain point of view, a non disputed non-cooperative close is indistinguishable from a non-cooperative close without a breach: the blockchain does not know whether a commitment transaction is the last one, unless this fact is disputed.} If Bob is online and notices the breach before the timeout, he broadcasts the latest commitment transaction, which allows Bob to spend Alice's output before she can, punishing her for the cheating attempt.
+\end{itemize}
+
+This revocation mechanism is the key element of LN, which allows LN channels to have an unlimited lifetime (the parties do not have to close the channel if none of them wants to) and to support payments in both directions.
+This makes the LN superior to earlier payment channel designs.
+However, the trade-off here is that parties must be online to notice potential malicious channel closures and broadcast justice transactions.
+This functionality can be outsourced.
+Entities that watch the blockchains for malicious channel closures and dispute them on behalf of a user are called \textit{watchtowers}.
+Implementing effective, economically incentivized, and privacy-preserving watchtowers in an active area of research~\cite{McCorry2019}.
+
+LN's revocation mechanism has proved effective as a deterrence against malicious channel closures.
+As of July~2019, there has been only 241 channel closures followed by a justice transaction -- 0.7\% of the number of Lightning channels at that time~\cite{BitMEXLN3}.
+\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
+
 
 \subsection{P2P network and routing}
-LN is source routed.
-Nodes exchange information about channels, and each node chooses routes based on the local view of the network graph.
-The graph includes total channel capacities but not local balances of the counterparties.
-Using HTLCs enables atomicity of channel updates in multi-path transactions.
-For instance, Alice can pay Charlie via Bob by using the same hash value along the route.
-If Charlie redeems the payment from Bob, then Bob can use the same pre-image to claim funds from Alice, otherwise no funds move.
+
+In the description of multi-channel transactions, we noted that the sender arranges a series of HTLCs along the path towards the receiver.
+But how does the sender construct such a path?
 
 LN nodes gossip about newly opened channels that are marked as available for routing.
 Based on this information, each node maintains a local view of the network, and uses it to calculate routes to the receiver.
@@ -327,38 +362,39 @@ The ability of channel parties to send or forward payments is limited by their \
 Initially, if Alice opens a channel with Bob, all funds are on her side.
 This means that she can send up to the total capacity, but she can not receive.
 As the local balances change, the routing capabilities of the channels in both directions are also changing.
+This makes routing not very reliable, especially for larger payment amounts.
 
-In case of payment failure, the sender is notified by an error message which channel has failed, and will presumably re-launch route generation function with the failed channel excluded.
-This procedure repeats for a pre-set number of tries, or until a payment succeeds.
-Given the external constraints it is sill not clear that a better approach than systematically probing for paths exist even though active research is being conducted in this area~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
+In case of payment failure, an error message notifies the sender which channel has failed.
+The sender would presumably try to send the payment again along a new route without the failed channel.
+This procedure repeats multiple times until a payment succeeds.
+Optimizing path finding for payment channel networks is an active area of research~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
 
-\subsection{Privacy}
-Another aspect of LN relevant for this work is privacy.
-Bitcoin is pseudonymous: while blockchain addresses are not linked to real world identity, and users are encouraged to not reuse them, the transaction graph can be extracted and analyzed.
-In contrast, LN payments are only sent to a short chain of randomly chosen nodes along the route from a sender to a receiver.
-Due to onion routing, each intermediary node only knows the previous and the next hops, but not the whole route and even not its position in the route.
-This supports the presumption that Lightning payments provide more privacy than layer-one Bitcoin transactions.
-However, our research as well as a probing attack described in~\cite{Dam2019} show that it is possible for an attacker to reveal balances of other channels of their channel partner.
-
-\subsection{Implementations}
-The development of the LN is guided by a set of request for comments (RFC) documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, 
-which are then followed by several implementation teams.
-The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
-Other implementations at earlier stages of development include
-Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
-
-Our results presented in~\cref{Chapter06LNprobing} have been obtained from the live network.
-At the time of our experiments, the attack in question seemed to be relevant to all nodes regardless of the implementation.
-Some of the countermeasures we propose can be implemented on the protocol level, and some on the implementation level.
-
-Our research in~\cref{Chapter07LNattacks} and~\cref{Chapter08HTLClimit} is concerned with the definition of the LN as described in the BOLTs and thus the results apply equally to every implementation.
 
 
 \section{Our contributions}
-Our contributions in this part are threefold.
 
-\paragraph{Discovering channel balances}
+Our results presented in this Part are concerned with various aspects of LN, with a particular focus on privacy.
+
+Bitcoin is pseudonymous.
+Addresses are not linked to real world identities, and users are encouraged to not reuse them.
+Despite this, users' privacy can be undermined with blockchain analysis.
+The transaction graph can be extracted from widely available blockchain data, stored, and analyzed.
+Companies have been built around the service of deanonymizing cryptocurrency users~\cite{Elliptic, Chainalysis}.
+
+In contrast to Bitcoin transactions, which are openly broadcast, LN payments are only sent to a short chain of randomly chosen nodes.
+Due to onion routing, each intermediary node only knows the previous and the next hops, but not the whole route and even not its position in the route.
+This leads to an assumption that Lightning provides more privacy than Bitcoin.
+
+However, LN implements a networking model different from Bitcoin and other L1 blockchain networks.
+We study various aspects of security and privacy of the Lightning Network.
+Conducting experiments on the actual (testnet) network, as well as using simulations based on network snapshots, we try to understand what privacy guarantees the LN provides and how we can make them stronger.
+
+Our contributions are threefold.
+
+\subsection{Discovering channel balances}
 First, we study the privacy of LN balances.
+\footnote{These results have been obtained from the live network. At the time of our experiments, the attack was relevant to all nodes regardless of the implementation. Some of the countermeasures we propose can be implemented on the protocol level, and some on the implementation level.}
+
 The LN protocol provides no way for a node to know how funds are split in remote channels.
 We ask the question: how private is this information in practice?
 As it turns our, a low-resource attacker can infer balances of most of the channels using \textit{probing}.
@@ -369,8 +405,11 @@ At the moment, LN nodes cannot use balance information for routing, which leads 
 We propose multiple potential countermeasures, including just-in-time routing.
 Evaluating them remains an exciting avenue for future work.
 
-\paragraph{Quantitative analysis of privacy attacks}
-Second, we perform an quantitative analysis of LN's resistance to three previously described attacks on privacy.
+
+\subsection{Quantitative analysis of privacy attacks}
+Second, we perform a quantitative analysis of LN's resistance to three previously described attacks on privacy.
+\footnote{Our research is concerned with the definition of the LN as described in the BOLTs and thus the results apply equally to every implementation.}
+
 Privacy in payment networks is defined in terms of value privacy (the attacker does not know how much is sent) and relationship anonymity (the attacker does not know who is paying whom).
 In the LN, an additional definition is added: a wormhole attack allows an adversary to steal fees from honest intermediaries and temporarily block their funds.
 How much of a threat do these attacks present?
@@ -378,10 +417,17 @@ This depends on a multiple factors: for an attack to be successful, a payment mu
 For the three attacks, we estimate this probability based on a simulated network for an array of parameters.
 Our findings suggest that LN, as of 2019, depends on highly connected and highly capitalized nodes: in case a relatively small proportion of such nodes are compromised, the attacker succeeds with a high probability.
 
-\paragraph{Analysis of a concurrency-related throughput limitation}
+
+\subsection{Analysis of a concurrency-related throughput limitation}
 Third, we describe a not so well-known peculiarity of the LN protocol concerned with concurrent payments.
+\footnote{These results also apply to all implementations.}
+
 Due to the size limitations on Bitcoin transactions, LN channels can handle up to a certain number of unresolved payments.
-An attacker can send payment from one node to another, blocking the capacity of channels along the route and depleting their "slots".
+An attacker can send payment from one node to another, blocking the capacity of channels along the route and depleting their "HTLC slots".
 This effect may be critical for micro-payment applications -- a use case LN was initially meant to solve.
-We evaluate the effect this limitation has for various payment amounts and how it has changed over two years, based on LN historical data.
+We evaluate the effect of this limitation for various payment amounts and its evolution over two years, based on LN historical data.
+
+
+
+
 

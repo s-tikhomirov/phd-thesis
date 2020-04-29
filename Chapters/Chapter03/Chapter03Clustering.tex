@@ -4,14 +4,9 @@
 
 We present a novel technique to analyze the public traffic in a P2P network of Bitcoin and other cryptocurrencies and extract information about the senders of transactions.
 
-%\begin{abstract}
-Bitcoin, introduced in 2008 and launched in 2009, is the first digital currency to solve the double spending problem without relying on a trusted third party.
-Bitcoin provides a way to transact without any trusted intermediary, but its privacy guarantees are questionable.
-Despite the fact that Bitcoin addresses are not linked to any identity, multiple deanonymization attacks have been proposed.
-Alternative cryptocurrencies such as Dash, Monero, and Zcash aim to provide stronger privacy by using sophisticated cryptographic techniques to obfuscate transaction data.
-
 Previous work in cryptocurrency privacy mostly focused on applying data mining algorithms to the transaction graph extracted from the blockchain.
 We focus on a less well researched vector for privacy attacks: network analysis.
+We analyze propagation times of protocol messages to infer relationships between transactions.
 We argue that timings of transaction messages leak information about their origin, which can be exploited by a well connected adversarial node.
 For the first time, network level attacks on Bitcoin and the three major privacy-focused cryptocurrencies have been examined.
 We describe the message propagation mechanics and privacy guarantees in Bitcoin, Dash, Monero, and Zcash.
@@ -20,25 +15,6 @@ We also unpack address advertisement messages (\texttt{ADDR}), which under certa
 We implement and evaluate our method, deanonymizing our own transactions in Bitcoin and Zcash with a high level of accuracy.
 We also show that our technique is applicable to Dash and Monero.
 We estimate the cost of a full-scale attack on the Bitcoin mainnet at hundreds of US dollars, feasible even for a low budget adversary.
-%\end{abstract}
-
-
-\section{Introduction}
-
-Bitcoin was, and still to some extent is, misleadingly referred to as an anonymous currency~\cite{Reid2011}.
-Indeed, unlike traditional financial systems, Bitcoin addresses are not tied to any real-world identity at the protocol level, but this fact alone does not guarantee strong privacy.
-Bitcoin transactions are broadcast through a peer-to-peer network in cleartext; after being verified by miners they are stored in a massively replicated shared database (the blockchain).
-A common technique to improve privacy in Bitcoin is to use a fresh address for every transaction (generating addresses is only limited by the size of the 256-bit key space).
-This piece of advice, often implemented in wallets, is no panacea, as the relationships between transactions can be inferred through blockchain analysis.
-
-Multiple cryptographic techniques have been proposed to address the Bitcoin privacy problem, from services on top of the original protocols such as mixers to new alternative cryptocurrencies such as Dash, Monero, and Zcash.
-Dash relies on built-in background mixing powered by the so called masternode network.
-Monero implements ring signatures and confidential transactions.
-Zcash uses zero-knowledge proofs, namely, zk-SNARKs (though the majority of transactions do not take advantage of them due to heavy performance cost).
-Zcash and Dash are based on a fork of the Bitcoin~Core codebase, while Monero is not.
-
-Previous attacks on the privacy of cryptocurrency transactions mostly employed some form of data analysis on the transaction graph.
-We take another approach and analyze propagation times of protocol messages to infer relationships between transactions.
 
 The ultimate goal of deanonymization is to reveal the relationship between cryptocurrency transactions (or addresses) and real-world identifiers, such as IP addresses.
 In our model, the goal of the adversary in our model is to infer a connection between a cryptocurrency transaction and the IP address of a node which was the first to introduce it into the network.\footnote{Even though an IP address is not linked to a physical person, it can be used to determine a relatively precise location of the device involved, and can be linked to a real-world identity if the responsible ISP is compromised.}
@@ -52,26 +28,22 @@ Instead of associating transactions with IP addresses directly, we first cluster
 Even if the latter step gains no insight, the clustering data used in combination with information from other sources is useful for the attacker.
 Moreover, our technique does not simply produce a binary decision (whether two transactions are related), but also allows for manual visual inspection of transaction clusters using heatmaps.
 
-The rest of the paper is organized as follows.
-Section~\ref{sec:Ch03Background} provides an overview of the propagation mechanisms in various cryptocurrencies.
-Section~\ref{sec:Ch03Ourapproach} describes our approach to transaction clustering based on propagation timing.
+We now provide the background on message propagation in Bitcoin and other cryptocurrencies, and present our approach to transaction clustering based on propagation timing.
 We implement and evaluate our technique on real-world cryptocurrencies.
 We were able to cluster our own transactions in Bitcoin and Zcash with high levels of precision and recall.
 In particular, in the case of Zcash, we can cluster transactions involving both transparent and shielded addresses.
 We also show that our technique is applicable to Dash and Monero.
 We provide rough calculations of the necessary resources and the monetary cost of an attack on the Bitcoin mainnet.
 We discuss attack scenarios for different types of wallets, and give a number of recommendations for users who want to preserve their privacy, as well as for developers of cryptocurrency protocols and wallets who want to give users an easier way to do so.
-Section~\ref{sec:Ch03Relatedwork} provides an overview of related work, and Section~\ref{sec:Ch03Conclusion} summarizes and suggests future work.
 
 
-\section{Background} \label{sec:Ch03Background}
 
-\subsection{Propagation of messages in cryptocurrency networks}
+\section{Message propagation in cryptocurrency networks} \label{sec:Ch03Background}
 
-Cryptocurrencies use P2P networks to disseminate messages.
-We now describe the relevant details on the networking behavior of Bitcoin (most alternative cryptocurrencies inherit these properties).
 
-\subsubsection{Address propagation}
+\subsection{Bitcoin}
+
+\subsubsection*{Address propagation}
 
 A newly launched node first performs a DNS lookup of a few records hard-coded into the software to discover the IP addresses of bootstrap nodes.
 It then asks the bootstrap nodes for (a subset of) the list of IP addresses of nodes known to them.
@@ -83,7 +55,7 @@ Upon receiving an \texttt{ADDR} message, each node decides individually for each
 A node re-advertises its address with random delays, every 24~hours on average.
 Nodes may also at any time query their neighbors for a list of addresses known to them (\texttt{GETADDR}); the response is an \texttt{ADDR} message containing up to 1000~addresses of peers recently seen on the network.
 
-\subsubsection{Transaction propagation}
+\subsubsection*{Transaction propagation}
 
 Propagation of transactions is a three step process.
 A node which has a new transaction advertises this fact to its neighbors with an \texttt{INV} (inventory) message containing the transaction hash only.
@@ -91,7 +63,7 @@ Upon receiving an \texttt{INV}, each node decides whether to request the transac
 If the node does not yet have the transaction, it replies with a \texttt{GETDATA} message and receives the transaction contents in a \texttt{TX} message.
 Blocks are propagated in a similar manner.
 
-\subsubsection{Randomization}
+\subsubsection*{Randomization}
 
 A straightforward way to broadcast messages in a P2P network is to relay them as soon as possible to all neighboring peers.
 Recognizing that this approach may harm privacy, Bitcoin developers introduced randomness in this process.
@@ -103,11 +75,7 @@ Based on the related work and the source code of the major cryptocurrencies, we 
 \end{itemize}
 
 
-\subsection{Alternative cryptocurrencies}
-
-We now provide a brief description of the three privacy focused cryptocurrencies we consider.
-
-\subsubsection{Zcash}
+\subsection{Zcash}
 
 Zcash~\cite{Zcash} implements the Zerocash protocol~\cite{BenSasson2014, Hopwood2020} -- an improvement of an earlier Zerocoin protocol~\cite{Miers2013}.
 It uses zk-SNARKs~\cite{BenSasson2014a} to hide the transaction information, while still allowing anyone to verify its correctness.
@@ -123,7 +91,7 @@ In October~2018, Zcash underwent an update code-named Sapling~\cite{Zcash2018}, 
 This allows for shielded transactions to be supported in light wallets, including mobile ones.
 
 
-\subsubsection{Dash}
+\subsection{Dash}
 
 A distinguishing feature of Dash~\cite{Dash} is a two-tier architecture.
 Along with regular nodes, users may set up so-called \textit{masternodes}, which require a 1000~DASH collateral (approximately 160\,000~USD, at the time of writing).
@@ -138,7 +106,7 @@ The Dash networking protocol is based on Bitcoin's but substantially more comple
 Dash uses the diffusion mechanism ported from Bitcoin.
 
 
-\subsubsection{Monero}
+\subsection{Monero}
 
 Monero~\cite{Monero} implements the CryptoNote protocol~\cite{Saberhagen2013}.
 Monero is not based on the Bitcoin~Core codebase.
@@ -150,22 +118,13 @@ Monero is the only one of the three privacy-preserving currencies which is priva
 In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
 
 
-\subsection{Mobile wallets}
 
-\todo{Which wallets we considered?}
-None of the P2P wallets we considered use diffusion or trickling.
-Most of them rely on the BitcoinJ library for networking.
-Unlike Bitcoin~Core, BitcoinJ sends \texttt{TX} unconditionally\footnote{Note that in this case a full node receiving a \texttt{TX} message from an SPV node can be sure that the transaction originated at that SPV node whereas receiving an \texttt{INV} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}.
-The BitcoinJ developers acknowledge that the three-step \texttt{INV} -- \texttt{GETDATA} -- \texttt{TX} exchange in Bitcoin~Core improves privacy, but argue that since BitcoinJ is used by light nodes with a priori weaker privacy guarantees, the three-step broadcast would only decrease efficiency.
-BitcoinJ and BRD broadcast a new transaction to a subset of entry nodes and wait for the announcement from other ones, which is taken as a sign of network acceptance.
 %See Appendix \ref{appendix} for references to source code.
 
 
-\section{Our approach}  \label{sec:Ch03Ourapproach}
+\section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
 
-\subsection{Our approach}
-
-\subsubsection{Intuition}
+\subsection{Algorithm overview}
 
 Our goal is to cluster transactions based on the node which was the first to introduce them into the network.
 Consider the first $N$ nodes which relayed a transaction to our listening node.
@@ -183,30 +142,12 @@ If we considered only the first propagation, these transactions would seem compl
 But with weight vectors, considering that those are sparse, the correlation between $tx_1$ and $tx_2$ and between $tx_2$ and $tx_3$ would be noticeable, which would allow us to reveal not only the relationship between these pairs but also among all three transactions.
 Note that this technique is also applicable for transactions originating from a light client (in this case, a cluster represents transactions from multiple clients connected to the same full node).
 
-\subsubsection{Data collection and representation}
-
-%\footnote{This approach was first introduced in another of our papers, which is currently under submission. In this work, the method is improved and applied to other cryptocurrencies and types of transaction sources.}
-We use a modified Bitcoin network probing tool \texttt{bcclient}~\cite{Pustogarov2017} to maintain parallel connections to peers and log incoming messages: transaction hash, the IP which relayed it to us, and the timestamp of this event.
-
-% Cryblock: begin comment
-\iffalse
-To adapt \texttt{bcclient} for usage with Dash and Zcash, we change the relevant constants (port numbers, protocol magic bytes, DNS seeder addresses).
-For Monero, which is not a Bitcoin fork, we modified the full node reference implementation (\texttt{monerod}), adding the required logging and disabling the built-in limits on the total bandwidth as well as artificial delays between network requests.
-
-For the purposes of clustering, we only log \texttt{INV} messages, and never continue with the \texttt{GETDATA} -- \texttt{TX} exchange.
-For some experiments, we also log \texttt{ADDR} messages to infer the set of most probable IP addresses corresponding to each cluster (only on the Bitcoin testnet).
-For clarity, when describing our data analysis, we will refer to transaction inventory messages as "transactions".
-\fi
-% Cryblock: end comment
-
-We use Python scripts to extract the essential information from the log, save it in a more compact JSON format, analyze the data, and visualize the results.
-For each transaction, we save a list of \textit{(t, IP)} pairs, where $t$ is a \textit{relative} timestamp (i.e.,~we subtract the timestamp of the first propagation of this transaction from all its propagations).
-
-\subsubsection{Weight functions and clustering}
+\subsection{Weight functions and clustering}
 
 Let $tx$ be a transaction.
 Let $p^{tx} = [p^{tx}_1, p^{tx}_2, ... p^{tx}_N]$ be the vector of the first $N$ IP addresses which relayed $tx$ to us.
-Let $t^{tx} = [t^{tx}_1, t^{tx}_2, ... t^{tx}_N]$ be the vector of the corresponding relative timestamps.
+Let $t^{tx} = [t^{tx}_1, t^{tx}_2, ... t^{tx}_N]$ be the vector of the corresponding \textit{relative} timestamps.
+A \textit{relative} timestamp is defined as $t = t^{abs}_i - t^{abs}_0$, where $t_{abs}^i$ is the absolute time time (UNIX timestamp) when we received transaction $tx_i$ (i.e.,~we subtract the timestamp of the first propagation of this transaction from all its propagations).
 For each $p^{tx}_i \in p^{tx}$, we assign a parameterized weight as follows:
 
 \[
@@ -275,9 +216,8 @@ C^{-1/2} & V
 
 The rows of $Z$ are clustered using the k-means algorithm.
 
-\subsection{Quality assessment}
 
-\subsubsection{Measuring clustering quality}
+\subsection{Measuring clustering quality}
 
 We use the Rand score as an external metric of clustering quality, as described in~\cite{Amigo2009} (Section~4.2).
 The Rand score operates on \textit{pairs} of elements and reflects the proportion of "right decisions" regarding whether to put a pair of transactions into one or different clusters.
@@ -339,6 +279,22 @@ If a user re-launches the client, their transactions issued before and after thi
 %While this scenario may not be prevalent, it may gain popularity in the future, as cryptocurrencies gain broader adoption and at least partially solve the scalability issues.
 
 
+\section{Implementation details}
+
+We use a modified Bitcoin network probing tool \texttt{bcclient}~\cite{Pustogarov2017} to maintain parallel connections to peers and log incoming messages: transaction hash, the IP which relayed it to us, and the timestamp of this event.
+
+To adapt \texttt{bcclient} for usage with Dash and Zcash, we change the relevant constants (port numbers, protocol magic bytes, DNS seeder addresses).
+For Monero, which is not a Bitcoin fork, we modified the full node reference implementation (\texttt{monerod}), adding the required logging and disabling the built-in limits on the total bandwidth as well as artificial delays between network requests.
+
+For the purposes of clustering, we only log \texttt{INV} messages, and never continue with the \texttt{GETDATA} -- \texttt{TX} exchange.
+For some experiments, we also log \texttt{ADDR} messages to infer the set of most probable IP addresses corresponding to each cluster (only on the Bitcoin testnet).
+For clarity, when describing our data analysis, we will refer to transaction inventory messages as "transactions".
+
+We use Python scripts to extract the essential information from the log, save it in a more compact JSON format, analyze the data, and visualize the results.
+For each transaction, we save a list of \textit{(t, IP)} pairs, where $t$ is a \textit{relative} timestamp.
+
+\section{Experimental evaluation}
+
 \subsection{Experiment overview}
 
 Assume our goal is to cluster transactions originating from one target source $S_{control}$.
@@ -362,8 +318,6 @@ The outline of our experiment is as follows.
 	\item visualize the results as a heatmap.
 \end{enumerate}
 
-\subsection{Visualization}
-
 We use heatmaps to visualize the results.
 A heatmap is a matrix where each row and each column represents a transaction that we captured during an experiment.
 The color of the square at the intersection of the $k$-th row and $n$-th column represent the correlation of weight vectors of $k$-th and $n$-th transactions (darker is higher).
@@ -373,13 +327,16 @@ Our assumption is that there exist a permutation of rows and columns such that t
 In the figures below, ticks along the axes indicate our transaction from the control set.
 
 
-\subsection{Evaluation}
+\subsection{Results for desktop wallets}
 
 We evaluate our method by clustering our own transactions in Bitcoin (testnet and mainnet) and Zcash.
 For these experiments, we log the traffic (both \texttt{INV} and \texttt{ADDR} messages) for 15~minutes.
 The anonymity degree calculated on our own transactions indicates a substantial loss of privacy.
 For Dash and Monero, we ran the clustering algorithm without calculating an external quality metric.
 We obtained clearly visible clusters, which indicated that our approach is applicable for these cryptocurrencies as well.
+
+All linkage experiments were done on our own transactions and when possible on the testnets.
+The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of 1000~nodes (out of approximately 10\,000).
 
 % California: experiment-1541509693
 % Tokyo: experiment-1541511845
@@ -391,13 +348,13 @@ We obtained clearly visible clusters, which indicated that our approach is appli
 	\centering
 	\begin{tabular}{ | l | l | c | c | c | c | c | }
 		\hline
-		Network & Listener location & Anonymity degree & Servers & Avg free slots & Tx INVs & ADDRs \\
+		Network & Listener location & Anon. degree & Servers & Avg free slots & Tx INVs & ADDRs \\
 		\hline
-		Bitcoin testnet  & California & 0.83 & 1141 & 64 & 139 & 402 \\
-		Bitcoin testnet & Tokyo & 0.80 & 1128 & 64 & 193 & 414 \\
-		Bitcoin testnet & Frankfurt & 0.72 & 1137 & 64 & 172 & 403 \\
-		Bitcoin testnet & combined & 0.63 & 1154 & 63 & 250 & 1321 \\
-		Bitcoin mainnet & Frankfurt & 0.88 & 1000* & 25* & 3238 & 11300 \\
+		Bitcoin test & California & 0.83 & 1141 & 64 & 139 & 402 \\
+		Bitcoin test & Tokyo & 0.80 & 1128 & 64 & 193 & 414 \\
+		Bitcoin test & Frankfurt & 0.72 & 1137 & 64 & 172 & 403 \\
+		Bitcoin test & combined & 0.63 & 1154 & 63 & 250 & 1321 \\
+		Bitcoin main & Frankfurt & 0.88 & 1000* & 25* & 3238 & 11300 \\
 		Zcash & Frankfurt & 0.86 & 206 & 36 & 62 & 1086 \\
 		\hline
 	\end{tabular}
@@ -579,9 +536,19 @@ Another peculiarity which makes our analysis more difficult is that \texttt{mone
 In our experiment, while trying to connect to 200~nodes, we got 150~connections only after approximately 2~hours, 175~connections after 3~hours, 200~connections after nearly 8~hours.
 We also notice that none of the hard-coded DNS seeds resolves (as of mid-July~2018); the client falls back to seed IP addresses (also hard-coded).
 
-\subsubsection{Mobile wallets}
+\subsection{Results for mobile wallets}
 
-We also performed analogous experiments on mobile wallets.
+We also performed analogous experiments on selected mobile wallets.
+\footnote{Chapter~\ref{Chapter04Wallets} is dedicated to evaluating other privacy-related aspects of mobile cryptocurrency wallets.}
+
+We considered the following wallets:
+\todo[inline]{Which ones and why?}
+
+None of the P2P wallets we considered use diffusion or trickling.
+Most of them rely on the BitcoinJ library for networking.
+Unlike Bitcoin~Core, BitcoinJ sends \texttt{TX} unconditionally\footnote{Note that in this case a full node receiving a \texttt{TX} message from an SPV node can be sure that the transaction originated at that SPV node whereas receiving an \texttt{INV} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}.
+The BitcoinJ developers acknowledge that the three-step \texttt{INV} -- \texttt{GETDATA} -- \texttt{TX} exchange in Bitcoin~Core improves privacy, but argue that since BitcoinJ is used by light nodes with a priori weaker privacy guarantees, the three-step broadcast would only decrease efficiency.
+BitcoinJ and BRD broadcast a new transaction to a subset of entry nodes and wait for the announcement from other ones, which is taken as a sign of network acceptance.
 
 We focus on three networks for our experiments: Bitcoin testnet, Bitcoin mainnet, and Zcash mainnet.
 Bitcoin testnet is the most active testnet of an open cryptocurrency and is a perfect testing ground to perform fully-fledged experiments.
@@ -670,7 +637,7 @@ In the Zcash experiment (Coinomi), though our transactions don't form a clear cl
 
 
 
-\subsection{Estimation of costs for an attacker}
+\section{Attack cost estimation}
 
 We now estimate the resources required for a full-scale attack on the Bitcoin mainnet.
 As of November~2018, the Bitcoin mainnet consists of approximately 10\,000 nodes.
@@ -702,15 +669,8 @@ Even taking into account the cost of computation and storage, the total cost of 
 
 All our experiments on Bitcoin testnet and Zcash mainnet cost \$35 (this can probably be decreased by optimizing the scripts, immediately copying the data to a local machine and deleting it from the cloud, etc).
 
-% TODO: "will be deleted"?
-\subsection{Ethical considerations}
-All linkage experiments were done on our own transactions and when possible on the testnets.
-The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of 1000~nodes (out of approximately 10\,000).
-Logs from mainnet experiments will be deleted.
 
-\subsection{Discussion and mitigations}
-
-\subsubsection{Attack scenarios and countermeasures}
+\section{Discussion and countermeasures}
 
 We now discuss the possible attack scenarios and countermeasures.
 
@@ -776,100 +736,7 @@ An attacker trying to deanonymize a regular user can remove clusters with many "
 We leave this research direction for future work.
 
 
-\subsubsection{Recommendations for core developers}
-
-Cryptocurrency developers should introduce privacy enhancing measures at the network level, especially if the currency is meant to be privacy-preserving.
-As our results show, trickling and diffusion, as they are implemented in Bitcoin and its forks, are not sufficient.
-A promising proposal for anonymous peer-to-peer broadcast is Dandelion~\cite{Venkatakrishnan2017, Fanti2018} (see Section~\ref{sec:Ch03Relatedwork} for an overview).
-
-
-\section{Related work}  \label{sec:Ch03Relatedwork}
-
-\subsection{Privacy in cryptocurrencies}
-
-Most early research on security and privacy of cryptocurrencies only considered Bitcoin as the dominant cryptocurrency at that time and was primarily focused on blockchain analysis~\cite{Meiklejohn2013, Ober2013, Ron2013}.
-% 2011 - Reid - An analysis of anonymity in the bitcoin system 
-% 2013 - Androulaki - Evaluating user privacy in bitcoin 
-Reid et al.~\cite{Reid2011} and Androulaki et al.~\cite{Androulaki2013} provide an overview of privacy challenges in Bitcoin.
-A popular mitigation, which does not require modifications to the Bitcoin protocol, is mixing.
-A Bitcoin transaction spends a number of unspent transaction outputs (UTXO) as inputs and generates a number of new UTXOs.
-Mixing allows users to create a joint transaction that combines all relevant inputs and outputs, making it harder for an adversary to track the flow of coins of a single user.
-The major drawback of this scheme is that users must agree to co-sign the transaction using additional means of communication.
-This process is unscalable without coordination by a trusted third party.
-Bonneau et al.~\cite{Bonneau2014}~propose Mixcoin, a protocol to automate mixed payments in Bitcoin and similar cryptocurrencies which includes an accountability mechanism to expose theft.
-Valenta et al.~\cite{Valenta2015} add a blind signature scheme to Mixcoin to prevent the operator from spying on users.
-Alternative implementations of mixing protocols include CoinJoin~\cite{Maxwell2013} and CoinShuffle~\cite{Ruffing2014}.
-
-%An alternative direction is to implement a new cryptocurrency with more sophisticated privacy-preserving cryptographic techniques.
-% TODO: mention Zcash node eviction (not intended as countermeasure): https://github.com/zcash/zips/blob/master/zip-0201.rst
-
-Quesnelle~\cite{Quesnelle2017} proposes a method to link Zcash transaction based on a heuristic extracted from real-world usage of transparent and shielded addresses.
-
-Gervais et al.~\cite{Gervais2014} analyze the privacy implications of Bloom filters in SPV wallets.
-
-\subsection{Network analysis}
-
-% 2014 - Koshy - An Analysis of Anonymity in Bitcoin Using P2P Network Traffic 
-Koshy et al.~\cite{Koshy2014} analyze Bitcoin's anonymity through the lens of P2P network properties.
-They propose a technique for a global passive adversary to deanonymize users based on transaction propagation times.
-The adversary aggregates network traffic into tuples containing the Bitcoin address, the first IP address to relay this transaction, and the transaction identifier.
-For each transaction, the tuples are constructed for each input and output.
-Each tuple is counted as a "vote" in favor of a hypothesis that a certain IP "owns" (i.e.,~possesses the private key of) a certain Bitcoin address.
-While this paper provided valuable insights, it seems not to account for trickling / diffusion, which must have decreased the quality of the proposed deanonymization algorithm.
-
-% 2014 - Biryukov - Deanonymisation of clients in Bitcoin P2P network
-Biryukov et al.~\cite{Biryukov2014} describe the networking properties of Bitcoin and propose a multi-step attack for correlating Bitcoin clients' transactions with their IP addresses.
-The attack proceeds as follows.
-Firstly, the attacker prevents clients from using Tor by abusing the Bitcoin's anti-DoS mechanism: by sending invalid blocks or transactions through Tor it is possible to make Bitcoin servers temporarily ban all Tor exit nodes (see also~\cite{Biryukov2015}).
-Next, the attacker establishes multiple connections to each of the servers and tracks which of them advertise an IP address of the victim client.
-The intuition is that the client's \textit{entry nodes} will be the ones to advertise its IP address to the attacker (this is not guaranteed; the paper suggests ways to reduce noise in the resulting data).
-After constructing a mapping of client IP addresses to sets of their entry nodes, the attacker listens to new transactions and correlates them with the victim client, if they are broadcast from that client's entry nodes.
-
-% 2015 - Miller - Discovering bitcoin's public topology and influential nodes
-Miller et al.~\cite{Miller2015} exploit some peculiarities in the update mechanism for a known address database (\texttt{addrMan}) in the Bitcoin reference implementation to infer the underlying graph structure.
-Each Bitcoin node maintains a  database of IP addresses of peers it knows, along with corresponding timestamps intended to reflect the peer's "freshness".
-Unintuitively, at the time of writing (2015), Bitcoin nodes only update timestamps for nodes they maintain outgoing connections with (at each message received).
-For incoming connections, the peer preserves the first timestamp relayed along with the address.
-The authors implement a tool that takes advantage of such rules to make quite an accurate guess of the topology of the Bitcoin network.
-After an update of Bitcoin Core in March~2015, this technique is no longer feasible.
-
-% 2016 - Neudecker - Timing Analysis for Inferring the Topology of the Bitcoin Peer-to-Peer Network
-Neudecker et al.~\cite{Neudecker2016} propose a timing analysis attack to infer the network topology.
-Their approach is different from the previous work (and similar to ours) in that it does not use any side-channels, but only the timing of transaction propagation.
-The real-world validation in the Bitcoin network inferred network links at a substantial recall and precision.
-The authors showed that an inappropriately parameterized trickling mechanism can actually reduce the resistance to traffic analysis compared to na{\"i}ve gossip (for the goal of learning the network topology).
-
-% 2017 - Wang - Towards better understanding of Bitcoin unreachable nodes
-Wang and Pustogarov~\cite{Wang2017} conduct a measurement study of Bitcoin to analyze the unreachable nodes (i.e.,~those behind NATs and firewalls) and report, among other findings, that a large share of Bitcoin transactions originate from only two mobile applications.
-
-% 2017 - Fanti - Anonymity Properties of the Bitcoin P2P Network
-Fanti et al.~\cite{Fanti2017} study the anonymity properties of trickling and diffusion.
-Despite the motivation to change the Bitcoin's propagation mechanism from trickling to diffusion, as the study shows, this provided only a marginal privacy improvement.
-The authors conclude that the key feature that enables deanonymization in both trickling and diffusion is an inherent symmetry: as messages spread through the network in a circular fashion, a global adversary can estimate where the center (i.e.,~the message source) is.
-
-% 2017 - Venkatakrishnan - Dandelion: Redesigning the Bitcoin Network for Anonymity
-% 2018 - Fanti - Dandelion++: Lightweight Cryptocurrency Networking with Formal Anonymity Guarantees
-Dandelion~\cite{Venkatakrishnan2017} and its improvement Dandelion++~\cite{Fanti2018} are message propagation protocols for P2P networks designed to prevent deanonymization attacks.
-Its key idea is introducing asymmetry: a message is first sent along a random path, and only then broadcast gossip-style.
-Message propagation in Dandelion++\footnote{We focus on the latest, improved version of the protocol.} proceeds in two stages: the "stem" phase and the "fluff" stage.
-In the stem phase, a new message is broadcast along a random path in the anonymity graph: an approximately regular random graph based on the same set of nodes as the regular P2P network.
-In the fluff phase, the latest node to receive the message disperses it using the regular gossip-style broadcast.
-The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism, though at the cost of a several second propagation delay and additional sensitivity to DoS attacks at stem phase. 
-
-Though the authors mention (Section~4.2) that some configurations of the protocol may be prone to transaction  correlation attacks, our approach is not suitable against Dandelion++.
-The key feature that allows our well-connected listening node to gather useful information is that nodes choose neighbors to propagate messages at random, without distinguishing incoming and outgoing connections.
-This means that by saturating 50\% of a node's connection slots we have a 50\% chance to be the first to receive a new transaction from it.
-In Dandelion++, nodes choose neighbors for the stem phase propagation only from outgoing connections.
-There is no obvious way to force a remote peer to initiate a connection to us, therefore a malicious node with many outgoing connections will not have any advantage in the stem phase (it can only aggregate incoming information while acting as a regular relay, which may gain some but not much insight into possible transaction clusters).
-
-% 2017 - Neudecker, Hartenstein - Could Network Information Facilitate Address Clustering in Bitcoin?
-Neudecker and Hartenstein~\cite{Neudecker2017} combine blockchain and network analysis to cluster Bitcoin addresses and associate them with IP addresses.
-They determine the originator of a transaction as the first originator, using two independent listening nodes and some heuristics to make the estimation more precise.
-The authors conclude that for the majority of users network-based deanonymization is not a concern, though a small percentage of users might be susceptible to attacks of this type.
-
-
-
-\section{Conclusion and future work} \label{sec:Ch03Conclusion}
+\section{Conclusion} \label{sec:Ch03Conclusion}
 
 We study the state of anonymity of cryptocurrencies on the network level.
 We describe and implement a novel kind of transaction clustering based on the analysis of propagation times.
@@ -882,20 +749,7 @@ Privacy-focused cryptocurrencies, while employing sophisticated cryptographic te
 Their lower overall popularity and a smaller anonymity set make them susceptible to network analysis.
 A smaller number of privacy-friendly wallets exacerbate the threat.
 We encourage privacy-conscious cryptocurrency users to choose their wallet according to privacy trade-offs.
-%Compared to a mobile wallet, a desktop-based full node provides at least some countermeasures against network analysis and is less likely to collect personal data in the background.
-We also suggest wallet developers pay closer attention to privacy on the network level.
 
-\subsection{The applicability of the external quality metric}
-The adjusted anonymity degree, which we used as an external quality metric, has limitations.
-In particular, we didn't account for transactions from clusters which did not also contain at least one of our own transactions.
-The rationale behind this is the lack of the ground truth for two "foreign" transactions: we do not know whether they should be included in the same cluster.
-Consequently, our quality metric may poorly reflect the reality on large networks (such as the Bitcoin mainnet), where our transactions make up only a small part of the full network throughput.
-One direction of future research may be deriving an anonymity metric which works better under these circumstances.
 
-\subsection{Direct comparison of relay randomization techniques}
-As described in Section~\ref{sec:Ch03Background}, cryptocurrencies use different relay randomization techniques aimed at improving privacy: trickling, diffusion, or no randomization.
-A natural question would be to measure the relative effectiveness of these methods.
-Unfortunately, we cannot use a direct comparison between cryptocurrencies that use diffusion and trickling to make a conclusion about relative effectiveness of these methods, as the real-world networks also differ in many other parameters (such as the number of nodes and transaction rate) that also influence the attack results.
-A possible direction for future research may be to quantify the effects of trickling and diffusion on privacy properties of a Bitcoin-like cryptocurrency with respect to our attack technique, holding all other parameters equal.
 
 

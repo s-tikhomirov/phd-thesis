@@ -4,90 +4,6 @@
 
 In this Chapter, we present an introduction to the second layer (L2) blockchain protocols and in particular the Lightning network for Bitcoin.
 
-\section{Introduction to blockchain scaling}
-
-Bitcoin was designed to avoid trusted third parties.
-If there is no designated servers to validate transactions, then all users must do this, or at least be able to.
-This design choice imposes severe restrictions on transaction throughput, with a theoretical maximum of tens of transactions per second~\cite{Croman2016}.
-Even if executing Bitcoin scripts is relatively cheap in terms of computation, users with consumer hardware should be able to keep up with the network in real time.
-Otherwise, if the inflow of new transactions per unit time is higher than a user's device can validate, the user would have to trust a third party with more powerful hardware to tell whether transactions are valid.
-
-Accommodating the increased demand for transactions requires protocol update.
-Let us consider ways in which open blockchain protocols such as Bitcoin can be updated.
-
-\subsection{Soft forks and hard forks}
-Blockchain networks have a unique property compared to other software in how they are updated.
-In a decentralized network, there is no master switch that can force users to update.
-Instead, Bitcoin's updates must achieve consensus among the majority of interested parties: full node operators, miners, businesses, wallet developers, and so on.
-Moreover, the development philosophy of Bitcoin strictly opposes breaking changes.
-The rationale is that all coins must be spendable under the same conditions as at the time they had been locked.
-For instance, even is a more efficient signature algorithm is implemented in Bitcoin, it must be an addition to the old one, not a replacement.
-
-The non-breaking type of update is referred to as a \textit{soft fork}.
-In a soft fork, the rules of the protocol become more strict.
-Therefore, a non-updated node would still perceive blocks created under the new rules as valid, though it may not understand all of the new semantics.
-In practice, soft forks are often implemented by enhancing one of the \texttt{OP_NOP} opcodes with the new semantics.
-
-A breaking update is referred to as a \textit{hard fork}.
-A hard fork broadens the set of valid blocks.
-This means that a block created under the new rules may be invalid from the viewpoint of old nodes.
-Increasing the block size is an example of such change: if the limit is raised (like in Bitcoin~Cash), an 7~MB block, which fits under the new limit, is rejected by old node.
-
-\subsection{Bitcoin block size debate}
-
-This restriction is manifested in Bitcoin's code with the \textit{block size limit}.
-In 2010, Satoshi Nakamoto introduced a 1~MB limit on the block size~\cite{Nakamoto2010}.
-With the growth of the Bitcoin ecosystem, dismantling this restriction without a major disruption has become less and less likely.
-Coordinating an upgrade in a large set of heterogeneous players is hard.
-
-A subset of the Bitcoin community viewed the 1~MB restriction as a limiting factor for Bitcoin's adoption in retail.
-To make Bitcoin a common means of payment worldwide, one would argue, the system would have to handle more transactions than under the 1~MB limit.
-Otherwise the fees would rise, and using Bitcoin for small purchases would become uneconomical.
-A counterargument to this was that raising the block size limit, apart from causing disruption, would cut off less powerful hardware from validating transactions, hindering the ability of users to independently validate transactions -- the key property of the system.
-
-This contradiction lead to a conflict within the Bitcoin community, culminating in 2017 with the introduction of Bitcoin~Cash and the activation of \textit{segregated witness} (SegWit).
-Bitcoin~Cash is a cryptocurrency born as a hard fork of Bitcoin with the block size raised to 8~MB.
-Bitcoin (as defined by the Bitcoin~Core codebase) introduced another method of increasing throughput -- segregated witness (SegWit).
-This thesis focuses on the scaling approach taken by Bitcoin~Core\footnote{While Bitcoin~Cash proponents tend to refer to the version of Bitcoin with SegWit as Bitcoin~Core to stress the proposition that both forks have equal rights to inherit the name "Bitcoin", we'll refer to the Bitcon~Core implementation as Bitcoin.}.
-
-\subsection{Segregated witness}
-
-SegWit was an important milestone in the evolution of Bitcoin.
-This protocol change, as the name suggests, \textit{segregated} the \textit{witness} (that is, the transaction signatures) from the part of the blockchain data used to calculate transaction hashes.
-The block size has been replaced by block \textit{weight} -- a synthetic metric which assigns different parts of a transaction different weights when counting towards the total weight of a block.
-The old block \textit{size} limit has been internally converted to block \textit{weight} limit.
-This resulted in the actual block size limit being increased to 4~MB without a hard fork.
-
-More importantly for our work, SegWit solved the \textit{transaction malleability} issue.
-This has been a fundamental roadblock that has been holding back the development of layer-two protocols.
-Due to the qualities of ECDSA signatures and their implementation in OpenSSL library used in Bitcoin, it was possible for an attacker, given a signed transaction, to modify it and this change its hash without changing its semantics.
-%\todo[inline]{script malleability is also possible but is irrelevant here?}
-
-In the context of L2 protocols, this is a critical drawback.
-L2 inherits its security properties from L1, assuming that parties can check whether an event of interest has happened on L1.
-For instance, to prevent cheating, the protocol must ensure that Alice can understand by looking at the blockchain whether Bob is attempting to cheat (for instance, broadcast an old channel state), and vice versa.
-With transaction malleability, the attacker could replace an unconfirmed transaction with another transaction with the same semantics but different hash.
-This makes "watching" the blockchain for relevant messages hard, if not impossible.
-
-With SegWit, transaction signature (witness) no longer affects its hash.
-Therefore, a hash reflects only the transaction \textit{semantics}, omitting the \textit{proof} of its validity.
-This allows LN parties to watch the blockchain for specific transaction hashes and be sure that the \textit{behavior} they are interested in cannot be performed on layer-one in any other way.
-We will describe the mechanics of the Lightning protocol in detail later in this Chapter.
-
-
-\subsection{L2 protocols in Ethereum and other blockchains}
-
-While this part of the thesis focuses on Bitcoin's L2 protocols and LN in particular, payment channels are only one type of layer-two protocols.
-The principles of the LN can be used to improve the scalability of other cryptocurrencies. 
-
-
-For completeness, let us mention some of the related developments in the Ethereum ecosystem.
-
-Ethereum is \textit{the} other major open blockchain alongside Bitcoin.\footnote{It is second in the market capitalization and first in the number of transactions~\cite{Coinmetrics}. Due to the differences in transaction mechanics and semantics, meaningfully comparing the metrics of these two major blockchain networks is a separate research question.}
-Ethereum makes many architectural decisions differently from Bitcoin.
-It incorporates a \textit{Turing-complete programming language}, supports \textit{zero-knowledge cryptography}, and is explicitly \textit{stateful}.
-This complexity of the base protocol is reflected in a wider space of layer-two designs, which include channels (Raiden~\cite{RaidenWebsite}), refereed computation protocols (Arbitrum~\cite{Kalodner2018}, Truebit~\cite{Teutsch2017}), state channels (Sprites~\cite{Miller2019}, Perun~\cite{Dziembowski2017}), Plasma~\cite{Poon2017}, and rollups (optimistic~\cite{Floersch2019}, zk-rollups~\cite{Gluchowski2019}).
-
 
 \section{Evolution of payment channels in Bitcoin}
 
@@ -95,7 +11,6 @@ Layer-two protocols allow blockchains to scale without modification to the base 
 In the context of Bitcoin, layer-two protocol usually implement the concept of \textit{payment channels}.
 A payment channel allows its two participants to exchange transactions without broadcasting them to the blockchain.
 Some of the security guarantees of L1 are preserved: conflicts can be resolved on layer-one.
-We refer the reader to a comprehensive overview of off-chain approaches in~\cite{Gudgeon2019}.
 
 Multiple ideas or implementations of Bitcoin channel for Bitcoin have been proposed.
 To put our work on the Lightning Network in historical context, we now describe the evolution of layer-two protocols in Bitcoin following the outline in the Bitcoin wiki~\cite{BitcoinWikiChannels}.
@@ -206,6 +121,7 @@ If \texttt{SIGHASH\_NOINPUT} is implemented, eltoo revocation mechanism can be u
 
 \paragraph{Privacy-preserving channels}
 A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technilogy (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatibility with Bitcoin-like blockchains (including Bitcoin itself) and renamed to zkChannels~\cite{Akinyele2020}.
+
 
 
 \section{Lightning network overview}
@@ -370,64 +286,14 @@ This procedure repeats multiple times until a payment succeeds.
 Optimizing path finding for payment channel networks is an active area of research~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
 
 
+\section{Privacy in payment channel networks}
 
-\section{Our contributions}
-
-Our results presented in this Part are concerned with various aspects of LN, with a particular focus on privacy.
-
-Bitcoin is pseudonymous.
-Addresses are not linked to real world identities, and users are encouraged to not reuse them.
-Despite this, users' privacy can be undermined with blockchain analysis.
-The transaction graph can be extracted from widely available blockchain data, stored, and analyzed.
-Companies have been built around the service of deanonymizing cryptocurrency users~\cite{Elliptic, Chainalysis}.
-
+There are substantial differences in the privacy models of first- and second-layer blockchain protocols.
 In contrast to Bitcoin transactions, which are openly broadcast, LN payments are only sent to a short chain of randomly chosen nodes.
 Due to onion routing, each intermediary node only knows the previous and the next hops, but not the whole route and even not its position in the route.
 This leads to an assumption that Lightning provides more privacy than Bitcoin.
 
-However, LN implements a networking model different from Bitcoin and other L1 blockchain networks.
-We study various aspects of security and privacy of the Lightning Network.
-Conducting experiments on the actual (testnet) network, as well as using simulations based on network snapshots, we try to understand what privacy guarantees the LN provides and how we can make them stronger.
-
-Our contributions are threefold.
-
-\subsection{Discovering channel balances}
-First, we study the privacy of LN balances.
-\footnote{These results have been obtained from the live network. At the time of our experiments, the attack was relevant to all nodes regardless of the implementation. Some of the countermeasures we propose can be implemented on the protocol level, and some on the implementation level.}
-
-The LN protocol provides no way for a node to know how funds are split in remote channels.
-We ask the question: how private is this information in practice?
-As it turns our, a low-resource attacker can infer balances of most of the channels using \textit{probing}.
-Specifically, by sending an unsolicited fake payment and observing the resulting error, the attacker can infer the balances of channels along the route.
-We show that this technique scales to the whole network and allows to probe channel balances in most channels with a high precision.
-This part of our work raises a question: can we strike a better balance between balance privacy and routing efficiency?
-At the moment, LN nodes cannot use balance information for routing, which leads to failed payments, but balances are extractable by an attacker anyway.
-We propose multiple potential countermeasures, including just-in-time routing.
-Evaluating them remains an exciting avenue for future work.
-
-
-\subsection{Quantitative analysis of privacy attacks}
-Second, we perform a quantitative analysis of LN's resistance to three previously described attacks on privacy.
-\footnote{Our research is concerned with the definition of the LN as described in the BOLTs and thus the results apply equally to every implementation.}
-
-Privacy in payment networks is defined in terms of value privacy (the attacker does not know how much is sent) and relationship anonymity (the attacker does not know who is paying whom).
-In the LN, an additional definition is added: a wormhole attack allows an adversary to steal fees from honest intermediaries and temporarily block their funds.
-How much of a threat do these attacks present?
-This depends on a multiple factors: for an attack to be successful, a payment must pass through a path partially controlled by the attacker.
-For the three attacks, we estimate this probability based on a simulated network for an array of parameters.
-Our findings suggest that LN, as of 2019, depends on highly connected and highly capitalized nodes: in case a relatively small proportion of such nodes are compromised, the attacker succeeds with a high probability.
-
-
-\subsection{Analysis of a concurrency-related throughput limitation}
-Third, we describe a not so well-known peculiarity of the LN protocol concerned with concurrent payments.
-\footnote{These results also apply to all implementations.}
-
-Due to the size limitations on Bitcoin transactions, LN channels can handle up to a certain number of unresolved payments.
-An attacker can send payment from one node to another, blocking the capacity of channels along the route and depleting their "HTLC slots".
-This effect may be critical for micro-payment applications -- a use case LN was initially meant to solve.
-We evaluate the effect of this limitation for various payment amounts and its evolution over two years, based on LN historical data.
-
-
+\todo[inline]{Outline differences}
 
 
 

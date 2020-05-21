@@ -2,6 +2,11 @@
 
 \label{Chapter03Clustering}
 
+In this Chapter, we tackle the following question: can a global passive adversary.infer relationships between transactions based solely on their propagation pattern in the network?
+We review the Bitcoin's P2P protocol and propose an algorithm that allows us to distinguish transactions issued from the same node from transactions issued from different nodes (with s certain degree of accuracy).
+We implement and test our method on Bitcoin and three other cryptocurrencies focused on privacy: Dash, Monero, and Zcash.
+We also test the same technique on transactions issued from mobile wallets, which are studied in more detail in the subsequent chapter.
+
 We present a novel technique to analyze the public traffic in a P2P network of Bitcoin and other cryptocurrencies and extract information about the senders of transactions.
 
 Previous work in cryptocurrency privacy mostly focused on applying data mining algorithms to the transaction graph extracted from the blockchain.
@@ -35,91 +40,6 @@ In particular, in the case of Zcash, we can cluster transactions involving both 
 We also show that our technique is applicable to Dash and Monero.
 We provide rough calculations of the necessary resources and the monetary cost of an attack on the Bitcoin mainnet.
 We discuss attack scenarios for different types of wallets, and give a number of recommendations for users who want to preserve their privacy, as well as for developers of cryptocurrency protocols and wallets who want to give users an easier way to do so.
-
-
-
-\section{Message propagation in cryptocurrency networks} \label{sec:Ch03Background}
-
-
-\subsection{Bitcoin}
-
-\subsubsection*{Address propagation}
-
-A newly launched node first performs a DNS lookup of a few records hard-coded into the software to discover the IP addresses of bootstrap nodes.
-It then asks the bootstrap nodes for (a subset of) the list of IP addresses of nodes known to them.
-Upon receiving the lists, the new node establishes a preconfigured number of connections with a random set of nodes, which we will refer to as \textit{entry nodes}.
-If the TCP port 8333\footnote{The default port for the Bitcoin mainnet. Other networks use other ports by default: 18333 for the Bitcoin testnet, 8233 for Zcash, 18080 for Monero, 9999 for Dash.} is open, a node allows up to 117 incoming connections to be established (this number can be overridden in the configuration).
-
-After joining the network and establishing connections, a node advertises its IP address (as seen from the Internet) in an \texttt{ADDR} message to its neighbors.
-Upon receiving an \texttt{ADDR} message, each node decides individually for each address whether to relay it to one or two of its neighbors, depending on reachability.
-A node re-advertises its address with random delays, every 24~hours on average.
-Nodes may also at any time query their neighbors for a list of addresses known to them (\texttt{GETADDR}); the response is an \texttt{ADDR} message containing up to 1000~addresses of peers recently seen on the network.
-
-\subsubsection*{Transaction propagation}
-
-Propagation of transactions is a three step process.
-A node which has a new transaction advertises this fact to its neighbors with an \texttt{INV} (inventory) message containing the transaction hash only.
-Upon receiving an \texttt{INV}, each node decides whether to request the transaction content.
-If the node does not yet have the transaction, it replies with a \texttt{GETDATA} message and receives the transaction contents in a \texttt{TX} message.
-Blocks are propagated in a similar manner.
-
-\subsubsection*{Randomization}
-
-A straightforward way to broadcast messages in a P2P network is to relay them as soon as possible to all neighboring peers.
-Recognizing that this approach may harm privacy, Bitcoin developers introduced randomness in this process.
-Based on the related work and the source code of the major cryptocurrencies, we distinguish three propagation mechanisms:
-\begin{itemize}
-	\item Na{\"i}ve gossip: broadcast to all neighbors as soon as possible (used in Monero);
-	\item Trickling: for a number of fixed-length time periods, broadcast to a new random subset of neighbors (used in Zcash and Bitcoin pre-2015);
-	\item Diffusion: broadcast to each neighbor after a random delay (used in Dash and Bitcoin post-2015).
-\end{itemize}
-
-
-\subsection{Zcash}
-
-Zcash~\cite{Zcash} implements the Zerocash protocol~\cite{BenSasson2014, Hopwood2020} -- an improvement of an earlier Zerocoin protocol~\cite{Miers2013}.
-It uses zk-SNARKs~\cite{BenSasson2014a} to hide the transaction information, while still allowing anyone to verify its correctness.
-Zcash does not provide privacy by default as of late~2018: zk-SNARKs are used only in a small minority of transactions involving \textit{shielded} addresses~\cite{Kappos2018}.
-The majority of transactions happen between \textit{transparent} addresses and have no additional privacy-preserving mechanisms compared to Bitcoin.
-
-Zcash codebase was forked off Bitcoin core in November~2015 at version~0.11.2 (commit~7e27892).
-In 2015, Bitcoin changed the network propagation mechanism from trickling to diffusion~\cite{Wuille} (commit included in version~0.12).
-According to~\cite{Fanti2017}, this provided only marginal privacy improvements.
-Zcash did not port those modifications and still uses trickling.
-
-In October~2018, Zcash underwent an update code-named Sapling~\cite{Zcash2018}, which greatly increased performance of shielded transactions.
-This allows for shielded transactions to be supported in light wallets, including mobile ones.
-
-
-\subsection{Dash}
-
-A distinguishing feature of Dash~\cite{Dash} is a two-tier architecture.
-Along with regular nodes, users may set up so-called \textit{masternodes}, which require a 1000~DASH collateral (approximately 160\,000~USD, at the time of writing).
-The Dash network contained around 5000 masternodes in late~2018.
-Masternodes receive 45\% of the mining reward for providing additional services:
-\begin{itemize}
-	\item \textit{PrivateSend} -- a privacy-enhancing transaction type, where a random masternode deterministically chosen based on the latest block hash matches users who wish to mix their coins;
-	\item \textit{InstantSend} -- a technique to increase merchants' confidence in accepting transactions without waiting for them to be included in a block, where a random subset of ten~masternodes agrees on the "locked" set of inputs.
-\end{itemize}
-
-The Dash networking protocol is based on Bitcoin's but substantially more complex: in addition to Bitcoin message types, it contains 22~new ones related to masternode functionality.
-Dash uses the diffusion mechanism ported from Bitcoin.
-
-
-\subsection{Monero}
-
-Monero~\cite{Monero} implements the CryptoNote protocol~\cite{Saberhagen2013}.
-Monero is not based on the Bitcoin~Core codebase.
-The Monero community recognizes the threat of deanonymization through network analysis~\cite{user36432017, manontheinside2016, expez2016, Cameron2016}.
-The developers are integrating an I2P router into Monero (the Kovri project~\cite{Kovri}), but it is not yet deployed as of November~2018.
-Monero does not have any broadcast randomization such as trickling or diffusion.\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net\_node.inl\#L1515}.}%, which is called in \texttt{relay\_post\_notify} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}, which is called in \texttt{relay\_transactions} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}.}.
-Further inspection of the source code and an answer on a Monero-related Q\&A site reveals that Monero nodes do not limit the number of incoming connections by default~\cite{user363032016}.
-Monero is the only one of the three privacy-preserving currencies which is private by default: users do not have to explicitly choose the "private" option (such as a shielded address in Zcash and PrivateSend in Dash).
-In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
-
-
-
-%See Appendix \ref{appendix} for references to source code.
 
 
 \section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
@@ -455,6 +375,9 @@ We notice that relatively many servers only provide our listener with 1 -- 10 sl
 This may indicate a larger share of "protected" nodes, i.e.,~nodes which are configured (using firewalls or other network-level means) to only provide a limited number of connections to each IP.
 Note than a resourceful adversary may overcome this limitation by purchasing additional IP addresses from a cloud provider.
 
+Zcash does not provide privacy by default: zk-SNARKs are used only in transactions involving \textit{shielded} addresses~\cite{Kappos2018}.
+The majority of transactions happen between \textit{transparent} addresses and have no additional privacy-preserving mechanisms compared to Bitcoin.
+
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-Frankfurt.png}
@@ -516,6 +439,10 @@ A new output appears as "locked" until the corresponding transaction gets 10~con
 Though this is a wallet-level restriction and not a protocol-level one, the major implementations (the official desktop wallet and Monerujo wallet for Android) support it.
 This means that the scenario of our previous experiments is rather unrealistic: for example, in order to issue 20~transactions within a 20~minute period, a user must have 20~independent, "unlocked" transaction outputs (each of which takes 20~minutes to create).
 
+Further inspection of the source code and an answer on a Monero-related Q\&A site reveals that Monero nodes do not limit the number of incoming connections by default~\cite{user363032016}.
+Monero is the only one of the three privacy-preserving currencies which is private by default: users do not have to explicitly choose the "private" option (such as a shielded address in Zcash and PrivateSend in Dash).
+In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
+
 We check the suitability of our technique on Monero by performing an experiment without our own transactions.
 The goal of the experiment is to check whether we observe a block-diagonal structure of the correlation matrix between transaction propagation vectors.
 
@@ -536,16 +463,17 @@ Another peculiarity which makes our analysis more difficult is that \texttt{mone
 In our experiment, while trying to connect to 200~nodes, we got 150~connections only after approximately 2~hours, 175~connections after 3~hours, 200~connections after nearly 8~hours.
 We also notice that none of the hard-coded DNS seeds resolves (as of mid-July~2018); the client falls back to seed IP addresses (also hard-coded).
 
+
 \subsection{Results for mobile wallets}
 
 We also performed analogous experiments on selected mobile wallets.
 \footnote{Chapter~\ref{Chapter04Wallets} is dedicated to evaluating other privacy-related aspects of mobile cryptocurrency wallets.}
 
-We considered the following wallets:
-\todo[inline]{Which ones and why?}
-
-None of the P2P wallets we considered use diffusion or trickling.
-Most of them rely on the BitcoinJ library for networking.
+We considered a number of wallets for Android.
+\footnote{The full list and privacy analysis is presented in Chapter~\ref{Chapter04Wallets}.}
+Most wallets connect to the P2P network indirectly via a trusted server maintained by the wallet's developers.
+From the wallets that connect to the P2P network directly (we refer to them as P2P wallets), most rely on the BitcoinJ library for networking.
+None of them uses randomizes broadcasts with diffusion or trickling.
 Unlike Bitcoin~Core, BitcoinJ sends \texttt{TX} unconditionally\footnote{Note that in this case a full node receiving a \texttt{TX} message from an SPV node can be sure that the transaction originated at that SPV node whereas receiving an \texttt{INV} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}.
 The BitcoinJ developers acknowledge that the three-step \texttt{INV} -- \texttt{GETDATA} -- \texttt{TX} exchange in Bitcoin~Core improves privacy, but argue that since BitcoinJ is used by light nodes with a priori weaker privacy guarantees, the three-step broadcast would only decrease efficiency.
 BitcoinJ and BRD broadcast a new transaction to a subset of entry nodes and wait for the announcement from other ones, which is taken as a sign of network acceptance.
@@ -734,6 +662,21 @@ For instance, transactions issued by regular users usually contain a small numbe
 Transactions with a large number of inputs or outputs are likely to have originated from a node associated with a business (a custodial wallet, an exchange, a mining pool).
 An attacker trying to deanonymize a regular user can remove clusters with many "enterprise" transactions, making the victim's anonymity set smaller, and use known addresses of various services from sources like~\cite{Walletexplorer}.
 We leave this research direction for future work.
+
+\paragraph{Dandelion}
+
+Dandelion~\cite{Venkatakrishnan2017} and its improvement Dandelion++~\cite{Fanti2018} are message propagation protocols for P2P networks designed to prevent deanonymization attacks.
+Its key idea is introducing asymmetry: a message is first sent along a random path, and only then broadcast gossip-style.
+Message propagation in Dandelion++\footnote{We focus on the latest, improved version of the protocol.} proceeds in two stages: the "stem" phase and the "fluff" stage.
+In the stem phase, a new message is broadcast along a random path in the anonymity graph: an approximately regular random graph based on the same set of nodes as the regular P2P network.
+In the fluff phase, the latest node to receive the message disperses it using the regular gossip-style broadcast.
+The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism, though at the cost of a several second propagation delay and additional sensitivity to DoS attacks at stem phase. 
+
+Though the authors mention (Section~4.2) that some configurations of the protocol may be prone to transaction  correlation attacks, our approach is not suitable against Dandelion++.
+The key feature that allows our well-connected listening node to gather useful information is that nodes choose neighbors to propagate messages at random, without distinguishing incoming and outgoing connections.
+This means that by saturating 50\% of a node's connection slots we have a 50\% chance to be the first to receive a new transaction from it.
+In Dandelion++, nodes choose neighbors for the stem phase propagation only from outgoing connections.
+There is no obvious way to force a remote peer to initiate a connection to us, therefore a malicious node with many outgoing connections will not have any advantage in the stem phase (it can only aggregate incoming information while acting as a regular relay, which may gain some but not much insight into possible transaction clusters).
 
 
 \section{Conclusion} \label{sec:Ch03Conclusion}

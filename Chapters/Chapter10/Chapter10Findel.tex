@@ -237,23 +237,6 @@ We develop an Ethereum smart contract, referred to as marketplace, that keeps tr
 The Findel DSL is network-agnostic and can be implemented on top of any blockchain with sufficient programming capabilities.
 
 
-\subsection{Ethereum overview}
-
-Ethereum is a decentralized smart contracts platform~\cite{Buterin2014, Wood2014}.
-Ethereum full nodes store data, perform computations, and maintain consensus about the state of all accounts using a proof-of-work mechanism similar to that in Bitcoin.
-Programs (Ethereum smart contracts) are stored on the blockchain as Ethereum virtual machine (EVM) bytecode, a Turing-complete language.
-Programmers write contracts in high-level languages targeting EVM, most popular being Solidity and Serpent (we use the former).
-
-A contract can call other contracts' functions and send them units of Ether -- the Ethereum native cryptocurrency.
-To launch a particular function of a contract, a user must send a well-formed transaction to the Ethereum network.
-
-Each EVM operation has a fixed cost in \textit{gas}.
-A user pays upfront for the maximum amount of gas the computation is expected to consume and gets a partial refund after a successful execution.
-If an exception (including "out of gas") occurs, all changes are reverted, but the gas is not refunded.
-
-
-\subsection{Implementation details}
-
 \subsubsection{Users and balances}
 
 We implement the objects defined in Section~\ref{sec:Ch10FindelDefinitions} with struct data types \texttt{Description} and \texttt{Fincontract}.

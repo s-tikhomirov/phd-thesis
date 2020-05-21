@@ -11,31 +11,23 @@ Decentralized applications without a trusted third party are appealing in areas 
 Smart contracts are a challenging research topic that spans over areas ranging from cryptography, consensus algorithms, and programming languages to governance, finance, and law.
 
 This paper summarizes the state of knowledge in this field.
-We provide a technical overview of Ethereum, outline open challenges, and review proposed solutions.
-We also mention alternative smart contract blockchains.
+In this Chapter, we provide a technical overview of Ethereum, and outline some of the open challenges.
 
-\section{Introduction}
+Ethereum is a decentralized smart contracts platform~\cite{Buterin2014, Wood2014}.
+Ethereum full nodes store data, perform computations, and maintain consensus about the state of all accounts using a proof-of-work mechanism similar to that in Bitcoin.
+Programs (Ethereum smart contracts) are stored on the blockchain as Ethereum virtual machine (EVM) bytecode, a Turing-complete language.
+Programmers write contracts in high-level languages targeting EVM, most popular being Solidity and Serpent (we use the former).
 
-Bitcoin~\cite{Nakamoto2008} is the first fully decentralized digital currency introduced in 2008 and launched in 2009.
-It innovatively combines cryptographic techniques with economic incentives to make rational participants likely to play by the rules.
-Bitcoin gained significant traction, reaching \$80~billion market capitalization in September~2017.
-Hundreds of alternative cryptocurrencies based on similar general design have appeared since Bitcoin's launch.
-Programming languages in early blockchains, e.g.,~the Bitcoin scripting language, were deliberately limited to reduce complexity for the sake of security.
+A contract can call other contracts' functions and send them units of Ether -- the Ethereum native cryptocurrency.
+To launch a particular function of a contract, a user must send a well-formed transaction to the Ethereum network.
 
-Ethereum~\cite{Buterin2014, Wood2014}, announced in 2014 and launched in 2015, aims at creating a universal blockchain-based application platform.
-It incorporates a Turing complete language, making it theoretically possible to express all practical computations in \textit{smart contracts} -- pieces of code permanently stored on the blockchain and capable of responding to users' requests.
-This enhanced functionality introduces new security challenges related to language design and secure programming practices.
+Each EVM operation has a fixed cost in \textit{gas}.
+A user pays upfront for the maximum amount of gas the computation is expected to consume and gets a partial refund after a successful execution.
+If an exception (including "out of gas") occurs, all changes are reverted, but the gas is not refunded.
 
-Ethereum is not the only smart contract blockchain system~\cite{Bartoletti2017}.
-Ethereum Classic~\cite{EthereumClassic} is an alternative blockchain originating from a controversial Ethereum update.
-Rootstock~\cite{Rootstock} and Qtum~\cite{Qtum} aim at implementing smart contracts in combination with the Bitcoin blockchain.
-Chain~\cite{Chain}, Corda~\cite{Corda}, and Hyperledger~\cite{Hyperledger} propose permissioned (i.e.,~with a fixed set of approved participants) smart contract blockchains, designed to simplify transactions between corporate entities.
 
-This paper focuses on Ethereum as the most mature open blockchain with Turing complete programming capabilities.
-We summarize the state of knowledge and outline the research perspectives in this rapidly developing field.
-We assume familiarity with the basic blockchain concepts; \cite{Bonneau2015} and~\cite{Tschorsch2016} provide the necessary background.
 
-\section{Technical overview}
+\section{Ethereum technical overview}
 
 \subsection{State and accounts}
 Ethereum can be thought of as a state machine.
@@ -142,7 +134,17 @@ Note that the practical requirements regarding the disk space for an Ethereum no
 	\label{table:1}
 \end{table}
 
-\subsection{Smart contract programming}
+\subsection{Applications}
+Among many potential applications of smart contracts~\cite{McAdams2017}, crowdfunding is arguably the first widely successful one.
+The first wide-scale Ethereum-based crowdfunding project was a decentralized investment fund called The DAO, launched on 30~April~2016\footnote{In June 2016, an unknown hacker exploited a vulnerability in the DAO code and withdrew around \$50 million, leading to a controversial~\cite{ETCDeclaration} hard fork.}.
+In 2017, the amount of money collected during so-called initial coin offerings (ICO) skyrocketed, reaching \$1.8~bn~\cite{CoindeakICOTracker} and surpassing early stage venture capital funding~\cite{Sunnarborg2017}.
+ICO is usually based around a token -- a smart contract that maintains a list of users' balances and allows them to transfer tokens or buy and sell them for ether.
+Tokens are usually implemented with respect to the API defined in the ERC20 standard~\cite{Victor2019}.
+The ICO organizers often promise that the tokens will be required to use the to-be developed product or service.
+Prominent Ethereum applications include decentralized file storage~\cite{Filecoin} \cite{Sia} \cite{Storj} and computation~\cite{Golem} \cite{Sonm}, name systems~\cite{ENS}, and prediction markets~\cite{Augur} \cite{Gnosis}.
+
+
+\section{Smart contract programming}
 
 EVM bytecode is a low-level Turing complete stack-based language operating on 256-bit words designed to be simple compared to general purpose VMs like JVM, execute deterministically, and natively support cryptographic primitives~\cite{Buterin2017}.
 Developers usually write contracts in high-level languages targeting EVM, the most popular one being Solidity~\cite{Solidity17} -- a statically typed language with a Javascript-like syntax.
@@ -161,121 +163,10 @@ str = _str;
 }
 \end{lstlisting}
 
-\subsection{Applications}
-Among many potential applications of smart contracts~\cite{McAdams2017}, crowdfunding is arguably the first widely successful one.
-The first wide-scale Ethereum-based crowdfunding project was a decentralized investment fund called The DAO, launched on 30~April~2016\footnote{In June 2016, an unknown hacker exploited a vulnerability in the DAO code and withdrew around \$50 million, leading to a controversial~\cite{ETCDeclaration} hard fork.}.
-In 2017, the amount of money collected during so-called initial coin offerings (ICO) skyrocketed, reaching \$1.8~bn~\cite{CoindeakICOTracker} and surpassing early stage venture capital funding~\cite{Sunnarborg2017}.
-ICO is usually based around a token -- a smart contract that maintains a list of users' balances and allows them to transfer tokens or buy and sell them for ether.
-Tokens are usually implemented with respect to the API defined in the ERC20 standard~\cite{Victor2019}.
-The ICO organizers often promise that the tokens will be required to use the to-be developed product or service.
-Prominent Ethereum applications include decentralized file storage~\cite{Filecoin} \cite{Sia} \cite{Storj} and computation~\cite{Golem} \cite{Sonm}, name systems~\cite{ENS}, and prediction markets~\cite{Augur} \cite{Gnosis}.
-
-
-\section{Open problems}
-
-\subsection{Core protocol}
-
-\subsubsection{Cryptographic primitives}
-Ethereum uses ECDSA for signatures\footnote{See~\cite{Mayer2016} for a study of ECDSA security in Bitcoin and Ethereum.}, Keccack256 for generating unique identifiers\footnote{Though Keccak256 is the winning proposal in the SHA3 competition, it differs from the officially standardized SHA3. SHA3 in the Ethereum documentation and source code refers to Keccak256.}, and Ethash~\cite{Ethash} for proof-of-work.	
-Based on Dagger~\cite{Buterin2013} and Hashimoto~\cite{Dryja2014}, Ethash is a memory intensive, GPU-friendly and ASIC-resistant hash function\footnote{Ethash is also referred to as Dagger-Hashimoto. Official documentation~\cite{Ethash} states that Ethash "is the latest version of Dagger-Hashimoto, although it can no longer appropriately be called that since many of the original features of both algorithms have been drastically changed".}.
-
-The algorithm is composed of four steps.
-In the first step, a seed is created from the blockchain by hashing the headers of each block together with the current epoch using Keccak.
-An epoch consists of 30~thousand blocks.
-In the second step, a 16~MB pseudorandom cache is generated from the seed using a memory-hard hash function.
-In the third step, done once per epoch, a linearly growing dataset (approximately 2~GB in 2017~\cite{DAGsize}) consisting of 64~byte elements is generated from the cache using a non-cryptographic hash function Fowler-Noll-Vo~\cite{Noll2017}.
-In the fourth step, the dataset, a header, and a nonce are repeatedly hashed until the result satisfies the difficulty target.
-
-Both Dagger and Hashimoto, in contrast to standardization attempts like the SHA-3 competition~\cite{SHA3} or the Password hashing competition~\cite{PHC}, were announced shortly before the Ethereum launch and did not undergo significant cryptanalysis in the academic community.
-The Ethash design rationale~\cite{Buterin2017} lacks details on why established and well-tested memory-hard hash functions do not serve the purpose.
-\cite{Lerner2014} claims that an earlier version of Dagger (as of 2014) was flawed.
-Rigorous cryptanalysis of Ethereum's underlying cryptographic primitives is required to guarantee its long-term security.
-
-
-\subsubsection{Consensus mechanism} \label{Consensus}
-Though some argue that PoW is the only viable blockchain consensus mechanism~\cite{Andreev2014, Sztorc2015}, Ethereum is planning to switch from proof-of-work to proof-of-stake (PoS)~\cite{Hertig2017}.
-As of September~2017, the first step of a two-stage process is due October~2017, transitioning Ethereum to a hybrid PoW-PoS consensus mechanism.
-The second step will make Ethereum fully PoS.
-PoS aims to address the drawbacks of PoW:
-\begin{itemize}
-	\item energy consumption comparable to a mid-sized country as of 2017~\cite{Digiconomist17};
-	\item centralization risks: miners are incentivized to invest in specialized hardware, which pushes up the entry cost of participating and puts big miners at an advantage due to economies of scale;
-	\item game-theoretic attacks like selfish mining~\cite{Eyal2018}.
-\end{itemize}
-
-PoS can be described as "virtual mining": a miner purchases coins instead of hardware and electricity.
-The consensus mechanism distributes power proportionally to the amount of coins miners hold (\textit{stake}), not computing power (see \cite{Bentov2016} for a review of cryptocurrencies without PoW).
-Known issues with naive PoS implementations include:
-
-\begin{itemize}
-	\item \emph{Nothing-at-stake}.
-	As producing new blocks incurs only a negligible cost, a rational PoS validator extends all known chains to get a reward regardless of which one wins.
-	This opens the door to attacks that require far less than 51\% of the stake\footnote{A commonly used term "51\% attack" is not precisely correct: "51\%" here means "strictly greater than 50\%".}: the attacker's chain wins if the attacker supports it exclusively, whereas other validators behave rationally and support all chains.
-	\item \emph{Randomly choosing validators}.
-	Using randomness from the blockchain itself (i.e.,~previous block hash) to determine the next validator is insecure, as it is determined by validators in previous rounds.
-	A possible solution is to use verifiable secret sharing for randomness generation.
-	\item \emph{Transaction finality}.
-	In PoW, a block header which has a hash less than the target simultaneously represents the choice of the next validator and the very act of validating the block.
-	PoS separates choosing the next validators and producing the block.
-	A PoS validator may create its own chain, plug in a constant instead of a pseudo-random number generator (PRNG) output, and produce blocks despite owning an arbitrarily small stake.
-	
-	A rule of thumb in Bitcoin considers transactions older than six~blocks final, as the chance of a minority attacker overtaking the main chain becomes negligible.
-	By contrast, as PoS blocks cost nearly nothing to produce, an attacker can secretly create an alternative chain starting from the genesis block.
-	To prevent this, a PoS blockchain must provide finality -- i.e.,~guarantee that after a fixed number of blocks old transaction can not be reversed\footnote{Interestingly, the reference Bitcoin implementation uses checkpoints to skip validation of very old blocks for efficiency, effectively providing finality for transactions older than the latest checkpoint~\cite{BitcoinCheckpoints}.}.
-\end{itemize}
-
-The central concept of the proposed Ethereum PoS algorithm Casper~\cite{Buterin2017a} is "consensus by bet": validators bet on the future blockchain state.
-Casper addresses the nothing-at-stake problem by introducing validator punishments for incorrect behavior, e.g.,~extending multiple chains, in addition to rewards, which makes the game-theoretic analysis of the protocol more complex.
-Long range attacks are addressed with the concept of \textit{finality}.
-%Ethereum can also be used to augment existing consensus algorithm with incentive compatibility~\cite{Kothapalli17}.
-
-Recent PoS designs also include 2-hop blockchain~\cite{Chepurnoy2017}, Algorand~\cite{Chen2019}, Ouroboros~\cite{Kiayias2017}, SnowWhite~\cite{Bentov2016a}, Proof of luck~\cite{Milutinovic2016}.
-Blockchain networks Ripple~\cite{Schwartz2014} and Stellar~\cite{Mazieres2014} use consensus mechanisms inspired by Byzantine fault tolerant consensus protocols like PBFT~\cite{Castro2002}.
-Developing an efficient, secure and incentive compatible PoS algorithm is an important task in blockchain research.
-
-\subsubsection{Scalability}
-Open blockchains deliberately sacrifice performance for what a smart contracts pioneer Nick Szabo describes as \textit{social scalability}~\cite{Szabo2017} -- "the ability of an institution [...] to overcome shortcomings in human minds [...] that limit who or how many can successfully participate".
-Both Bitcoin and Ethereum have been facing scalability problems.
-Improving blockchain scalability while minimally sacrificing security is an important research direction.
-Blockchain scalability can be defined as two goals: increasing transaction throughput and decreasing the requirements on bandwidth, storage, and processing power for nodes (thus preserving decentralization).
-
-The first goal can be addressed by payment channel networks and sharding.
-A bidirectional payment channel is a protocol that lets users exchange signed transactions before publishing of them on-chain as settlement.
-A network of payment channels is a protocol that finds a sequence of payment channels across the network.
-%, a mechanism similar to the IP packet routing~\cite{McCone15}.
-Payment channel networks for Bitcoin~\cite{Poon2016} and Ethereum~\cite{RaidenWebsite} are in development.
-
-%A shard is a horizontal partition of data in a relational database.
-In open blockchains, every node is usually required to process every transaction.
-This provides strong security, but severely limits scalability.
-Sharding~\cite{Gencer2016, Luu2016a} might alleviate this problem by spreading transactions across groups of nodes (\textit{shards}), which should be large enough to provide a sufficient level of security and a significantly better throughput~\cite{ShardingFAQ}.
-
-The second goal can be addressed by skipping the validation of old blocks~\cite{Junge17} or by additionally providing new nodes with full snapshots of a previous state~\cite{ParityWarpSync}.
-
-
-\subsubsection{Privacy}
-Most open blockchains\footnote{Except those using dedicated privacy-preserving cryptographic techniques, e.g.,~Dash, Monero, Zcash.}, including Ethereum, guarantee integrity and availability, but provide little to no privacy.
-All transactions are broadcast in plaintext and can be intercepted (or later obtained from the blockchain) and analyzed.
-Deanonymization of blockchain transactions is an active business area with start-ups (e.g.,~\cite{Chainalysis}) offering blockchain analysis tools, which is in line with government demands of KYC/AML compliance for financial services.
-
-A common but only partially efficient privacy preserving practice in Bitcoin, which takes advantage of the UTXO structure of its state, is to use a new address for every transaction.
-This technique is not applicable in Ethereum, because it uses addresses for authentication and explicitly maps them to accounts states.
-For instance, if a user purchases tokens using a particular address, they have to use the same address to redeem them.
-
-An additional privacy challenge comes from the requirement to hide business logic behind smart contract code.
-Though Ethereum only stores bytecode, users are reluctant to trust contracts without published source code.
-Moreover, bytecode analysis\footnote{Decompiling bytecode to source code is hardly possible as the information about function and variable names is lost during compilation; nevertheless it is possible to display bytecode as a sequence of mnemonics or convert it into an intermediate higher-level representation suitable for analysis.} tools are already available~\cite{Norvill2017, Suiche2017}.
-Possible research directions in the privacy domain include privacy preserving smart contracts with zero-knowledge proofs~\cite{Kosba2016} (support for zero-knowledge proofs in Ethereum was first tested in September~2017~\cite{OLeary2017}), mixing, computations on encrypted data, and code obfuscation.
-
-\subsection{Smart contract programming}
-
-\subsubsection{Programming languages}
 Security is of paramount importance in smart contract programming~\cite{Atzei2017, Delmolino2016}.
 Contrary to traditional software, smart contracts can not be patched, which brings new challenges to blockchain programming~\cite{Porru2017}.
 Multiple approaches exist to contract programming~\cite{Seijas2016}.
 Areas of research in this domain include systematizing good and bad programming practices~\cite{ConsenSys16, Chen2017}, designing general-purpose~\cite{Hirai2017a, Buterin2017b, Pettersson2016} as well as domain-specific~\cite{Biryukov2017, EgelundMueller2017} smart contract programming languages, and developing tools for automated security analysis~\cite{Luu2016a, Tsankov2018} and formal verification~\cite{Bhargavan2016} of smart contract source code, EVM bytecode, and the EVM itself~\cite{Hirai2017}.
-
-\subsubsection{Secure contract programming}
 
 An important challenge is to describe smart contracts' execution model (possibly drawing parallels from concurrent programming on a multi-threaded processor~\cite{Sergey2017}) and to develop a usable and formally verifiable high-level language reflecting this model.
 Some argue that Solidity inclines programmers towards unsafe development practices~\cite{ydtm2016}.
@@ -286,52 +177,20 @@ Typical vulnerabilities and issues in Solidity might include:
 	\item \textbf{Out-of-gas exceptions}. Computation in Ethereum is many orders of magnitude more expensive than with centrally managed cloud computing services. Developers who do not take it into account may implement functions that require too much gas to fit in the block gas limit and thus always fail.
 \end{enumerate}
 
-\subsubsection{Trusted data sources}
+\subsubsection*{Trusted data sources}
 Many smart contract applications (financial derivatives, insurance, prediction markets) depend on real-world data.
 Ethereum is isolated from the broader Internet to guarantee consistent execution across nodes.
 A popular approach to providing data to contracts in a trust-minimizing way is an oracle -- a specialized data provider, possibly with a dedicated cryptographic protocol to guarantee integrity~\cite{Provable}.
 A recent development is TownCrier -- an oracle built with trusted hardware~\cite{Zhang2016}.
 
-\subsection{Higher level issues}
-\subsubsection{Governance}
-In June~2016, a massive Ethereum-based crowdfunding project -- The DAO -- ended in a disaster: an unknown hacker exploited a bug in the smart contract and obtained around \$50~million out of \$150~million collected~\cite{Sirer2016}.
-Despite the fact that the Ethereum protocol correctly executed the smart contract code, the Ethereum developers implemented a hard fork that allowed stakeholders to withdraw their deposits.
-This event raised concerns about Ethereum's governance, as the fork violated the premise of decentralized applications running "exactly as programmed" and lead to the creation of Ethereum~Classic~\cite{EthereumClassic}.
-%Ethereum Classic gradually diverged from Ethereum's development agenda, i.e.,~by limiting the issuance of its ETC tokens~\cite{EthClassicMonetary} and postponing the decision whether to change the consensus algorithm to PoS~\cite{EthClassicDiffBomb}.
-Governance mechanisms should provide certainty over how updates (potentially breaking compatibility) are introduced.
-
+\subsubsection*{Gas pricing}
 Though the gas price in ether is determined by the market, the relative gas costs of EVM bytecodes are constant.
 In September~2016, an attacker exploited a weakness in gas pricing and organized a DoS attack on the network, taking advantage of the fact that certain operations were under-priced~\cite{EIP150}.
 The problem was ultimately fixed with a hard fork.
 Research is needed to propose more flexible mechanisms for determining relative prices of EVM operations.
 
-\subsubsection{Incentives}	
-Open blockchains rely on the participants' rationality~\cite{Chen2017a} and must maintain incentive compatibility, so that rational behavior leads to the overall benefit for the network~\cite{Luu2015}.
-This introduces a new field of study dubbed \emph{cryptoeconomics} -- the study of incentives in cryptographic systems.
-The trustless nature of smart contracts might be used for benign (managing mining pools~\cite{Luu2017}) as well as for malicious (providing automatic rewards for attacking mining pools~\cite{Velner2017}) purposes.
-Rigorous research should guarantee the proper functioning of the blockchain networks and applications based on a definition of rational behavior.
-
-\subsubsection{Usability}
-Considering the influx of new people into the blockchain space, usable yet secure lightweight blockchain software is needed.
-From the human-computer interaction (HCI) perspective, a challenging task would be to help users grasp the smart contracts fundamentals without going into technicalities.
-Research shows that cryptographically sound systems may fail to gain traction due to usability issues~\cite{Ruoti2015}.
-HCI research is needed to make blockchains and smart contracts usable by general public.
-
-\subsubsection{Ethical and legal issues}
+\subsubsection*{Responsible disclosure and contract patching}
 Information security researchers usually adhere to the "responsible disclosure" policy: they report a bug privately to the vendor and give developers time to fix it before publishing the information in the open.
 Though some oppose this practice~\cite{Schneier2007}, it is assumed to decrease the probability of an attack on the live system (unless the attackers discover the same bug independently before a patch is applied).
 Ethereum introduces a new dimension to the responsible disclosure debate, as smart contracts can not be patched.
 It is unclear whether it is ethical to fully disclose a vulnerability discovered in a smart contract, if developers can not fix it anyway\footnote{A technical response to this issue could be updateable contracts: users communicate with a proxy contract, which redirects their transactions to the latest version of the main contract. Such scheme assumes that the developers are honest and competent so that the latest update does not run away with everyone's money.}.
-
-A whole separate range of topics, which is outside the scope of this paper, is how (and if at all) smart contracts fit into existing legal frameworks.
-For instance, BitLicense~\cite{BitLicense} -- a controversial~\cite{StopTheBitLicense} piece of regulation that came into force in New York in 2015 -- prompted many cryptocurrency businesses to withdraw their services from the residents of this US state~\cite{Roberts2015}.
-In July~2017, the US Securities and Exchange Commission stated that issuers of digital assets may be subject to requirements of the US law~\cite{SEC17}.
-
-
-\section{Conclusion}
-
-Ethereum is a fascinating research area at the intersection of multiple fields: cryptography and distributed systems, programming languages and formal verification, economics and game theory, human-computer interaction, finance and law.
-The promise of smart contracts is not limited to making existing processes more efficient by putting parts of their logic onto a very inefficient, yet very secure decentralized network.
-This new way of handling value without a trusted third party opens up whole new classes of previously impossible use cases.
-Thorough research is needed to realize this vision.
-

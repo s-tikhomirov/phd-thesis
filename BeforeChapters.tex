@@ -78,10 +78,23 @@
 
 \vspace*{0.2\textheight}
 
-\noindent\enquote{\itshape If you don’t believe it or don’t get it, I don’t have the time to try to convince you, sorry.}\bigbreak
+\noindent\enquote{\itshape 
+	Imagine there was a base metal as scarce as gold but with the following properties:
+	
+	- boring grey in colour
+	
+	- not a good conductor of electricity
+	
+	- not particularly strong, but not ductile or easily malleable either
+	
+	- not useful for any practical or ornamental purpose 
+	
+	and one special, magical property:
+	
+	- can be transported over a communications channel.}\bigbreak
 
 \hfill Satoshi Nakamoto
-% https://bitcointalk.org/index.php?topic=532.msg6306#msg6306
+% https://bitcointalk.org/index.php?topic=583.msg11405#msg11405
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT PAGE
@@ -91,26 +104,25 @@
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 This thesis explores various questions related to security and privacy of blockchain systems.
 
-Bitcoin~\cite{nakamoto2008bitcoin} is a breakthrough system, allowing for the first time to transfer digital units of value without any trusted party.
+Bitcoin~\cite{nakamoto2008bitcoin} has allowed for the first time to transfer digital units of value without any trusted party.
 Alternative cryptocurrencies inspired by Bitcoin aim at better addressing the issues of privacy, scalability, and feature set.
 In particular, Ethereum introduces smart contracts in a Turing complete language and a stateful virtual machine, greatly expanding the design space of blockchain application, but expanding the attack surface as well.
 
-% a part is a sequence of chapters
-The first part of the thesis explores Ethereum.
-Ethereum's expressive language, Solidity, provides lots of opportunities for developers to write insecure code.
-We propose a simpler language based on Solidity, called Findel, to encode financial agreements in a more declarative fashion.
-We study the vulnerabilities in real-world Ethereum contracts and present a tool that automates bug detection in Solidity using static analysis.
-Finally, we describe a proposal to limit the privacy-damaging effects of existing legal requirements (know-your-customer, or KYC) if a financial service is implemented on top of Ethereum.
-
-In the second part, we discuss the networking layer of Bitcoin and related cryptocurrencies.
+In Part~\ref{Part1Privacy}, we discuss the networking layer of Bitcoin and related cryptocurrencies.
 We introduce an attack on privacy that allows an adversary to correlated transactions issued by the same user.
 We test this technique on Bitcoin, as well as on the major privacy focused cryptocurrency.
 We provide a separate overview of privacy-related functionality in mobile wallets.
 
-The third part is dedicated to a promising approach at scaling blockchain, namely, off-chain protocols.
+Part~\ref{Part2Lightning} is dedicated to a promising approach at scaling blockchain, namely, off-chain protocols.
 We study the Bitcoin's Lightning Network as the most prominent example of this approach.
 We measure the potential effects of certain subset of Lightning nodes on privacy of the users.
 Finally, we introduce a probing attack that lets an adversary reveal intermediary balances of payment channels it is not a part of -- the information supposed to be private.
+
+Part~\ref{Part3Ethereum} explores Ethereum.
+Ethereum's expressive language, Solidity, provides lots of opportunities for developers to write insecure code.
+We propose a simpler language based on Solidity, called Findel, to encode financial agreements in a more declarative fashion.
+We study the vulnerabilities in real-world Ethereum contracts and present a tool that automates bug detection in Solidity using static analysis.
+Finally, we describe a proposal to limit the privacy-damaging effects of existing legal requirements (know-your-customer, or KYC) if a financial service is implemented on top of Ethereum.
 	
 \end{abstract}
 
@@ -120,18 +132,21 @@ Finally, we introduce a probing attack that lets an adversary reveal intermediar
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
+This work would not be possible without the help and support of many people.
+This is an incomplete list of people to whom I would like to express my deepest gratitude:
 \begin{itemize}
-	\item advisor
-	\item jury
-	\item coauthors
+	\item My advisor, Prof.~Alex~Biryukov, for the opportunity to freely pursue my interests and for the invaluable support and guidance throughout this journey;
+	\item the members of my thesis committee, ... for agreeing to serve as jury members;
+	\item my coauthors: ..., for 
 	\item colleagues
 	\item Uni staff, incl administrative
-	\item Luxembourg
-	\item Zcash foundation
-	\item family
+	\item Luxembourg, for excellent research conditions;
+	\item Zcash Foundation, for supporting my work with a grant;
+	\item my family, especially for encouraging me to pursue my further education abroad;
 	\item Satoshi
 \end{itemize}
 \end{acknowledgements}
+% https://github.com/ZcashFoundation/GrantProposals-2017Q4/issues/24
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -149,8 +164,14 @@ Finally, we introduce a probing attack that lets an adversary reveal intermediar
 
 \begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
 
-\textbf{PoW} & \textbf{P}roof \textbf{o}f \textbf{W}ork\\
-\textbf{LN} & \textbf{L}ightning \textbf{N}etwork\\
+\textbf{PoW} & Proof of work \\
+\textbf{PoS} & Proof of stake \\
+\textbf{LN} & Lightning Network \\
+\textbf{CPU} & Central processing unit \\
+\textbf{GPU} & Graphics processing unit \\
+\textbf{FPGA} & Field-programmable gate array \\
+\textbf{ASIC} & Application-specific integrated circuit \\
+\textbf{P2P} & Peer-to-peer \\
 
 \end{abbreviations}
 

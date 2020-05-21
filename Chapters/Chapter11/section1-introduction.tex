@@ -11,6 +11,11 @@ Miners include it in a block, permanently storing the contract at a unique block
 Users interact with the contract by broadcasting transactions with its address, the function to be called, and its arguments.
 Upon request, the contract can call other contracts and send units of \textit{ether} -- the Ethereum native cryptocurrency -- to users or other contracts.
 
+Though Ethereum only stores bytecode, users are reluctant to trust contracts without published source code.
+Decompiling bytecode to source code is hardly possible as the information about function and variable names is lost during compilation.
+Nevertheless it is possible to display bytecode as a sequence of mnemonics or convert it into an intermediate higher-level representation suitable for analysis.
+Bytecode analysis tools are available~\cite{Norvill2017, Suiche2017}.
+
 To make spamming costly, the Ethereum protocol specifies a cost (denominated in \textit{gas} units) for each EVM operation~\cite{Wood2014}.
 A user pays upfront for the expected amount of gas the computation will consume and gets a partial refund after a successful execution.
 If an exception (including ``out of gas``) occurs, all state changes are reverted, but the gas may not be refunded\footnote{Gas refunds depend on the exception type: \texttt{assert} consumes all gas, \texttt{require} does not (starting from the Byzantium release in October~2017).}.

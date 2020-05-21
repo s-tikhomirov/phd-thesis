@@ -2,7 +2,14 @@
 
 \label{Chapter08HTLClimit}
 
-We describe an inherent limitation on the number of concurrent payments Lightning channels can handle.
+In this Section, we describe an inherent limitation on the number of concurrent payments Lightning channels can handle.
+
+\footnote{These results also apply to all implementations.}
+
+Due to the size limitations on Bitcoin transactions, LN channels can handle up to a certain number of unresolved payments.
+An attacker can send payment from one node to another, blocking the capacity of channels along the route and depleting their "HTLC slots".
+This effect may be critical for micro-payment applications -- a use case LN was initially meant to solve.
+We evaluate the effect of this limitation for various payment amounts and its evolution over two years, based on LN historical data.
 
 \section{HTLC limit in the Lightning Network}
 \label{sec:attack}

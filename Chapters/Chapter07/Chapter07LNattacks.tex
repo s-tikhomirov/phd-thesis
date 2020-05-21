@@ -18,6 +18,17 @@ Our findings should prompt the LN community to consider the security, privacy an
 when educating users about path selection algorithms, as well as to adopt multi-hop payment protocols that provide stronger security, privacy and 
 scalability guarantees. 
 
+We perform a quantitative analysis of LN's resistance to three previously described attacks on privacy.
+\footnote{Our research is concerned with the definition of the LN as described in the BOLTs and thus the results apply equally to every implementation.}
+
+Privacy in payment networks is defined in terms of value privacy (the attacker does not know how much is sent) and relationship anonymity (the attacker does not know who is paying whom).
+In the LN, an additional definition is added: a wormhole attack allows an adversary to steal fees from honest intermediaries and temporarily block their funds.
+How much of a threat do these attacks present?
+This depends on a multiple factors: for an attack to be successful, a payment must pass through a path partially controlled by the attacker.
+For the three attacks, we estimate this probability based on a simulated network for an array of parameters.
+Our findings suggest that LN, as of 2019, depends on highly connected and highly capitalized nodes: in case a relatively small proportion of such nodes are compromised, the attacker succeeds with a high probability.
+
+
 \section{Datasets}
 \label{sec:datasets}
 

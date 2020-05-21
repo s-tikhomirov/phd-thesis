@@ -98,7 +98,8 @@ headsepline, % Uncomment to get a line under the header
 
 \setcounter{secnumdepth}{3} % for references to subsubsections in SmartCheck
 % use \subsubsection* to avoid 4-digit numbering elsewhere
-\setcounter{tocdepth}{2}	% but don't include subsubsections in ToC
+%\setcounter{tocdepth}{2}	% but don't include subsubsections in ToC
+\setcounter{tocdepth}{3}	% include subsubsections in ToC
 
 
 %----------------------------------------------------------------------------------------
@@ -153,22 +154,26 @@ headsepline, % Uncomment to get a line under the header
 
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the chapters
+%\include{Chapters/Chapter01/Chapter01Introduction}
+%\include{Chapters/Chapter02/Chapter02IntroP2P}
 
-%\iffalse
 \include{Chapters/Chapter01/Chapter01Introduction}
 
 \part{Network-level privacy of Bitcoin and privacy focused cryptocurrencies}
+\label{Part1Privacy}
 \include{Chapters/Chapter02/Chapter02IntroP2P}
 \include{Chapters/Chapter03/Chapter03Clustering}
 \include{Chapters/Chapter04/Chapter04Wallets}
-
+%\iffalse
 \part{Privacy of the Lightning Network}
+\label{Part2Lightning}
 \include{Chapters/Chapter05/Chapter05IntroLightning}
 \include{Chapters/Chapter06/Chapter06LNprobing}
 \include{Chapters/Chapter07/Chapter07LNattacks}
 \include{Chapters/Chapter08/Chapter08HTLClimit}
 
 \part{Security of smart contracts on Ethereum}
+\label{Part3Ethereum}
 \input{solidity-highlighting}
 \include{Chapters/Chapter09/Chapter09Introcontracts}
 \include{Chapters/Chapter10/Chapter10Findel}

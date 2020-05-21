@@ -2,6 +2,14 @@
 
 \label{Chapter04Wallets}
 
+In this Chapter, we study mobile wallets.
+
+Mobile devices have surpassed desktops by Internet traffic.
+Smartphones have become the primary computing device for many millions of people.
+The security of cryptocurrency wallets is therefore of high importance.
+We systematize various privacy-related characteristics of mobile applications that are relevant for cryptocurrency wallets, and compare a selection of $23$~wallets for Android -- the most prevalent mobile OS.
+Our results show that the majority of wallets do not follow all security and privacy guidelines.
+
 Mobile devices play an increasingly important role in the cryptocurrency ecosystem, but their privacy guarantees remain unstudied.
 
 Chapter~\ref{Chapter03Clustering} has shown the importance of properly implementing transaction propagation to protect against a global passive adversary.
@@ -38,7 +46,11 @@ SPV nodes mutt therefore ensure they are not eclipse-attacked (so that they know
 This is achieved by either connecting to a random set of nodes (bootstrapping), or to a trusted node.
 Moreover, SPV provides weaker privacy, as the full node learns which addresses belong to the SPV node.
 To mitigate this threat, \textit{Bloom filters} have been introduced to mitigate this threat, but their privacy guarantees have also been questioned~\cite{Gervais2014}.
-%SPV nodes issue queries using Bloom filters with a specified false positive rate (and zero false negatives), and discard unnecessary data client-side.
+
+Considering the influx of new people into the blockchain space, usable yet secure lightweight blockchain software is needed.
+From the human-computer interaction (HCI) perspective, a challenging task would be to help users grasp the smart contracts fundamentals without going into technicalities.
+Research shows that cryptographically sound systems may fail to gain traction due to usability issues~\cite{Ruoti2015}.
+HCI research is needed to make blockchains and smart contracts usable by general public.
 
 
 \section{Minimal privacy criteria} \label{section:Ch04Initialprivacycriteria}
@@ -443,9 +455,6 @@ The summary of the results obtained with static analysis (both FlowDroid and Sma
 	\label{tab:static-analysis}
 \end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 
 
 

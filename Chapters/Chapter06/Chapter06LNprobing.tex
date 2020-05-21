@@ -2,7 +2,21 @@
 
 \label{Chapter06LNprobing}
 
-In this Chapter, we introduce and evaluate a technique for cheaply and quickly probing private balances of channels in the Lightning network (LN).
+In this Chapter, we study the privacy of LN balances.
+We introduce and evaluate a technique for cheaply and quickly probing private balances of channels in the Lightning network (LN).
+
+
+\footnote{These results have been obtained from the live network. At the time of our experiments, the attack was relevant to all nodes regardless of the implementation. Some of the countermeasures we propose can be implemented on the protocol level, and some on the implementation level.}
+
+The LN protocol provides no way for a node to know how funds are split in remote channels.
+We ask the question: how private is this information in practice?
+As it turns our, a low-resource attacker can infer balances of most of the channels using \textit{probing}.
+Specifically, by sending an unsolicited fake payment and observing the resulting error, the attacker can infer the balances of channels along the route.
+We show that this technique scales to the whole network and allows to probe channel balances in most channels with a high precision.
+This part of our work raises a question: can we strike a better balance between balance privacy and routing efficiency?
+At the moment, LN nodes cannot use balance information for routing, which leads to failed payments, but balances are extractable by an attacker anyway.
+We propose multiple potential countermeasures, including just-in-time routing.
+Evaluating them remains an exciting avenue for future work.
 
 \section{Privacy-efficiency tradeoff}
 

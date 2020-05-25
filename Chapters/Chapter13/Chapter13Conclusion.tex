@@ -2,32 +2,6 @@
 
 \label{Chapter13Conclusion}
 
-We summarize the thesis and present an outlook into the future of blockchains, cryptocurrencies, and money in general.
+We have studies various aspects of security and privacy of various blockchain protocols and applications, in particular Bitcoin, Ethereum, and the Lightning Network.
 
-\section{Future directions}
-
-\subsection{Improving P2P privacy in cryptocurrencies}
-
-Cryptocurrency developers should introduce privacy enhancing measures at the network level, especially if the currency is meant to be privacy-preserving.
-As our results show, trickling and diffusion, as they are implemented in Bitcoin and its forks, are not sufficient.
-
-\paragraph{Better P2P propagation in Bitcon}
-As we have outlines, Dandelion~\cite{Venkatakrishnan2017, Fanti2018} may be a promising way to improve the privacy of Bitcoin and other cryptocurrencies on the networking level.
-Dandelion has already been implemented and is currently used in a privacy-focused cryptocurrency Grin.
-Its use, however, has been shown to have weaknesses.
-\todo[inline]{Discuss what Dandelion does and doesn't; ref Bogatyy's post}
-
-\subsubsection*{Improving our clustering technique}
-
-\paragraph{The applicability of the external quality metric}
-The adjusted anonymity degree, which we used as an external quality metric, has limitations.
-In particular, we didn't account for transactions from clusters which did not also contain at least one of our own transactions.
-The rationale behind this is the lack of the ground truth for two "foreign" transactions: we do not know whether they should be included in the same cluster.
-Consequently, our quality metric may poorly reflect the reality on large networks (such as the Bitcoin mainnet), where our transactions make up only a small part of the full network throughput.
-One direction of future research may be deriving an anonymity metric which works better under these circumstances.
-
-\paragraph{Direct comparison of relay randomization techniques}
-As described in Section~\ref{sec:Ch03Background}, cryptocurrencies use different relay randomization techniques aimed at improving privacy: trickling, diffusion, or no randomization.
-A natural question would be to measure the relative effectiveness of these methods.
-Unfortunately, we cannot use a direct comparison between cryptocurrencies that use diffusion and trickling to make a conclusion about relative effectiveness of these methods, as the real-world networks also differ in many other parameters (such as the number of nodes and transaction rate) that also influence the attack results.
-A possible direction for future research may be to quantify the effects of trickling and diffusion on privacy properties of a Bitcoin-like cryptocurrency with respect to our attack technique, holding all other parameters equal.
+\todo[inline]{Outline future directions and open questions}

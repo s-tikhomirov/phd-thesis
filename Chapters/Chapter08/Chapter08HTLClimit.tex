@@ -30,6 +30,8 @@ which ultimately results in a network-wide DoS attack.
 We provide estimates for the cost of such an attack, showing that it is within range for a moderately resourceful attacker. 
 We finally discuss potential countermeasures.
 
+This Chapter is based on~\cite{Tikhomirov2020a}.
+
 \subsection{Background} \label{max-htlc-background}
 
 Among other transaction validity rules, a Bitcoin transaction must be smaller than 100~KB (transaction size limit\cite{StandardTxBitcoinSE, BitcoinCoreMaxTxWeight}).\footnote{Bitcoin~Core, the reference Bitcoin implementation, defines a \textit{standard} transaction. Transaction size limit is a part of this definition. While non-standard transactions may be valid according to the consensus rules, Bitcoin~Core nodes do not propagate them. As Bitcoin~Core nodes constitute $97\%$ of the network~\cite{CoinDance}, non-standard transactions are highly unlikely to get confirmed.}

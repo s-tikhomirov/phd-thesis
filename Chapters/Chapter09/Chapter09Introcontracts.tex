@@ -2,66 +2,97 @@
 
 \label{Chapter09Introcontracts}
 
-Ethereum is a major blockchain-based platform for smart contracts -- Turing complete programs that are executed in a decentralized network and usually manipulate digital units of value.
-A peer-to-peer network of mutually distrusting nodes maintains a common view of the global state and executes code upon request.
-The stated is stored in a blockchain secured by a proof-of-work consensus mechanism similar to that in Bitcoin.
-The core value proposition of Ethereum is a full-featured programming language suitable for implementing complex business logic.
+The notion of smart contracts have been first proposed by Nick Szabo in 1997.
 
-Decentralized applications without a trusted third party are appealing in areas like crowdfunding, financial services, identity management, and gambling.
-Smart contracts are a challenging research topic that spans over areas ranging from cryptography, consensus algorithms, and programming languages to governance, finance, and law.
-
-This paper summarizes the state of knowledge in this field.
-In this Chapter, we provide a technical overview of Ethereum, and outline some of the open challenges.
+Bitcoin offered for the first time a practical system to enforce agreements without a trusted third party.
+However, Bitcoin script is deliberately limited.
 
 Ethereum is a decentralized smart contracts platform~\cite{Buterin2014, Wood2014}.
-Ethereum full nodes store data, perform computations, and maintain consensus about the state of all accounts using a proof-of-work mechanism similar to that in Bitcoin.
-Programs (Ethereum smart contracts) are stored on the blockchain as Ethereum virtual machine (EVM) bytecode, a Turing-complete language.
-Programmers write contracts in high-level languages targeting EVM, most popular being Solidity and Serpent (we use the former).
+Ethereum has been proposed as an implementation of a more complex programming environment based on the security guarantees of proof-of-work.
+Ethereum full nodes store data, perform computations, and maintain consensus about the state of all accounts.
 
-A contract can call other contracts' functions and send them units of Ether -- the Ethereum native cryptocurrency.
-To launch a particular function of a contract, a user must send a well-formed transaction to the Ethereum network.
+There is a number of key distinctions between Ethereum and Bitcoin.
 
-Each EVM operation has a fixed cost in \textit{gas}.
-A user pays upfront for the maximum amount of gas the computation is expected to consume and gets a partial refund after a successful execution.
-If an exception (including "out of gas") occurs, all changes are reverted, but the gas is not refunded.
+First, Ethereum provides a richer programming environment.
+An Ethereum nodes incorporates an instance of the \textit{Ethereum virtual machine} (EVM).
+Developers write programs (smart contracts) in high-level languages that compile to EVM bytecode.
+At publishing, each contracts is stored at a unique address.
+In can be \textit{called} by users (using transactions) or by other contracts.
+(The first contract in the call chain must be called with a transaction.)
+
+Second, Ethereum is \textit{stateful}.
+Ethereum nodes maintain consensus on the state of all accounts.
+Each account can store units of the native crypto and, optionally, code and \textit{data} of a contract.
+The code can react to transactions by sending ether or modifying the state (assigning new values to variables.)
+
+Third, Ethereum implements an account-based model, as opposed to Bitcoin's UTXO-based one.
+In Ethereum, balances are explicitly stored.
+In Bitcoin, balances are calculated by wallet software by summing up all known UTXO values that are controlled by known private keys.
+
+The richer programming capabilities  of Ethereum has benefits and drawbacks.
+On the one hand, it enables applications that are difficult if not impossible to implement using Bitcoin.
+(See \missing{Patrick paper} that compares the complexity of fair dice roll implementation in the two systems.)
+This has fueled the crowdfunding (ICO) boom of~2017.
+On the other hand, complexity has security implications.
+A rich programming environment leaves more possibilities for programmers to make mistakes which are hard to fix.
+
+This Part explores the security and privacy of Ethereum.
+In this introductory Chapter, we give a technical overview of Ethereum and smart contract programming.
 
 
 
 \section{Ethereum technical overview}
 
+On a high level, the architecture of Ethereum is similar to that Bitcoin.
+Mutually untrusted parties maintain consensus on a shared state using proof-of-work.
+The integrity of the system is enabled by economic incentives.
+
+Ethereum aims at not only encoding relatively simple value transfer, but more complex functionality.
+Therefore, many implementation decisions have been made differently from Bitcoin.
+
+
 \subsection{State and accounts}
+
 Ethereum can be thought of as a state machine.
 Nodes of the Ethereum peer-to-peer network maintain a shared view of the global state.
-A user interacts with the network by issuing a transaction representing a valid state transition.
-Nodes pick transactions from the \emph{mempool} (the set of unconfirmed transactions), verify their validity, perform the corresponding computation (possibly changing ownership of units of the Ethereum native cryptocurrency \emph{ether}), and update the state.
-There are two types of accounts in Ethereum: \emph{externally owned accounts} and \emph{contract accounts} controlled by a private key or by a smart contract -- a piece of code deployed on the blockchain -- respectively.
+The state is a key-value mapping.
+The key is an account address.
+The value is the account \textit{state}.
 
-The account state consists of the following fields:
-\begin{itemize}
-	\item \emph{nonce} -- the number of transactions sent by this account (for externally controlled accounts) or the number of contract creations made by this account (for contract accounts);
-	\item \emph{balance} -- the number of \emph{wei}\footnote{Smallest denomination of ether: 1~ether = $10^{18}$~wei.} owned by this account;
-	\item \emph{storageRoot} -- Merkle Patricia tree root of this account's storage;
-	\item \emph{codeHash} -- hash of this account's contract bytecode.
-\end{itemize}
+There are two types of accounts in Ethereum.
+The state of an account depends on its type.
 
-Accounts' 160-bit addresses\footnote{Addresses are usually written in hex with a \texttt{0x} prefix.} are derived from its public key or, in case of contract accounts, from the address of the contract's creator and its nonce~\cite{EthereumSE16}.
-The global state maps addresses to account states.
-The primary data structure in Ethereum is the Merkle Patricia tree -- a radix tree optimized for key-value mappings with 256 bit keys~\cite{MPTSpec, Buchman14}.
-The root hash authenticates the whole data structure.
-Values pairs are editable in logarithmic time.
+\emph{Externally owned accounts} are controlled by a private key or by a smart contract.
+\emph{Contract accounts} are controlled by a smart contract -- a piece of EVM bytecode.
 
-The Ethereum state model (accounts and states) differs from than in Bitcoin.
-The Bitcoin blockchain stores unspent transaction output (UTXO); balances of addresses are calculated off-chain by wallet software.
+Each account independent of its type has a \textit{nonce} and a \textit{balance}.
+The \emph{nonce} stores the number of transactions sent by this account (for externally controlled accounts) or the number of contract creations made by this account (for contract accounts).
+The \emph{balance} reflects the value the account owned in the Ethereum's native currency unit -- \textit{ether}.
+Internally, balances are expressed in \emph{wei} -- the smallest denomination of ether.
+1~ether = $10^{18}$~wei.
+
+Contract accounts, in addition to nonce and balance, have \textit{code} (EVM bytecode) and \textit{storage} (a mapping of variable names to their current values).
+Variables can be modified (if allowed by the code, but the code itself cannot.
+Internally, data is stored in Merkle Patricia trees.
+A Merkle Patricia tree is a radix tree optimized for key-value mappings with $256$-bit keys~\cite{MPTSpec, Buchman14}.
 
 
 \subsection{Transactions and gas}
 
-The halting problem -- determining if a given program will ever halt -- is unsolvable in the general case~\cite{Church1936}.
-This poses a challenge: nodes running the Ethereum virtual machine (EVM) cannot foresee the amount of resources required for validating a transaction, which enables denial-of-service attacks.
+Ethereum users modify state by issuing transactions.
+Each transaction represents a state transition.
+Nodes validate and propagate transactions.
+Miners validate and execute transactions, deriving the new global state.
+They then perform proof-of-work based on the new state.
 
-To overcome the issue, the Ethereum protocol incorporates a pricing mechanism.
-It makes resource-intensive computations in smart contracts economically infeasible.
+Ethereum contracts are written in a Turing complete language.
+This means that in the general case it is impossible to determine whether a program would halt~\cite{Church1936}.
+This allows for denial-of-service attacks.
+An adversary could force miners to execute computationally demanding calculations.
+
+To prevent resource abuse, the Ethereum protocol incorporates a pricing mechanism.
 Every computational step in EVM is priced in units of \emph{gas}.
+It makes resource-intensive computations in smart contracts economically infeasible.
 EVM opcodes and their gas costs are defined in the Yellow paper~\cite{Wood2014}.
 The price of a gas unit in ether is determined by the market.
 For every transaction, the sender specifies the maximum amount of gas that the intended computation is expected to consume (the \emph{gas limit}) and the price the user wishes to pay per unit of gas (the \emph{gas price}).
@@ -83,65 +114,64 @@ It consists of the following fields:
 \end{itemize}
 
 There are two types of transactions in Ethereum.
-A \emph{contract creation transaction} is used to deploy a new contract.
-It contains an additional \emph{init} field that specifies the EVM code to be run on contract creation, as well as the EVM code of the new contract.
-A a \emph{message call transaction} is used to execute a function of an existing contract (with arguments specified by the an optional \emph{data} field) or to transfer ether.
+A \emph{message call transaction} executes a function of an existing contract or transfers ether.
+It contains the arguments for the function call in an optional \emph{data} field.
+A \emph{contract creation transaction} deploys a new contract.
+It specifies the EVM bytecode of the new contract and the EVM code to be run once on contract creation.
 
 
 \subsection{Block structure and mining}
-Ethereum uses proof-of-work (PoW): nodes compete to find a partial collision of a cryptographic hash function and produce the next block\footnote{See~\cite{atomh33ls16} for a visual interpretation of the block structure in Ethereum.}.
-Both Bitcoin~\cite{Wuille2017} and Ethereum~\cite{Johnson2017} chose the \textit{heaviest} chain as a valid one in case of forks, where a chain's \textit{weight} is defined as the sum of its blocks' difficulties.
 
-Good connectivity is crucial for Bitcoin mining operation: the resources spent mining on a block other than the latest one are essentially wasted.
-Good connectivity puts big pools at an advantage, while blocks from worse connected miners propagate slowly and increase the orphan rate.
-Thus Bitcoin mining is prone to centralization.
-To be able to operate with block times much shorter than Bitcoin's 10~minutes (about 30~seconds in September~2017), Ethereum uses a mining protocol~\cite{EthdocsMining} similar to GHOST~\cite{Sompolinsky2013}.
-Ethereum considers \emph{uncles} -- valid orphan blocks that are ancestors of the current block (no more than 6~generations deep).
-For each block, the miner receives a static reward of 5~ether, payments for the gas consumed by transactions in the block, and $1/32$ of the static reward ($0.15625$~ether) per uncle, whose hash is included in the block header (no more than 2~uncles per block).
-Miners of uncles whose headers get included in the main chain receive $7/8$ of the static reward ($4.375$~ether).
-Due to uncles, the energy spent on orphan blocks contributes to security, increasing the amount of work required for a double-spend.
+Ethereum aims to substantially decrease time between blocks compared to Bitcoin.
+Bitcoin blocks appear every $10$~minutes on average.
+Ethereum generates blocks every $15$~seconds.
+Without additional measures, such a short block interval would lead to a high orphan rate and wasted hash power.
 
-Contrary to Bitcoin, where coins are issued on a diminishing rate with a total cap of 21~million, Ethereum issues ethers at a constant rate with no total cap.
-Ethereum's issuance parameters may change after switching to proof-of-stake (see Section~\ref{Consensus}).
+Consider a block A with two child blocks B and B'.
+Let us assume that the next block C is build on top of B.
+In a simple protocol, the hash power spent on B' is wasted.
+In a double-spend attack, the attacker would only have to re-generate the proof-of-work for A and B, while honest miners have spent their hash power to generate A, B, and B'.
+The energy spent on orphan blocks does not contribute to security, decreasing the amount of work required for a double-spend.
+This gives the attacker an advantage.
+The shorter is the time between blocks, the more likely are accidental forks, which exacerbates the problem.
 
-Bitcoin PoW uses a general purpose cryptographic hash function SHA-256, which can be efficiently implemented in hardware.
-Specialized mining equipment (application-specific integrated circuits, ASIC) is orders of magnitude more efficient than commodity hardware, which puts small miners at a disadvantage.
-Ethereum uses a memory hard hash function Ethash and targets GPUs as the primary mining equipment.
-It helps prevent mining centralization akin to Bitcoin's and throttles CPU mining (botnets or cloud VM instances can be rented for a short time to perform an attack).
-%In mid~2017, due to increased demand for high-end GPUs for mining, major GPU producers introduced specialized mining GPUs~\cite{Haig17}.
+Therefore, Ethereum uses a modification of GHOST~\cite{Sompolinsky2013, EthdocsMining}.
+GHOST is a blockchain protocol that accounts for the weight of valid but orphaned blocks when evaluating which chain is the heaviest~\cite{Wuille2017, Johnson2017}.
+In the previous example, the miner of block C may include the hash of B' into C and get an additional reward.
+The difficulty of B' would therefore count towards the weight of the branch A-B-C.
 
-Table~\ref{table:1} compares some properties of Bitcoin and Ethereum.
-Note that the practical requirements regarding the disk space for an Ethereum node can be greatly reduced due to the explicit storage of account balances and data as opposed to Bitcoin's UTXO~\cite{EthereumSEDiskSpace}.
+The block B' is refereed to as an \textit{uncle} block.
+More formally, an uncle is a valid orphan blocks that is an ancestor of the current block.
+Miners include hashed of uncles in block headers to receive additional reward.
+Ethereum rewards uncles no more than 6~generations deep.
+No more than $2$~uncles per block are allowed.
+Miners of uncles whose headers get included in the main chain also receive additional reward.
 
-\begin{table}[ht]
-	\centering
-	\begin{tabular}{|p{0.40\linewidth}|p{0.30\linewidth}|p{0.30\linewidth}|}
-		\hline
-		\textbf{Metric} & \textbf{Bitcoin} & \textbf{Ethereum} \\
-		\hline\hline
-		Number of nodes & 9428 & 22007 \\
-		\hline
-		Blockchain size & 158~GB & 52~GB \\
-		\hline
-		Transactions per hour & 8509 & 12406 \\ 
-		\hline
-		Market capitalization (\$~million) & 62812 & 27200 \\
-		\hline
-		Daily trading volume (\$~million) & 997 & 420 \\
-		\hline
-	\end{tabular}
-	\caption{Bitcoin and Ethereum, September~2017~\cite{Etherchain17, Bitnodes17, Ethernodes17, Bitinfocharts17, Coinmarketcap17}}
-	\label{table:1}
-\end{table}
+Initially, Ethereum issued $5$~ether per block.
+The issuance rate has been lowered to $3$~ether per block in 2017, and to $2$~ether per block in 2019.
+Contrary to Bitcoin, Ethereum issuance rate is not hard-coded into the protocol~\cite{Ethhub2020}.
+Changes in issuance are decided in an informal governance process and implemented by the core developers.
+
+Ethereum uses a memory-hard hash function Ethash for PoW.
+GPUs are a popular mining equipment, though ASICs have also been introduced.
+%See~\cite{atomh33ls16} for a visual interpretation of the block structure in Ethereum.
+
 
 \subsection{Applications}
-Among many potential applications of smart contracts~\cite{McAdams2017}, crowdfunding is arguably the first widely successful one.
-The first wide-scale Ethereum-based crowdfunding project was a decentralized investment fund called The DAO, launched on 30~April~2016\footnote{In June 2016, an unknown hacker exploited a vulnerability in the DAO code and withdrew around \$50 million, leading to a controversial~\cite{ETCDeclaration} hard fork.}.
+
+Crowdfunding is arguably the first popular applications of smart contracts~\cite{McAdams2017}.
 In 2017, the amount of money collected during so-called initial coin offerings (ICO) skyrocketed, reaching \$1.8~bn~\cite{CoindeakICOTracker} and surpassing early stage venture capital funding~\cite{Sunnarborg2017}.
 ICO is usually based around a token -- a smart contract that maintains a list of users' balances and allows them to transfer tokens or buy and sell them for ether.
 Tokens are usually implemented with respect to the API defined in the ERC20 standard~\cite{Victor2019}.
 The ICO organizers often promise that the tokens will be required to use the to-be developed product or service.
-Prominent Ethereum applications include decentralized file storage~\cite{Filecoin} \cite{Sia} \cite{Storj} and computation~\cite{Golem} \cite{Sonm}, name systems~\cite{ENS}, and prediction markets~\cite{Augur} \cite{Gnosis}.
+While many ICOs were dubious projects or outright scams, Ethereum proved to be a useful tool for global crowdfunding.
+
+In 2019, a new are of smart contract application appeared under the name of \textit{decentralized finance}, or \textit{DeFi}.
+DeFi projects aim to implement building blocks of traditional finance, such as loans, on Ethereum.
+The basic building block for DeFi is a \textit{stablecoin} -- a token with the value linked to the US~dollar.
+A prominent stablecoin project is MakerDAO.
+
+Other potential applications of Ethereum include decentralized file storage~\cite{Storj} and computation~\cite{Golem}, name systems~\cite{ENS}, and prediction markets~\cite{Augur, Gnosis}.
 
 
 \section{Smart contract programming}

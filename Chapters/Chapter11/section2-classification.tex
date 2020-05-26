@@ -66,6 +66,9 @@ This rule contains multiple patterns:
 The recommended way to perform ether payments is \texttt{addr.transfer(x)}, which automatically throws an exception if the transfer is unsuccessful, preventing the problem described in Section~\ref{SolidityUncheckedCall}.
 The pattern detects the \texttt{send} keyword.
 
+\paragraph{2020 update}
+As of 2020, the best practice is that \texttt{send} is preferred to \texttt{call} and \texttt{transfer} (see comment in~\ref{SolidityCallValue}).
+
 %% SOLIDITY_REENTRANCY_EXTERNAL_CALL
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityReentrancyExternalCall:name \let\letcs\etoolboxletcs} \label{SolidityReentrancyExternalCall}
 
@@ -152,6 +155,15 @@ Solidity provides many ways to transfer ether (see Section~\ref{SoliditySend}).
 The recommended way to transfer ether is \texttt{addr.transfer(x)}, which only provides the callee with a ``stipend`` of 2300 gas.
 The pattern detects functions whose name is \texttt{call.value} and whose argument list is empty.
 
+\paragraph{2020 update}
+In 2019, Ethereum underwent the Istanbul upgrade.
+Among other modifications, gas prices for some operations were increased~\cite{EIP1884}.
+As a result, the call subsidy of $2300$ gas is often not sufficient to handle the call.
+Therefore it is recommended to forward more than $2300$ gas (probably all available gas) when calling external contracts.
+In the light of this pattern, \texttt{transfer} is no longer preferred over \texttt{send}.
+Both these commands are considered undesirable.
+The preferred way to interact with external contracts is \texttt{call}.
+
 
 \subsection{Functional issues}
 
@@ -168,6 +180,13 @@ The pattern detects division (\texttt{/}) where the the numerator and the denomi
 
 Contracts programmed to receive ether should implement a way to withdraw it, i.e.,~call \texttt{transfer} (recommended), \texttt{send}, or \texttt{call.value} at least once.
 The patterns detects contracts that contain a \texttt{payable} function but contain neither of the withdraw-enabling functions mentioned above.
+
+\paragraph{2020 update}
+In Solidity 0.5.0, the address type has been split into \texttt{address} and \texttt{address payable}~\cite{Solidity050}.
+Ether can only be sent to \texttt{address payable}.
+A contract developer is thus forced to consider where money can be sent from their contract.
+However, the issue captured in this pattern persists on the receiving side.
+It is still possible to write a contract that receives money but cannot send it elsewhere.
 
 %% SOLIDITY_UNCHECKED_MATH
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedMath:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedMath}
@@ -190,9 +209,13 @@ Consider a lottery that distributes prizes depending on whether \texttt{now} (al
 \end{lstlisting}
 
 A miner can tweak the timestamp and gain unfair advantage.
-Use block numbers and average time between blocks to estimate the current time.
+%Use block numbers and average time between blocks to estimate the current time.
 Use secure sources of randomness, such as RANDAO~\cite{RANDAO2017}.
 The pattern detects the environmental variable \texttt{now}.
+
+\paragraph{2020 update}
+Implicit type inference from \texttt{var} was deprecated in Solidity 0.5.0~\cite{Solidity050}.
+The pattern no longer applies.
 
 %% SOLIDITY_VAR
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityVar:name \let\letcs\etoolboxletcs} \label{SolidityVar}
@@ -281,6 +304,10 @@ Contrary to a popular misconception, the \texttt{private} modifier does not make
 Miners have access to all contracts' code and data.
 Developers must account for the lack of privacy in Ethereum.
 The pattern detects state variable declarations with a  \texttt{private} modifier.
+
+\paragraph{2020 update}
+Since Solidity 0.5.0, a visibility modifier is mandatory for all functions~\cite{Solidity050}.
+The pattern no longer applies.
 
 %% SOLIDITY_REDUNDANT_FALLBACK_REJECT
 \subsubsection{\usevalue SolidityRedundantFallbackReject:name } \label{SolidityRedundantFallbackReject}

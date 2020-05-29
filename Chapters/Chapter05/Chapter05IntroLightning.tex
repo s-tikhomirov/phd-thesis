@@ -32,6 +32,8 @@ If the two parties disagree on which of the signed transaction should be confirm
 Miners do not get punished even if they deliberately confirm a transaction with a lower sequence number, possibly as a result of a collusion with one of the channel parties.
 They even have a degree of plausible deniability: they may claim that they simply have not heard of the later transaction versions, which may happen without malicious intent due to P2P propagation delay.
 
+See~\cite{McCorry2016} for an overview of Bitcoin payment channel network designs.
+
 
 \subsection{Unidirectional channels}
 
@@ -70,22 +72,11 @@ With timelocks, it is possible to implement bidirectional channels.
 In a series of off-chain transactions, each transaction must be time-locked to a point closer to the present than the previous one by a safety margin.
 The drawbacks of this construction are limited channel lifetime (determined by the timelock of the initial transaction) and the limited total number of potential updates (determined by the total channel lifetime and the safety margin between timelocks).
 
-Duplex micropayment channels, proposed by Decker and Wattenhofer~\cite{Decker2015}, combine replace-by-timelock and replace-by-incentive to implement bidirectional channels as a pair of unidirectional channels.
-The key concept of DMC is \textit{invalidation tree} -- a hierarchical transaction structure that allow for invalidation of old channel states.
-
-\todo[inline]{edit}
-Duplex micropayment channels~\cite{DBLP:conf/sss/DeckerW15} propose an alternative design.
-They use pairs of simple unidirectional channels to form a bidirectional channel.
-The challenge is to provably invalidate old channel states (the problem that the Lightning design solves through BRTs).
-Duplex uses another construction -- the invalidation tree.
-The key observation is that for a chain of linked transaction the timelock of the first one defines the validity of the whole chain.
-For instance, if ten transaction are chained, and the first one has nLockTime of t 0 , the whole chain is invalid before t 0 .
-Parties of a duplex channel create a chain of transactions before instantiating a pair of unidirectional channels. If one of the channels runs out of funds, the parties may wish to atomically instantiate a new pair of channels while preserving the balances.
-They can do so by invalidating the previous transaction chain: they co-sign an alternative transaction spending the same initial output, but with a smaller absolute timelock (nLockTime).
-The benefit of the Duplex design is the simplicity of a single channel (just a pair of bi-directional channels) and the fact that parties do not have to store significant amounts of data for invalidating fraudulent transactions (Duplex channels can be closed out by just broadcasting the latest state).
-Moreover, the parties do not have to be on-line and monitor the blockchain for potential fraud attempts.
-The drawback is that the invalidation tree requires parties to produce relatively many signatures.
-A follow-up paper~\cite{DBLP:conf/sss/BurchertDW17} describes a way to share the cost of opening and closing channels among multiple parties while trustlessly re-distributing funds between channels of the same party if required.
+Duplex micropayment channels~\cite{Decker2015} (DMC) implement bidirectional channels as a pair of unidirectional channels.
+DMC combines replace-by-timelock and replace-by-incentive.
+The key concept of DMC is \textit{invalidation tree} -- a hierarchical transaction structure that allows for invalidation of old channel states.
+Invalidation tree is based on the fact that the timelock of the first transaction in a chain defines the validity of all subsequent transactions.
+A follow-up paper~\cite{Burchert2017} describes a way to share the cost of opening and closing channels among multiple parties.
 
 
 \subsection{Poon-Dryja channels (Lightning)}
@@ -97,9 +88,7 @@ LN channels are \textit{bidirectional} and have an \textit{unlimited lifetime}.
 The key insight in Lightning is its \textit{revocation mechanism}.
 The transactions reflecting channel states are constructed in such a way that each next update \textit{invalidates} the previous one.
 Despite the fact that all intermediate states are valid Bitcoin transactions (and can be broadcast and confirmed on the blockchain), broadcasting any state except the latest one by one party allows the other party to withdraw \textit{all} funds from the channel, punishing the cheater.
-We will describe the Lightning protocol in more detail later.
-
-\todo[inline]{Mention milestones of LN development?}
+We will describe the Lightning protocol in more detail in Section~\ref{sec:LightningOverview}.
 
 The development of the LN is guided by a set of request for comments (RFC) documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, 
 which are then followed by several implementation teams.
@@ -107,12 +96,9 @@ The three most advanced implementations available in 2020 are LND~\cite{LND} (im
 Other implementations at earlier stages of development include
 Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
 
+As of 2020,~LN is being used in production but is still under heavy development.
 As of April~2020, LN facilitates the off-chain exchange of more than $950$~BTC.
 Lightning Network also operates with Litecoin~\cite{1MLLitecoin} -- an alternative cryptocurrency very similar to Bitcoin.
-
-\subsubsection*{Future of Lightning}
-
-As of 2020,~LN is being used in production but is still under heavy development.
 Some of the ideas to improve LN depend on modifications in the Bitcoin protocol, which usually take a long time to implement, test, and roll out.
 
 \paragraph{Schnorr-Taproot}
@@ -139,6 +125,7 @@ A payment channel protocol called Bolt\footnote{Not to be confused with Basics o
 
 
 \section{Lightning network overview}
+\label{sec:LightningOverview}
 
 We now describe the key details of the Lightning Network architecture.
 
@@ -299,53 +286,3 @@ The sender would presumably try to send the payment again along a new route with
 This procedure repeats multiple times until a payment succeeds.
 Optimizing path finding for payment channel networks is an active area of research~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
 
-
-\section{Open problems for the Lightning Network}
-
-
-\todo[inline]{Edit}
-
-
-There are multiple issues with the current Lightning network.
-
-\begin{itemize}
-    \item routing (solutions: Ant routing https://arxiv.org/abs/1807.00151 (presented at Building on Bitcoin, August 2018; seems to scale badly - gossip; SpeedyMurmurs https://arxiv.org/abs/1709.05748)
-    \item incoming capacity: may be able to send up to \$5 and receive up to \$10 - breaks user's mental model?
-    \item the requirement of being online: must exchange revocations, create new secret random number
-    \item watchtowers: punishing cheaters can be outsourced, how trustless is that? Encryption: towers don't know what they are watching (implemented?)
-    \item the requirement of connecting to a full node (possible solution: Neutrino?)
-    \item requirements for L1 capacity for opening and closing channels (optimist's view: channels don't need to be closed; solutions: channel factories)
-    \item fee estimation. impossible to reliably do, number 1 reason for premature channel closure (source: Ln story talk by Fabrice Drouin at Building on Bitcoin 2018). solution: eltoo https://blockstream.com/2018/04/30/eltoo-next-lightning/
-\end{itemize}
-
-\subsection{Privacy}
-
-There are substantial differences in the privacy models of first- and second-layer blockchain protocols.
-In contrast to Bitcoin transactions, which are openly broadcast, LN payments are only sent to a short chain of randomly chosen nodes.
-Due to onion routing, each intermediary node only knows the previous and the next hops, but not the whole route and even not its position in the route.
-This leads to an assumption that Lightning provides more privacy than Bitcoin.
-
-
-\section{Alternative PCN designs}
-
-\todo{inline}[merge with evolution of channels (above)?]
-\todo{inline}[understand differences or shorten]
-Apart from Lightning, there are other second layer protocols have been proposed.
-
-\cite{DBLP:journals/iacr/McCorryMSH16} classifies payment channel designs and compares Lightning with Duplex.
-Duplex is now (2019) considered obsolete (source: Christian Decker, multiple talks).
-
-Raiden network~\cite{Raiden} ports the ideas of Lightning to Ethereum.
-It is suited for both ether and ERC20 tokens.
-$\mu$Raiden (mirco-Raiden) is an implementation of simple unidirectional payment channels on Ethereum.
-
-Sprites~\cite{DBLP:journals/corr/MillerBKM17} is a design of state channels (generalization of payment channels) that takes advantage of the Ethereum’s statefulness.
-It eases the requirements of funds lock-up in payment channel networks from linear in the length of the path to constant.
-The Sprites design includes a dedicated smart contract called the Preimage Manager (PM), which records assertions of the form "the preimage x of hash h = H(x) was published on the blockchain before time t".
-The paper also provides a formal definition of state channels and related terms in the Universal Composability (UC) framework and compares existing payment / state channel proposals (Lightning vs Duplex vs Raiden vs Sprites).
-
-Perun~\cite{DBLP:journals/iacr/DziembowskiEFM17} is yet another payment channel network proposal: it defines state channels for Ethereum or any blockchain with Turing complete programming language and introduces the so-called virtual channels.
-
-\cite{DBLP:journals/iacr/MalavoltaMKMR17} defined challenges in payment channel design in terms of concurrency and privacy and proposes two designs -- Fugor and Rayo -- with different approaches to the liveness vs privacy trade-off.
-
-Liquidity network~\cite{Liquidity} proposes a payment channel design based on a semi-trusted operator: users regularity receive Merkle proofs that their balances are correctly accounted for, and are able to withdraw their money as per the last valid checkpoint in case of fraud.

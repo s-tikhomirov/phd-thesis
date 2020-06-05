@@ -217,12 +217,19 @@ Other popular DeFi projects, as of 2020, include Uniswap (a decentralized exchan
 Potential applications of Ethereum also include decentralized file storage~\cite{Storj} and computation~\cite{Golem}, name systems~\cite{ENS}, and prediction markets~\cite{Augur, Gnosis}.
 
 
-
 \section{Challenges for smart contract security}
 
-Smart contracts aim to formalize agreements in way that eliminates ambiguity.
-Therefore, security is paramount for smart contracts~\cite{Atzei2017, Delmolino2016}.
-Let us list some of the most pressing security challenges in smart contract development.
+In 2016, a high-profile Ethereum contract called \textit{The DAO} was broken into~\cite{Sirer2016}.
+An unknown hacker appropriated around $40$~million~USD worth of ether.
+Ethereum developers proposed a non backwards-compatible protocol upgrade to return the funds.
+This was a controversial move, because the EVM behaved correctly.
+It was the faulty contract code that caused the calamity.
+Most community members accepted the proposal.
+A dissident minority continued to support the original chain (Ethereum~Classic~\cite{EthereumClassic}).
+
+\textit{The DAO} incident showed the importance of secure smart contract development.
+Let us list some of the most pressing security challenges in this area.
+We refer the reader to~\cite{Delmolino2016, Atzei2017} for an overview of attacks on smart contracts.
 
 \subsection{Smart contract semantics}
 Smart contracts must precisely reflect the intent of the developers.

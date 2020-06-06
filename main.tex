@@ -84,6 +84,8 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{syntax}
 \usepackage{algorithm2e}
 
+\usepackage{epigraph}
+
 %\usepackage{underscore}
 \usepackage{hyperref} % as per its manual, must be added last
 
@@ -153,9 +155,8 @@ headsepline, % Uncomment to get a line under the header
 \pagestyle{thesis} % Return the page headers back to the "thesis" style
 
 % Include the chapters of the thesis as separate files from the Chapters folder
-% Uncomment the lines as you write the chapters
-%\include{Chapters/Chapter01/Chapter01Introduction}
-%\include{Chapters/Chapter02/Chapter02IntroP2P}
+% Uncomment the lines as you write the 	chapters
+
 
 \include{Chapters/Chapter01/Chapter01Introduction}
 
@@ -164,7 +165,7 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter02/Chapter02IntroP2P}
 \include{Chapters/Chapter03/Chapter03Clustering}
 \include{Chapters/Chapter04/Chapter04Wallets}
-%\iffalse
+
 \part{Privacy of the Lightning Network}
 \label{Part2Lightning}
 \include{Chapters/Chapter05/Chapter05IntroLightning}
@@ -180,9 +181,9 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter11/Chapter11SmartCheck}
 \include{Chapters/Chapter12/Chapter12KYC}
 
-\bookmarksetupnext{level=chapter}
-\include{Chapters/Chapter13/Chapter13Conclusion}
-%\fi
+%\bookmarksetupnext{level=chapter}
+%\include{Chapters/Chapter13/Chapter13Conclusion}
+
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
 %----------------------------------------------------------------------------------------
@@ -202,6 +203,8 @@ headsepline, % Uncomment to get a line under the header
 
 \printbibliography[heading=bibintoc]
 
+\setcounter{secnumdepth}{-1}
+\input{ListOfPublications}
 %----------------------------------------------------------------------------------------
 
 \end{document}  

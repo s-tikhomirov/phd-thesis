@@ -92,7 +92,7 @@ For amounts between $D$ and $2677$ satoshis, the limiting factor is the HTLC lim
 %For transactions with higher value than $2677$~satoshis LN is limited by capacity, 
 %and for transactions of lower value the restriction on the number of in-flight HTLCs is the limiting factor.
 
-\begin{figure}
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=\columnwidth]{effective-channel-updates}
 	\caption{Ratio between the current limit on concurrent channel updates and the theoretically possible 
@@ -115,7 +115,7 @@ we consider a channel \textit{affected} by the HTLC limit if $u_{\textit{HTLC},a
 %$88.0\%$ of channels are affected with $a_\textit{avg}=100$, and $44.72\%$ are affected for $a_\textit{avg}=1000$.
 %Drops on the graph correspond to popular channel capacities (?).
 
-\begin{figure}
+\begin{figure}[tb]
 	\centering
 	\includegraphics[width=\columnwidth]{affected-channels}
 	\caption{Share of channels affected by the HTLC limit for different transaction amounts. \label{fig:affected-channels}}

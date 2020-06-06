@@ -269,7 +269,7 @@ The experiments on the Bitcoin mainnet deliberately did not attempt to occupy al
 	\centering
 	\begin{tabular}{ | l | l | c | c | c | c | c | }
 		\hline
-		Network & Listener location & Anon. degree & Servers & Avg free slots & Tx INVs & ADDRs \\
+		Network & Listener & Anon. deg. & Servers & Avg free slots & Tx INVs & ADDRs \\
 		\hline
 		Bitcoin test & California & 0.83 & 1141 & 64 & 139 & 402 \\
 		Bitcoin test & Tokyo & 0.80 & 1128 & 64 & 193 & 414 \\
@@ -358,12 +358,20 @@ For Bitcoin mainnet, we performed one experiment with a listener located in Fran
 An experiment on Bitcoin mainnet showed that transactions also exhibit the "clustering" behavior, though the results are weaker because of a much larger transaction rate and due to the fact that we only connected to 1000~servers (asking for up to 50~connections).
 We used learning and control transaction sets of 20~transactions each; 5 transactions from the control set were assumed "known" for anonymity degree calculation.
 
-\begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{bitcoin-mainnet-1542054034-fig-correlations-202-txcl-006-N-Rand-best.png}
-	\caption{Bitcoin mainnet}
-	\label{fig:bitoin-mainnet}
-\end{figure}
-
+\begin{figure*}
+	\centering
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1542054034-fig-correlations-202-txcl-006-N-Rand-best.png}
+		\caption{Bitcoin mainnet}
+	\end{minipage}\hfill
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-Frankfurt.png}
+		\caption{Zcash}
+	\end{minipage}\hfill
+	\label{fig:bitcoin-zcash}
+\end{figure*}
 
 \subsubsection{Zcash}
 
@@ -378,13 +386,6 @@ Note than a resourceful adversary may overcome this limitation by purchasing add
 
 Zcash does not provide privacy by default: zk-SNARKs are used only in transactions involving \textit{shielded} addresses~\cite{Kappos2018}.
 The majority of transactions happen between \textit{transparent} addresses and have no additional privacy-preserving mechanisms compared to Bitcoin.
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-Frankfurt.png}
-	\caption{Zcash}
-	\label{fig:zcash-mainnet}
-\end{figure}
 
 \begin{figure*}
 	\centering
@@ -416,17 +417,22 @@ In a 15-minute experiment we received  12~transaction inventory messages and 396
 % most probably, mixed txs are broadcast with another message type
 We ran our clustering algorithm two times: taking Dash-specific messages into account (Figure~\ref{fig:dash-all}), and considering only usual transaction inventory messages (Figure~\ref{fig:dash-tx}).
 
-\begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{dash-mainnet-1531510768-all.png}
-	\caption{Dash (Dash-specific messages and usual transactions)}
-	\label{fig:dash-all}
-\end{figure}
 
-\begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{dash-mainnet-1531510768.png}
-	\caption{Dash (usual transactions)}
-	\label{fig:dash-tx}
-\end{figure}
+\begin{figure*}
+	\centering
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\columnwidth]{dash-mainnet-1531510768-all.png}
+		\caption{Dash (Dash-specific messages and usual transactions)}
+	\end{minipage}\hfill
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		\includegraphics[width=\columnwidth]{dash-mainnet-1531510768.png}
+		\caption{Dash (usual transactions)}
+	\end{minipage}\hfill
+	\label{fig:dash-all}
+\end{figure*}
+
 
 In both cases, we obtained clearly visible clusters.
 These preliminary results demonstrate a clear privacy concern, especially if network analysis is combined with deanonymization attacks on Dash based on transaction graph analysis~\cite{Kalodner2017}. 
@@ -454,7 +460,8 @@ The goal of the experiment is to check whether we observe a block-diagonal struc
 We connected to 200 nodes (with a single connection per node) and received 124~transactions in a 38~minute window (see Figure~\ref{fig:monero}).
 
 \begin{figure}[!t]
-	\includegraphics[width=\columnwidth]{monero-mainnet-005-fig-correlations-012-txcl-003-N-Rand-best.png}
+	\centering
+	\includegraphics[width=0.5\columnwidth]{monero-mainnet-005-fig-correlations-012-txcl-003-N-Rand-best.png}
 	\caption{Monero}
 	\label{fig:monero}
 \end{figure}

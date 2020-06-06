@@ -444,6 +444,10 @@ Further inspection of the source code and an answer on a Monero-related Q\&A sit
 Monero is the only one of the three privacy-preserving currencies which is private by default: users do not have to explicitly choose the "private" option (such as a shielded address in Zcash and PrivateSend in Dash).
 In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
 
+As of 2020, Monero developers uses Dandelion++~\cite{ErCiccione2020}.
+At the time of our experiments (mid-2018), Monero did not use any broadcast randomization technique.
+%\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net\_node.inl\#L1515}.}
+
 We check the suitability of our technique on Monero by performing an experiment without our own transactions.
 The goal of the experiment is to check whether we observe a block-diagonal structure of the correlation matrix between transaction propagation vectors.
 

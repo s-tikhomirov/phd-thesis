@@ -97,8 +97,9 @@ In addition to Bitcoin message types, it contains 22~new ones related to mastern
 Dash uses the diffusion mechanism ported from Bitcoin.
 Monero is not based on the Bitcoin~Core codebase.
 The Monero community recognizes the threat of deanonymization through network analysis~\cite{user36432017, manontheinside2016, expez2016, Cameron2016}.
-The developers are integrating an I2P router into Monero (the Kovri project~\cite{Kovri}), but it is not yet deployed as of November~2018.
-Monero does not have any broadcast randomization such as trickling or diffusion.\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net\_node.inl\#L1515}.}%, which is called in \texttt{relay\_post\_notify} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}, which is called in \texttt{relay\_transactions} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}.}.
+Monero uses Dandelion++ for transaction propagation~\cite{ErCiccione2020}.
+The Kovri project~\cite{Kovri} aim to add an I2P router into Monero (not deployed as of 2020).
+%, which is called in \texttt{relay\_post\_notify} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}, which is called in \texttt{relay\_transactions} at \url{https://github.com/monero-project/monero/blob/master/src/cryptonote_protocol/cryptonote_protocol_handler.inl\#L1712}.}.
 Ethereum uses a modification of Kademlia, which has been shown to be vulnerable to eclipse attacks~\cite{Henningsen2019,Marcus2018}.
 
 

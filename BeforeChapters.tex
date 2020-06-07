@@ -102,27 +102,39 @@
 
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
-This thesis explores various questions related to security and privacy of blockchain systems.
 
-Bitcoin~\cite{nakamoto2008bitcoin} has allowed for the first time to transfer digital units of value without any trusted party.
-Alternative cryptocurrencies inspired by Bitcoin aim at better addressing the issues of privacy, scalability, and feature set.
-In particular, Ethereum introduces smart contracts in a Turing complete language and a stateful virtual machine, greatly expanding the design space of blockchain application, but expanding the attack surface as well.
+Bitcoin is the first digital currency without a trusted third party.
+This revolutionary protocol inspired multiple alternative projects that aim to address its limitations such as scalability and privacy.
+This new area of research at the intersection of computer science and economics is often characterized by the term \textit{blockchain}.
 
-In Part~\ref{Part1Privacy}, we discuss the networking layer of Bitcoin and related cryptocurrencies.
-We introduce an attack on privacy that allows an adversary to correlated transactions issued by the same user.
-We test this technique on Bitcoin, as well as on the major privacy focused cryptocurrency.
-We provide a separate overview of privacy-related functionality in mobile wallets.
+This thesis explores the security and privacy of blockchain systems.
 
-Part~\ref{Part2Lightning} is dedicated to a promising approach at scaling blockchain, namely, off-chain protocols.
-We study the Bitcoin's Lightning Network as the most prominent example of this approach.
-We measure the potential effects of certain subset of Lightning nodes on privacy of the users.
-Finally, we introduce a probing attack that lets an adversary reveal intermediary balances of payment channels it is not a part of -- the information supposed to be private.
+A cryptocurrency is based on a peer-to-peer network.
+Performance, resilience, and privacy of the P2P layer are important for the protocol as a whole.
+In Part~\ref{Part1Privacy}, we study the P2P networks of Bitcoin and selected privacy-focused cryptocurrencies.
+We introduce a new attack on privacy that allows an attacker to link transactions issued by the same node.
+We test the efficiency of the attack in real networks, successfully linking our own transactions.
+We provide a separate study of privacy characteristics of mobile cryptocurrency wallets.
+We discover that very few wallets follow the best practices regarding their users' privacy.
 
-Part~\ref{Part3Ethereum} explores Ethereum.
-Ethereum's expressive language, Solidity, provides lots of opportunities for developers to write insecure code.
-We propose a simpler language based on Solidity, called Findel, to encode financial agreements in a more declarative fashion.
-We study the vulnerabilities in real-world Ethereum contracts and present a tool that automates bug detection in Solidity using static analysis.
-Finally, we describe a proposal to limit the privacy-damaging effects of existing legal requirements (know-your-customer, or KYC) if a financial service is implemented on top of Ethereum.
+The architecture of Bitcoin and similar cryptocurrencies emphasizes security but severely limits the transaction throughput.
+Off-chain protocols address this issue.
+Part~\ref{Part2Lightning} is dedicated to the Lightning Network (LN) -- a prominent Bitcoin-based off-chain protocol.
+Lightning performs transactions off-chain, but allows for on-chain dispute resolution.
+This ensures low latency while inheriting most of Bitcoin's security guarantees.
+We introduce a probing attack that allows to quickly discover user balances in the LN.
+We analyze the likelihood of various privacy attacks on the LN depending on a number of parameters.
+We describe a limitation on the number of concurrent LN payments and quantify its effects on the transaction throughput.
+
+Bitcoin allows only a limited means to define how coins can be spent.
+Ethereum is a blockchain network with a focus on programmability.
+It allows to write programs in a Turing-complete language and permanently store them on-chain.
+Such programs are called smart contracts and are usually written in a high-level language Solidity.
+Part~\ref{Part3Ethereum} explores the security and privacy of smart contracts in Ethereum.
+We propose Findel -- a Solidity-based declarative domain-specific language for financial contracts.
+We classify the vulnerabilities in real-world Ethereum contracts.
+We present SmartCheck -- a static analysis tool for bug detection in Solidity.
+We describe an Ethereum-based cryptographic protocol for a more privacy-preserving regulation compliance.
 	
 \end{abstract}
 
@@ -133,20 +145,30 @@ Finally, we describe a proposal to limit the privacy-damaging effects of existin
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 This work would not be possible without the help and support of many people.
-This is an incomplete list of people to whom I would like to express my deepest gratitude:
-\begin{itemize}
-	\item My advisor, Prof.~Alex~Biryukov, for the opportunity to freely pursue my interests and for the invaluable support and guidance throughout this journey;
-	\item the members of my thesis committee, ... for agreeing to serve as jury members;
-	\item my coauthors: ..., for 
-	\item colleagues
-	\item Uni staff, incl administrative
-	\item Luxembourg, for excellent research conditions;
-	\item Zcash Foundation, for supporting my work with a grant;
-	\item my family, especially for encouraging me to pursue my further education abroad;
-	\item Satoshi
-\end{itemize}
+This is an incomplete list of those to whom I would like to express my gratitude.
+
+First of all, I am deeply grateful my advisor, Prof.~Alex~Biryukov, for the opportunity to pursue my research interests and the invaluable guidance throughout this journey.
+I appreciate Prof.~Volker M{\"u}ller, A-Prof.~Andrew Miller, Prof.~Matteo Maffei, Dr.~Patrick McCorry, and A-Prof.~Arthur Gervais agreeing to serve as jury members.
+I thank my co-authors: Dmitry Khovratovich, Ekaterina Voskresenskaya, Ivan Ivanitskiy, Ramil Takhaviev, Evgeny Marchenko, Yaroslav Alexandrov, Pedro Moreno-Sanchez, Matteo Maffei, Ren{\'e} Pickhardt, and Mariusz Nowostawski.
+I have learned a lot during our fruitful collaborations.
+A special thanks goes to Pedro Moreno-Sanchez and Matteo Maffei for inviting me to spend three months on a research visit at TU~Wien in the beautiful city of Vienna.
+
+I thank my colleagues for the insightful and fun conversations: Aleksei Udovenko, Brian Shaft, Christof Beierle, Dag Arne Osvik, Daniel Dinu, Daniel Feher, Dmitry Khovratovich, Giuseppe Vitto, Johann Gro{\ss}sch{\"a}dl, Luan Cardoso dos Santos, L{\'e}o Perrin, Qingju Wang, Ritam Bhaumik, Shange Fu, Vesselin Velichkov, and Yann Le Corre.
+
+The country of Luxembourg and the University of Luxembourg generously provided me with excellent research conditions.
+I specifically thank Fabienne Schmitz, Ida Ienna, and Catherine Violet for their assistance in administrative matters.
+
+A huge thanks goes to my co-hosts for the Basic Block Radio podcast Ivan Ivanitskiy, Sergei Pavlin, and Alexander Seleznev, as well as to all our guests and listeners, for helping spread the word about decentralized technologies for the Russian-speaking audience.
+
+My deepest gratitude goes to my family for their endless love and support.
+I want to specifically thank my parents for encouraging me to pursue education abroad.
+
+Finally, I thank Satoshi Nakamoto.
+Your ingenious invention continues to amaze and inspire me.
+I admire your wisdom and humbleness.
+It is an honor to be a part of the movement you started.
+
 \end{acknowledgements}
-% https://github.com/ZcashFoundation/GrantProposals-2017Q4/issues/24
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -208,4 +230,4 @@ This is an incomplete list of people to whom I would like to express my deepest 
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-\dedicatory{For/Dedicated to/To my\ldots} 
+%\dedicatory{For/Dedicated to/To my\ldots} 

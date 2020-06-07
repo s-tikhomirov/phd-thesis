@@ -375,6 +375,9 @@ We used learning and control transaction sets of 20~transactions each; 5 transac
 
 \subsubsection{Zcash}
 
+Zcash codebase was forked off Bitcoin core in November~2015 at version~0.11.2 (commit~7e27892).
+Zcash did not port those modifications and still used trickling at the time of our experiments (2018).
+
 For the Zcash mainnet, we performed one experiment with a listener located in Frankfurt.
 The learning and control sets consist of 20 and 18~transactions respectively; 8~out of 18 control transactions are shielded (from a t-address to a z-address).
 We use 6~control transactions as "known" for anonymity degree estimation.
@@ -407,6 +410,10 @@ Consequently, our method applied for Zcash allows clustering transactions involv
 
 
 \subsubsection{Dash}
+
+The Dash networking protocol is based on Bitcoin's but substantially more complex.
+In addition to Bitcoin message types, it contains 22~new ones related to masternode functionality.
+Dash uses the diffusion mechanism ported from Bitcoin.
 
 We ran an experiment on the Dash mainnet (connecting to 500~random nodes from the total of~3065, asking for 30~slots).
 In addition to announcing transactions and blocks, Dash uses the inventory mechanism for managing the masternode network~\cite{Schinzel2015}, which includes periodic pings of masternodes to check whether they are functioning, managing mixing transactions, voting for governance proposals, etc.
@@ -450,9 +457,12 @@ Further inspection of the source code and an answer on a Monero-related Q\&A sit
 Monero is the only one of the three privacy-preserving currencies which is private by default: users do not have to explicitly choose the "private" option (such as a shielded address in Zcash and PrivateSend in Dash).
 In October~2018, Monero version 0.13.0 introduced an implementation of Bulletproofs -- a cryptographic technique which allowed greatly reduced transaction size (and hence fees), which also, similar to Sapling in Zcash, is expected to incentivize Monero adoption on devices with limited resources~\cite{Spagni2018}.
 
-As of 2020, Monero developers uses Dandelion++~\cite{ErCiccione2020}.
+Monero is not based on the Bitcoin~Core codebase.
+The Monero community recognizes the threat of deanonymization through network analysis~\cite{user36432017, manontheinside2016, expez2016, Cameron2016}.
+Since 2020, Monero uses Dandelion++ for transaction propagation~\cite{ErCiccione2020}.
 At the time of our experiments (mid-2018), Monero did not use any broadcast randomization technique.
 %\footnote{See \texttt{relay\_notify\_to\_all} at \url{https://github.com/monero-project/monero/blob/master/src/p2p/net\_node.inl\#L1515}.}
+The Kovri project~\cite{Kovri} aims to add an I2P router into Monero (not deployed as of 2020).
 
 We check the suitability of our technique on Monero by performing an experiment without our own transactions.
 The goal of the experiment is to check whether we observe a block-diagonal structure of the correlation matrix between transaction propagation vectors.

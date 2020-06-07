@@ -4,31 +4,16 @@
 
 \input{Chapters/Chapter11/rules}
 
-We present SmartCheck -- a static analysis tool for smart contracts in Solidity.
+In this Chapter, we study the security of smart contracts in Solidity.
+\footnote{This Chapter is based on~\cite{Tikhomirov2018}. The author of this thesis contributed to researching and formalizing the types of vulnerabilities and writing the paper. The author thanks Evgeny Marchenko for the help in adding "2020 updates" to reflect the changes in the applicability of the patterns since the original publication.}
 
-Ethereum is a major blockchain-based platform for smart contracts -- Turing complete programs that are executed in a decentralized network and usually manipulate digital units of value.
-Solidity is the most mature high-level smart contract language.
-Ethereum is a hostile execution environment, where anonymous attackers exploit bugs for immediate financial gain.
-Developers have a very limited ability to patch deployed contracts.
-Hackers steal up to tens of millions of dollars from flawed contracts, a well-known example being ``The DAO``, broken in June~2016.
-Advice on secure Ethereum programming practices is spread out across blogs, 
-papers, and tutorials.
-Many sources are outdated due to a rapid pace of development in this field.
-Automated vulnerability detection tools, which help detect potentially problematic language constructs, are still underdeveloped in this area.
-
-We provide a comprehensive classification of code issues in Solidity and implement SmartCheck -- an extensible static analysis tool that detects them\footnote{The source code is available at \url{https://github.com/smartdec/smartcheck}.}.
+First, we provide a comprehensive classification of code issues in Solidity.
+Second, we implement SmartCheck -- an extensible static analysis tool.
+\footnote{The source code is available at \url{https://github.com/smartdec/smartcheck}.}
 SmartCheck translates Solidity source code into an XML-based intermediate representation and checks it against XPath patterns.
-We evaluated our tool on a big dataset of real-world contracts and compared the results with manual audit on three contracts.
-Our tool reflects the current state of knowledge on Solidity vulnerabilities and shows significant improvements over alternatives.
-SmartCheck has its limitations, as detection of some bugs requires more sophisticated techniques such as taint analysis or even manual audit.
-We believe though that a static analyzer should be an essential part of contract developers' toolbox, letting them fix simple bugs fast and allocate more effort to complex issues.
-
-This Chapter is based on~\cite{Tikhomirov2018}.
-\footnote{Contributions of the author of this thesis include: research on the types of vulnerabilities, formalize the vulnerability definitions in the SmartCheck's internal format, writing the paper.}
-Solidity has evolved between the publication of this paper (2018) and the writing of this thesis (2020).
-Comments entitled "2020 update" describe the changes in applicability of the vulnerability patterns.
-The author thanks Evgeny Marchenko for the help in adding these updates.
-
+We evaluate our tool on a big dataset of real-world contracts and compared the results with manual audit on three contracts.
+While SmartCheck has its limitations, we believe that a static analyzer should be an essential part of contract developers' toolbox.
+Automated detection of simple bugs lets developers allocate more effort to complex issues.
 
 %%%% SECTION 1: INTRODUCTION %%%%
 \input{Chapters/Chapter11/section1-introduction.tex}

@@ -3,13 +3,19 @@
 \label{Chapter08HTLClimit}
 
 In this Section, we describe an inherent limitation on the number of concurrent payments Lightning channels can handle.
+\footnote{This Chapter is based on~\cite{Tikhomirov2020a}.}
 
-\footnote{These results also apply to all implementations.}
-
-Due to the size limitations on Bitcoin transactions, LN channels can handle up to a certain number of unresolved payments.
+Due to the size limitations on Bitcoin transactions, LN channels can handle up to a certain number of unresolved payments (HTLCs).
 An attacker can send payment from one node to another, blocking the capacity of channels along the route and depleting their "HTLC slots".
 This effect may be critical for micro-payment applications -- a use case LN was initially meant to solve.
-We evaluate the effect of this limitation for various payment amounts and its evolution over two years, based on LN historical data.
+This limitation has been pointed out~\cite{EmelyanenkoK2017} but never quantitatively analyzed. 
+
+We study the management of concurrent payments in the LN and quantify its negative effect on scalability. 
+We observe that for micropayments, the forwarding capability of up to $50\%$ of channels is restricted to a value smaller than the overall channel capacity.
+This phenomenon not only hinders scalability but also opens the door for DoS attacks.
+We estimate that a network-wide DoS attack costs within $1.5M$~USD, while isolating the biggest community from the rest of the network costs only $225k$~USD.
+We also evaluate the evolution of this phenomenon over the two years of LN existence, based on the historical data.
+
 
 \section{HTLC limit in the Lightning Network}
 \label{sec:attack}
@@ -30,7 +36,7 @@ which ultimately results in a network-wide DoS attack.
 We provide estimates for the cost of such an attack, showing that it is within range for a moderately resourceful attacker. 
 We finally discuss potential countermeasures.
 
-This Chapter is based on~\cite{Tikhomirov2020a}.
+
 
 \subsection{Background} \label{max-htlc-background}
 

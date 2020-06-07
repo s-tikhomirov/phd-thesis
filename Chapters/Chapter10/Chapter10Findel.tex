@@ -2,23 +2,20 @@
 
 \label{Chapter10Findel}
 
-We introduce a declarative language for financial derivatives on top of Solidity.
-
+In this Chapter, we introduce a declarative language for financial derivatives on top of Solidity.
+\footnote{This Chapter is based on~\cite{Biryukov2017}.}
 
 Blockchain-based smart contracts are considered a promising technology for handling financial agreements securely.
 In order to realize this vision, we need a formal language to unambiguously describe contract clauses.
-We introduce Findel -- a purely declarative financial domain-specific language (DSL) well suited for implementation in blockchain networks.
+We introduce \textbf{Findel} (Financial Derivatives Language) -- a declarative financial domain-specific language (DSL).
 We implement an Ethereum smart contract that acts as a marketplace for Findel contracts and measure the cost of its operation.
-We analyze challenges in modeling financial agreements in decentralized networks and outline directions for future work\footnote{See the author's post-print at~\url{https://orbilu.uni.lu/handle/10993/30975} and the related source code at~\url{https://github.com/cryptolu/findel}.}.
+\footnote{See the related source code at~\url{https://github.com/cryptolu/findel}.}
+%We analyze challenges in modeling financial agreements in decentralized networks and outline directions for future work.
 
-This Chapter is based on~\cite{Biryukov2017}.
 
+\section{Financial domain-specific languages}
 
-% \tableofcontents
-
-\section{Introduction}
-
-Financial derivatives -- contracts defined in terms of other contracts -- play a major role in modern economy\footnote{The derivatives market is comparable in size to the world's GDP. The gross market value of all outstanding over-the-counter derivatives is \$20.7~trillion~\cite{InternationalSettlements2016} (2016). The world GDP in 2015 is \$73,9~trillion~\cite{WorldBank}.}.
+%Financial derivatives -- contracts defined in terms of other contracts -- play a major role in modern economy\footnote{The derivatives market is comparable in size to the world's GDP. The gross market value of all outstanding over-the-counter derivatives is \$20.7~trillion~\cite{InternationalSettlements2016} (2016). The world GDP in 2015 is \$73,9~trillion~\cite{WorldBank}.}.
 Financial industry lacks a universal domain-specific language.
 Natural language is unsuitable for expressing contracts due to its inherent ambiguity.
 An influential paper~\cite{PeytonJones2000} is one of many attempts to create a rigorous DSL that would mitigate disputes and stimulate automated processing of complex derivatives.
@@ -34,7 +31,7 @@ Ethereum is a network of mutually distrusting nodes, which nevertheless establis
 
 An obvious use case for blockchain-based smart contracts is to securely manage financial agreements.
 A naive approach to doing so is to encode the entire logic of an agreement inside a smart contract.
-Expressing complex clauses in a general-purpose programming language, like Ethereum's Solidity, is error-prone~\cite{Atzei2017}~\cite{Sirer2016}.
+Expressing complex clauses in a general-purpose programming language, like Ethereum's Solidity, is error-prone~\cite{Sirer2016, Atzei2017}.
 We propose a safer approach that separates the description of a contract from its execution.
 A user only defines what a contract \textit{is} ("I owe you \$10 tomorrow"), not \textit{how} it is executed ("if the timestamp is greater than $t_0$,~\dots").
 The entire execution logic is implemented inside a smart contract, which is executed by nodes of a blockchain network.
@@ -42,8 +39,6 @@ Thus we take the best of both worlds: unambiguity and composability of a concise
 %Users should be able to rigorously prove properties of contracts and thus understand what they are agreeing to.
 %A contract in a well-designed financial DSL should be composed of simple parts and be both human- and machine-readable.
 
-We introduce \textbf{Findel} (Financial Derivatives Language) -- a declarative financial DSL (Section~\ref{sec:Ch10FindelSyntax}) capable of expressing most common derivatives (Section~\ref{sec:Ch10FindelExamples}).
-We implement an Ethereum contract that manages Findel contracts (Section~\ref{sec:Ch10FindelImplementation}) and prove our approach viable in terms of cost (Section~\ref{sec:Ch10FindelTesting}).
 
 %%%% SECTION 2 %%%%
 

@@ -2,6 +2,16 @@
 
 \label{Chapter09Introcontracts}
 
+In this Chapter, we provide an introduction to smart contracts and Ethereum.
+\footnote{This Chapter is partially based on~\cite{Tikhomirov2017}.}
+We describe the history of the concept of smart contracts and its implementation in blockchain networks.
+We then provide the necessary technical background on Ethereum -- a blockchain-based smart contract platform -- and outline the security and privacy challenges it faces.
+
+
+\section{History of smart contracts}
+
+\subsection{Early ideas}
+
 A contract is a basic building block of market economy.
 Despite significant changes in legal systems, the foundational mechanics of a contract has not changed in centuries.
 It is usually a written text which is designed to be interpreted by humans.
@@ -17,6 +27,9 @@ The physical properties of the machine make attacking it sufficiently expensive 
 However, a contract implemented by a vending machine is automated but not trustless.
 The supplier possesses the administrator key and has a privileged access to the money and goods in the machine.
 
+
+\subsection{Smart contracts in Bitcoin}
+
 The idea of smart contracts remained dormant until Bitcoin.
 Bitcoin, for the first time, enabled smart contracts without an administrator.
 Bitcoins can only be unlocked by providing the required arguments to their respective output scripts.
@@ -31,6 +44,9 @@ Each transaction is executed in isolation and can either be deemed correct or no
 It is impossible to branch depending on the results of executing another transaction.
 On the one hand, such limitations limit the potential attack surface and simplify security analysis.
 On the other hand, they make implementing many types of contracts difficult, if not impossible~\cite{Miller2019}.
+
+
+\subsection{Smart contracts in Ethereum}
 
 Ethereum was created to address these limitations.
 It provides a platform for more complex smart contracts without a trusted third party.
@@ -65,8 +81,6 @@ Ethereum contacts is a case in point.
 A rich programming environment leaves more possibilities for programmers to make mistakes which are hard to fix.
 Multiple high-profile smart contracts were hacked or broken, losing on the order of tens and sometimes hundreds of millions of US~dollars.
 These unfortunate events have shown that secure programming practices are especially important for smart contracts.
-
-In this Part, we explore the security and privacy of Ethereum smart contracts.
 
 
 \section{Ethereum architecture}

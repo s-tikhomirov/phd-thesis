@@ -2,38 +2,21 @@
 
 \label{Chapter07LNattacks}
 
-We evaluate the possibility of various attacks on Lightning, considering various subsets of nodes potentially compromised.
+In this Chapter, we quantitatively evaluate various attacks on the Lightning Network, based on various assumptions regarding the attacker.
+\footnote{This Chapter is based on~\cite{Tikhomirov2020a}.}
 
-Payment channels suffer from security vulnerabilities, such as the wormhole attack~\cite{Malavolta2019}, anonymity issues~\cite{Malavolta2017}, and scalability limitations related to  the upper bound on the number of concurrent payments per channel~\cite{EmelyanenkoK2017}, which have been pointed out by the scientific community but never quantitatively analyzed. 
+Privacy in payment networks is defined in terms of \textit{value privacy} and \textit{relationship anonymity}~\cite{Malavolta2017}.
+Additionally, the \textit{wormhole attack}~\cite{Malavolta2019} allows an adversary to steal fees from honest intermediaries and temporarily block their funds.
 
-In this work, we first analyze the proneness of the LN to the wormhole attack and attacks against anonymity. 
-We observe that an adversary needs to control only $2\%$ of LN nodes to learn sensitive payment information (e.g., sender, receiver and payment amount) or to carry out the wormhole attack. 
-Second, we study the management of concurrent payments in the LN and quantify its negative effect on scalability. 
-We observe that for micropayments, the forwarding capability of up to $50\%$ of channels is restricted to 
-a value smaller than the overall channel capacity.
-This phenomenon not only hinders scalability but also opens the door for DoS attacks: We estimate that 
-a network-wide DoS attack costs within $1.5M$~USD, while isolating the biggest community from the rest of the network costs only $225k$~USD.
+We perform a quantitative analysis of LN's resistance to the three attacks.
+We estimate attack success probabilities based on a simulated network for an array of parameters.
+Our findings suggest that LN, as of 2019, depends on highly connected and highly capitalized nodes.
+An attacker who successfully compromises those nodes succeeds with a high probability.
+Our results are concerned with the LN as described in the specification, and thus apply to all implementations.
 
-Our findings should prompt the LN community to consider the security, privacy and scalability issues of the network studied in this work 
-when educating users about path selection algorithms, as well as to adopt multi-hop payment protocols that provide stronger security, privacy and 
-scalability guarantees. 
-
-We perform a quantitative analysis of LN's resistance to three previously described attacks on privacy.
-\footnote{Our research is concerned with the definition of the LN as described in the BOLTs and thus the results apply equally to every implementation.}
-
-Privacy in payment networks is defined in terms of value privacy (the attacker does not know how much is sent) and relationship anonymity (the attacker does not know who is paying whom).
-In the LN, an additional definition is added: a wormhole attack allows an adversary to steal fees from honest intermediaries and temporarily block their funds.
-How much of a threat do these attacks present?
-This depends on a multiple factors: for an attack to be successful, a payment must pass through a path partially controlled by the attacker.
-For the three attacks, we estimate this probability based on a simulated network for an array of parameters.
-Our findings suggest that LN, as of 2019, depends on highly connected and highly capitalized nodes: in case a relatively small proportion of such nodes are compromised, the attacker succeeds with a high probability.
-
-This Chapter is based on~\cite{Tikhomirov2020a}.
 
 \section{Datasets}
 \label{sec:datasets}
-
-
 
 We obtained a snapshot of LN on 2020-02-25 from \url{https://ln.bigsun.xyz} and parsed with the (anonymized) scripts available at~\cite{Tikhomirov2019}.
 %\footnote{Our experiments are based on data from \url{https://ln.bigsun.xyz/}.
@@ -58,9 +41,6 @@ These observations motivate the methodology in our experiments in~\cref{sec:sec-
 We also derive a series of historic snapshots which represent the state of LN on the first day of each month from April~2018 to February~2020.
 We refer to this dataset as \textit{LNHist} 
 and use it in the subsequent chapter, where we study of concurrent payments on LN performance over time.
-\todo[inline]{Ref to future chapter doesn't work}
-% (\ref{Chapter08HTLClimit}).
-%See Appendix~\ref{sec:historic} for our study of the temporal evolution of the LN based on LNHist.
 
 
 \begin{figure}[tb]

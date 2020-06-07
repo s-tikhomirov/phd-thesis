@@ -2,46 +2,28 @@
 
 \label{Chapter03Clustering}
 
-In this Chapter, we tackle the following question: can a global passive adversary.infer relationships between transactions based solely on their propagation pattern in the network?
-We review the Bitcoin's P2P protocol and propose an algorithm that allows us to distinguish transactions issued from the same node from transactions issued from different nodes (with s certain degree of accuracy).
+In this Chapter, we describe a novel network-level deanonymization attack on cryptocurrencies.
+\footnote{This Chapter is based on the following publications: \cite{Biryukov2019a, Biryukov2019b}.}
+
+We show how a global passive adversary can use the timings of transaction propagations to cluster transactions that are likely to originate from the same node.
+It can then correlate such clusters with IP addresses.
 We implement and test our method on Bitcoin and three other cryptocurrencies focused on privacy: Dash, Monero, and Zcash.
 We also test the same technique on transactions issued from mobile wallets, which are studied in more detail in the subsequent chapter.
 
-We present a novel technique to analyze the public traffic in a P2P network of Bitcoin and other cryptocurrencies and extract information about the senders of transactions.
-
-Previous work in cryptocurrency privacy mostly focused on applying data mining algorithms to the transaction graph extracted from the blockchain.
-We focus on a less well researched vector for privacy attacks: network analysis.
-We analyze propagation times of protocol messages to infer relationships between transactions.
-We argue that timings of transaction messages leak information about their origin, which can be exploited by a well connected adversarial node.
-For the first time, network level attacks on Bitcoin and the three major privacy-focused cryptocurrencies have been examined.
-We describe the message propagation mechanics and privacy guarantees in Bitcoin, Dash, Monero, and Zcash.
-We propose a novel technique for linking transactions based on transaction propagation analysis.
-We also unpack address advertisement messages (\texttt{ADDR}), which under certain assumptions may help in linking transaction clusters to IP addresses of nodes.
-We implement and evaluate our method, deanonymizing our own transactions in Bitcoin and Zcash with a high level of accuracy.
-We also show that our technique is applicable to Dash and Monero.
-We estimate the cost of a full-scale attack on the Bitcoin mainnet at hundreds of US dollars, feasible even for a low budget adversary.
-
-The ultimate goal of deanonymization is to reveal the relationship between cryptocurrency transactions (or addresses) and real-world identifiers, such as IP addresses.
-In our model, the goal of the adversary in our model is to infer a connection between a cryptocurrency transaction and the IP address of a node which was the first to introduce it into the network.\footnote{Even though an IP address is not linked to a physical person, it can be used to determine a relatively precise location of the device involved, and can be linked to a real-world identity if the responsible ISP is compromised.}
-We rely on the core observation that a node can be uniquely identified by its set of connected peers (\textit{entry nodes}).
-Earlier network-based deanonymization attacks~\cite{Biryukov2014, Koshy2014} only took into account the first node to propagate a given transaction to the adversary.
+Compared to previous similar attacks~\cite{Biryukov2014, Koshy2014}, we do not only rely on the first node to announce a transaction to the attacker.
 Our approach is more sophisticated.
 We apply carefully chosen weight functions to message timing information.
-This allows us to link transactions broadcast from one node, even if all addresses involved are unrelated (consequently, blockchain analysis would gain no insight).
+This allows us to link transactions broadcast from one node with high accuracy.
+Our clustering method works independently of whether the addresses involved are related.
+Therefore, it may act as a useful complement to blockchain-based transaction graph analysis.
 
-Instead of associating transactions with IP addresses directly, we first cluster the transactions, and then try to assign IP addresses to clusters.
-Even if the latter step gains no insight, the clustering data used in combination with information from other sources is useful for the attacker.
-Moreover, our technique does not simply produce a binary decision (whether two transactions are related), but also allows for manual visual inspection of transaction clusters using heatmaps.
-
-We now provide the background on message propagation in Bitcoin and other cryptocurrencies, and present our approach to transaction clustering based on propagation timing.
-We implement and evaluate our technique on real-world cryptocurrencies.
+We implement and evaluate our technique on Bitcoin (testnet and mainnet) and three major privacy-focused cryptocurrencies: Dash, Monero, and Zcash.
 We were able to cluster our own transactions in Bitcoin and Zcash with high levels of precision and recall.
 In particular, in the case of Zcash, we can cluster transactions involving both transparent and shielded addresses.
+We also unpack address advertisement messages (\texttt{ADDR}), which under certain assumptions may help in linking transaction clusters to IP addresses of nodes.
 We also show that our technique is applicable to Dash and Monero.
-We provide rough calculations of the necessary resources and the monetary cost of an attack on the Bitcoin mainnet.
-We discuss attack scenarios for different types of wallets, and give a number of recommendations for users who want to preserve their privacy, as well as for developers of cryptocurrency protocols and wallets who want to give users an easier way to do so.
+The cost of a full-scale attack on the Bitcoin mainnet is on the order of hundreds of US~dollars, which is feasible even for a low budget adversary.
 
-This Chapter is based on~\cite{Biryukov2019a} and~\cite{Biryukov2019b}.
 
 \section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
 

@@ -2,23 +2,20 @@
 
 \label{Chapter12KYC}
 
-We present a scheme which allows for a development of an Ethereum based token usable only to white-listed entities while preserving their privacy.
+In this Chapter, we present an Ethereum-based privacy-preserving KYC scheme for token white-listing.
+\footnote{This Chapter is based on~\cite{Biryukov2018}, which in turn described a hackathon project. A proof-of-concept implementation of the design described above was created in May~2017 during the Luxblock hackathon in Luxembourg, and was awarded a joint first prize. The team included Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad. Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for Section~\ref{sec:PrivacyPreservingKYC}).}
 
-Identity is a fundamental concept for the financial industry.
-In order to comply with regulation, financial institutions must verify the identity of their customers.
-Identities are currently handled in a centralized way, which diminishes users' control over their personal information and threats their privacy.
-Blockchain systems, especially those with support for smart contracts (e.g.,~Ethereum), are expected to serve as a basis of more decentralized systems for digital identity management.
-
-We propose a design of a privacy-preserving KYC scheme on top of Ethereum.
-It would let providers of financial services leverage the potential of blockchain technology to increase efficiency of customer onboarding while complying with regulation and protecting users' privacy.
-
-This Chapter is based on~\cite{Biryukov2018}.
-\footnote{Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for the description of the cryptographic protocol).}
+We describe the current approach of identity management and propose KYCE -- a privacy-preserving KYC scheme on Ethereum.
 
 
 %%%%%%%% SECTION 1. Introduction %%%%%%%%
 
 \section{Introduction}
+
+In order to comply with regulation, financial institutions must verify the identity of their customers.
+Identities are currently handled in a centralized way.
+This diminishes users' control over their personal information and threats their privacy.
+Blockchain networks like Ethereum aim to serve as a basis of more decentralized identity management.
 
 Digital identity is information used by a computer system to represent a user.
 It serves two purposes:
@@ -197,6 +194,7 @@ Users withdraw tokens from the exchange by calling \texttt{approve(exchangeAddre
 
 
 \subsection{Privacy-preserving KYC}
+\label{sec:PrivacyPreservingKYC}
 
 We propose KYCE -- a privacy-preserving KYC design for Ethereum-based financial services.
 
@@ -427,12 +425,3 @@ Once accredited, a blockchain investor uses multiple "restricted" services witho
 Privacy-preserving KYC might be a good use case for Ethereum-based identity projects~\cite{Mesropyan2017}, e.g.,~Sovrin~\cite{Sovrin} and uPort~\cite{Uport}.
 
 %"Furthermore, such a system would reduce the barrier for operating a financial institution due to the decreased regulatory costs of KYC, and open thefinancial market for further competition." - Ross
-
-
-%%%%%%%% SECTION 6. Acknowledgements %%%%%%%%
-
-\section{Acknowledgements}
-
-A proof-of-concept implementation of the design described above was created in May~2017 during the Luxblock hackathon in Luxembourg by the CryptoLUX team, and was awarded a joint first prize.
-The team included Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad.
-

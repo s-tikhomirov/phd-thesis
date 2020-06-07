@@ -2,28 +2,19 @@
 
 \label{Chapter04Wallets}
 
-In this Chapter, we study mobile wallets.
+In this Chapter, we study the privacy of mobile cryptocurrency wallets.
+\footnote{This Chapter is based on~\cite{Biryukov2019}.}
 
-Mobile devices have surpassed desktops by Internet traffic.
+%Mobile devices have surpassed desktops by Internet traffic.
 Smartphones have become the primary computing device for many millions of people.
-The security of cryptocurrency wallets is therefore of high importance.
-We systematize various privacy-related characteristics of mobile applications that are relevant for cryptocurrency wallets, and compare a selection of $23$~wallets for Android -- the most prevalent mobile OS.
-Our results show that the majority of wallets do not follow all security and privacy guidelines.
+Mobile devices play an increasingly important role in the cryptocurrency ecosystem.
+We systematize various privacy-related characteristics of mobile cryptocurrency wallets.
+We compare a selection of $23$~wallets for Android -- the most prevalent mobile operating system.
+We analyze their features and source code, both manually and using static analysis tools.
 
-Mobile devices play an increasingly important role in the cryptocurrency ecosystem, but their privacy guarantees remain unstudied.
+Our results indicate that most mobile wallets do not follow important security and privacy guidelines.
+Privacy conscious users are rather limited in their choice of a mobile wallet for Bitcoin, and even more so -- for privacy-focused cryptocurrencies.
 
-Chapter~\ref{Chapter03Clustering} has shown the importance of properly implementing transaction propagation to protect against a global passive adversary.
-This Chapter provides another perspective on wallet privacy.
-Here, we consider wallet developers as adversaries trying to collect data about their users' transactions.
-
-Mobile wallets differ in many aspects from desktop wallets.
-We review the security and privacy of popular Android wallets for Bitcoin and the three major privacy-focused cryptocurrencies (Dash, Monero, Zcash).
-Through studying the features of prominent mobile wallets, we try to estimate the amount of personal information their developers can collect.
-We formulate four criteria for a minimally privacy-preserving wallet and apply them to a selection of wallets (Section~\ref{section:Ch04Initialprivacycriteria}).
-Then, we study the source code of selected wallets, both manually and using static analysis tools, to detect potential to privacy violations (Section~\ref{section:Ch04Analysis}).
-We show that privacy conscious users are rather limited in their choice of a mobile wallet for Bitcoin, and even more so -- for privacy-preserving cryptocurrencies.
-
-This Chapter is based on~\cite{Biryukov2019}.
 
 \section{Taxonomy of cryptocurrency nodes}
 

@@ -53,13 +53,8 @@ This protocol has a number of drawbacks.
 First, it is unidirectional: the customer can pay the merchant but not vice versa.
 Second, the lifetime of a channels is limited by the timelock of the refund transaction.
 
-Note that the protocol is not secure if transactions are malleable.
-In particular, an adversary can modify the funding transaction without invalidating it, which would change its hash and thus invalidate the refund transaction~\cite{Harding2016}.
-After SegWit activation, this attack vector is mitigated by using SegWit outputs.
-
 A similar design of unidirectional payment channels takes advantage of \texttt{OP\_CHECKLOCKTIMEVERIFY} (CLTV) -- an opcode added to Bitcoin script in 2015~\cite{Todd2014}, which allows to specify absolute timelocks at the output level (rather than at the transaction level, as \texttt{nLockTime} does).
-This allows to implement Spillman channels without the malleability vulnerability.
-\footnote{Note that CLTV was implemented in 2015, before SegWit (2017).}
+%This allows to implement Spillman channels without the malleability vulnerability.
 
 
 \subsection{Replace-by-timelock and Duplex channels}
@@ -79,6 +74,28 @@ DMC combines replace-by-timelock and replace-by-incentive.
 The key concept of DMC is \textit{invalidation tree} -- a hierarchical transaction structure that allows for invalidation of old channel states.
 Invalidation tree is based on the fact that the timelock of the first transaction in a chain defines the validity of all subsequent transactions.
 A follow-up paper~\cite{Burchert2017} describes a way to share the cost of opening and closing channels among multiple parties.
+
+
+\subsection{Segregated witness}
+
+Initially, signatures of Bitcoin transactions were \textit{malleable}.
+This means that there are multiple valid signatures for the same message.
+An network adversary could modify a Bitcoin transaction without invalidating it, which would change its hash.
+
+Transaction malleability was a critical roadblock for L2 protocols.
+Most of them rely on first co-signing a funding transaction, then signing transactions that spend from the funding transaction's outputs, and then broadcasting the funding transaction.
+A network adversary could modify the funding transaction and get it confirmed with a different hash.
+This would invalidate already signed transaction that spent the outputs of the original funding transaction~\cite{Harding2016}.
+Additionally, transaction malleability makes watching the blockchain difficult.
+In the context of L2 protocols, this is a critical drawback.
+L2 protocols assume that parties can check whether an event of interest on the base layer.
+For instance, Alice would scan the blockchain and react if she notices that Bob attempts cheating.
+With transaction malleability, the transaction hash is not uniquely defined by its semantics.
+This makes watching the blockchain for relevant events hard, if not impossible.
+
+\textit{Segregated Witness} (SegWit) was an important update to Bitcoin that mitigated transaction malleability.
+SegWit, as the name suggests, \textit{segregated} the \textit{witness} (that is, the transaction signatures) such that it no longer affects the transaction hash.
+This opened the way for the practical implementation and deployment of Bitcoin-based L2 protocols such as the Lightning Network.
 
 
 \subsection{Poon-Dryja channels (Lightning)}
@@ -105,7 +122,7 @@ Some of the ideas to improve LN depend on modifications in the Bitcoin protocol,
 
 \paragraph{Schnorr-Taproot}
 As of early 2020, the implementation and rollout of the \textit{Schnorr-Taproot} update to Bitcoin is in progress.
-This would add another type of signatures (Schnorr signatures in addition to ECDSA), which allow for arithmetic on signatures.
+This would add another type of signatures (Schnorr signatures in addition to ECDSA), which allows for arithmetic on signatures.
 
 For Lightning Network, this allows for better privacy.
 The current HTLC mechanism maintains atomicity of multi-path transfers by using the same payment hash along the route.

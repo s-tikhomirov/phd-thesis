@@ -40,7 +40,7 @@ We finally discuss potential countermeasures.
 
 \subsection{Background} \label{max-htlc-background}
 
-Among other transaction validity rules, a Bitcoin transaction must be smaller than 100~KB (transaction size limit\cite{StandardTxBitcoinSE, BitcoinCoreMaxTxWeight}).\footnote{Bitcoin~Core, the reference Bitcoin implementation, defines a \textit{standard} transaction. Transaction size limit is a part of this definition. While non-standard transactions may be valid according to the consensus rules, Bitcoin~Core nodes do not propagate them. As Bitcoin~Core nodes constitute $97\%$ of the network~\cite{CoinDance}, non-standard transactions are highly unlikely to get confirmed.}
+Among other transaction validity rules, a Bitcoin transaction must be smaller than 100~KB (transaction size limit~\cite{StandardTxBitcoinSE, BitcoinCoreMaxTxWeight}).\footnote{Bitcoin~Core, the reference Bitcoin implementation, defines a \textit{standard} transaction. Transaction size limit is a part of this definition. While non-standard transactions may be valid according to the consensus rules, Bitcoin~Core nodes do not propagate them. As Bitcoin~Core nodes constitute $97\%$ of the network~\cite{CoinDance}, non-standard transactions are highly unlikely to get confirmed.}
 An LN channel can not contain more than 966~unsettled HTLCs, as prescribed in~\cite{BOLT2Rationale}.
 This limit ensures that both counterparties can close the channel using one valid Bitcoin transaction.\footnote{The specification also points out that this limit ensures that the related messages conform to the limitation of the LN protocol, which limits the size of a message to $65535$~bytes.}
 Hereby we refer to the limitation described above as the \textit{HTLC limit}.
@@ -302,5 +302,5 @@ Their work, however, does not account for the way LN handles payments below the 
 
 \section{Conclusion}
 
-We also quantitatively analyze the negative effect on scalability produced by the limit on concurrent payments in the LN. 
+We quantitatively analyze the negative effect on scalability produced by the limit on concurrent payments in the LN. 
 We calculate that the limited concurrency in the LN implies that an adversary can block the complete LN investing around $1.5M$~USD ($18.5\%$~of the network capacity), and this cost can be substantially reduced by targeting highly valuable channels (e.g., high-capacity channels or those connecting the biggest communities in the network).

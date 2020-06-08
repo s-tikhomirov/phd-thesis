@@ -34,7 +34,7 @@ The idea of smart contracts remained dormant until Bitcoin.
 Bitcoin, for the first time, enabled smart contracts without an administrator.
 Bitcoins can only be unlocked by providing the required arguments to their respective output scripts.
 This has lead to discussions in the Bitcoin community on the possibilities of implementing a wide range of smart contracts based on Bitcoin.
-Early Bitcoin-based protocols towards this goal include Colored Coins, Counterparty, and Mastercoin~\cite{Rosenfeld2012,Willett2016,Bartoletti2017a}.
+Early Bitcoin-based protocols towards this goal include Colored Coins, Counterparty, and Mastercoin~\cite{Rosenfeld2012, Willett2016, Bartoletti2017a}.
 
 Bitcoin's programming capabilities are too restrictive to encode many types of contracts.
 First, Bitcoin script is not Turing-complete.
@@ -173,8 +173,8 @@ Short time between blocks exacerbates this problem.
 
 To address the issue, Ethereum uses a modification~\cite{Lewenberg2015} of GHOST protocol~\cite{Sompolinsky2013, EthdocsMining}.
 %This blockchain protocol accounts for the weight of orphaned blocks~\cite{Wuille2017, Johnson2017}.
-In Ethereum, orphans are refereed to as an \textit{uncle} blocks.
-Ethereum miners include hashes of orphan blocks (also referred to as \textit{uncles}) in block headers to receive additional reward.
+In Ethereum, orphan blocks are refereed to as an \textit{uncle} blocks, or \textit{uncles}.
+Ethereum miners include hashes of uncles in block headers to receive additional reward.
 Ethereum rewards uncles no more than $6$~blocks old.
 No more than $2$~uncles per block are allowed.
 Miners of uncles whose headers get included in the main chain are also rewarded.
@@ -233,7 +233,7 @@ Potential applications of Ethereum also include decentralized file storage~\cite
 
 \section{Challenges for smart contract security}
 
-In 2016, a high-profile Ethereum contract called \textit{The DAO} was broken into~\cite{Sirer2016}.
+In 2016, a high-profile Ethereum contract called \textit{The DAO} was compromised~\cite{Sirer2016}.
 An unknown hacker appropriated around $40$~million~USD worth of ether.
 Ethereum developers proposed a non backwards-compatible protocol upgrade to return the funds.
 This was a controversial move, because the EVM behaved correctly.

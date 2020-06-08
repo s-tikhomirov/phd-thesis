@@ -2,13 +2,17 @@
 
 \subsection{Goals and definitions}
 
-We compare SmartCheck with three freely available tools aimed at statically detecting vulnerabilities in Ethereum contracts: Oyente, Remix, and Securify\footnote{In case of Securify, we consider only partial results, since full results are not displayed in the publicly available version of the tool.} and with the results of manual audit.
+We compare SmartCheck with three freely available vulnerability detection tools (Oyente, Remix, and Securify\footnote{In case of Securify, we consider only partial results, since full results are not displayed in the publicly available version of the tool.}) and with the results of manual audit.
 
-We define a true finding as an issue (detected by a tool with manual verification or manually) that is a bad practice and should be fixed from our viewpoint (it may or may not be an exploitable vulnerability).
+We define a true finding as an issue (detected by a tool with manual verification or manually) that is a bad practice and should be fixed from our viewpoint.
+It may or may not be an exploitable vulnerability.
 All issues found by the tools were manually labeled as either true positive (TP) or false positive (FP).
 A false negative (FN) for each of the four tools (Oyente, Remix, Securify, and SmartCheck) is a true finding that was not detected by this tool.
 
-For each tool, the false discovery rate (FDR) is the number of FPs for this tool divided by the number of all issues reported by this tool: FDR = FP / (TP + FP).
+For each tool, the false discovery rate (FDR) is the number of FPs for this tool divided by the number of all issues reported by this tool:
+
+\[FDR = FP / (TP + FP)\]
+
 False negative rate (FNR) is the number of FNs for this tool divided by the number of all true findings (found by any of the tools or manually), which is the sum of TP and FN for this tool: FNR = FN / (TP + FN).
 
 Section~\ref{ManualAudit} assesses FDR and FNR of SmartCheck and three other tools on three typical contracts.
@@ -28,45 +32,53 @@ The FDR and FNR for each tool (in \% and in absolute numbers) are presented in T
 		\textbf{Project} &  & \textbf{Oyente} & \textbf{Remix} & \textbf{Securify} & \textbf{SmartCheck} \\
 		\hline
 		\multirow{3}{*}{Genesis Vision}
-			& TP/FP/FN & 0/6/10 & 0/40/10 & 0/19/10 & 7/22/3 \\
-			& FDR (\%) & 100 & 100 & 100 & 75.86 \\
-			& FNR (\%) & 100 & 100 & 100 & 30.00 \\
+			& TP & $0$ & $0$ & $0$ & $7$ \\
+			& FP & $6$ & $40$ & $19$ & $22$ \\
+			& FN & $10$ & $10$ & $10$ & $3$ \\
+			& FDR (\%) & $100$ & $100$ & $100$ & $75.86$ \\
+			& FNR (\%) & $100$ & $100$ & $100$ & $30.00$ \\
 		\hline
 		\multirow{3}{*}{Hive}
-			& TP/FP/FN & 0/6/22 & 0/11/22 & 0/6/22 & 6/7/16 \\
-			& FDR (\%) & 100 & 100 & 100 & 53.85 \\
-			& FNR (\%) & 100 & 100 & 100 & 72.73 \\
+			& TP & $0$ & $0$ & $0$ & $6$ \\
+			& FP & $6$ & $11$ & $6$ & $7$ \\
+			& FN & $22$ & $22$ & $22$ & $16$ \\
+			& FDR (\%) & $100$ & $100$ & $100$ & $53.85$ \\
+			& FNR (\%) & $100$ & $100$ & $100$ & $72.73$ \\
 		\hline
 		\multirow{3}{*}{Populous}
-			& TP/FP/FN & 0/7/19 & 4/60/15 & 0/45/19 & 14/31/5 \\
-			& FDR (\%) & 100 & 93.75 & 100 & 68.89 \\
-			& FNR (\%) & 100 & 78.95 & 100 & 26.32 \\
+			& TP & $0$ & $4$ & $0$ & $14$ \\
+			& FP & $7$ & $60$ & $45$ & $31$ \\
+			& FN & $19$ & $15$ & $19$ & $5$ \\
+			& FDR (\%) & $100$ & $93.75$ & $100$ & $68.89$ \\
+			& FNR (\%) & $100$ & $78.95$ & $100$ & $26.32$ \\
 		\hline
 		\multirow{3}{*}{Overall}
-			& TP/FP/FN & 0/19/51 & 4/111/47 & 0/70/51 & 27/60/24 \\
-			& FDR (\%) & 100 & 96.52 & 100 & 68.97 \\
-			& FNR (\%) & 100 & 92.16 & 100 & 47.06 \\
+			& TP & $0$ & $4$ & $0$ & $27$ \\
+			& FP & $19$ & $111$ & $70$ & $60$ \\
+			& FN & $51$ & $47$ & $51$ & $24$ \\
+			& FDR (\%) & $100$ & $96.52$ & $100$ & $68.97$ \\
+			& FNR (\%) & $100$ & $92.16$ & $100$ & $47.06$ \\
 		\hline
 	\end{tabular}
 	\label{CaseStudyTable}
 \end{table*}
 
-Oyente and Securify did not show any TPs on these threee contracts.
+Oyente and Securify did not show any TPs on these three contracts.
 Remix detected TPs only in the Populous contract.
-Remix and SmartCheck showed an overall FDR of 97\% and 69\% respectively, and an overall FNR of 92\% and 47\% respectively.
+Remix and SmartCheck showed an overall FDR of $97$\% and $69$\% respectively, and an overall FNR of $92$\% and $47$\% respectively.
 This means that SmartCheck showed better FDR and FNR compared to its closest competitor.
-Overall, SmartCheck reported 87 issues in the three contracts.
-
+Overall, SmartCheck reported $87$ issues in the three contracts.
 
 Requirements for code analysis tools differ across platforms and domains.
-Due to a peculiar security landscape in smart contract programming (see Section~\ref{SecurityChallenges}), low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable: most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
+Due to a peculiar security landscape in smart contract programming (see Section~\ref{SecurityChallenges}), low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
+Most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
 
-Though SmartCheck's FDR of 69\% may seem pretty high, it is not a serious issue in this domain.
-47\% is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
+Though SmartCheck's FDR of $69$\% may seem pretty high, it is not a serious issue in this domain.
+$47$\% is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
 Most of SmartCheck's FNs were found manually (not by other tools).
 
 SmartCheck detected a critical issue in one of the contracts: an attacker could create an unlimited number of internal entities and block the normal operation of the contract.
-A public function (i.e.,~ such that any Ethereum user can call it) allowed to add an element to an internal array (Listing~\ref{AddingGroup}).
+A public function (i.e.,~such that any Ethereum user can call it) allowed to add an element to an internal array (Listing~\ref{AddingGroup}).
 Several critical functions then iterated through this array (e.g.,~Listing~\ref{Iterating}), so an attacker could make those functions permanently fail (a function call would require more gas than the block gas limit).
 
 \begin{lstlisting}[caption={Adding an element to the internal array},label={AddingGroup},language=Solidity]
@@ -104,23 +116,23 @@ function findBidder(bytes32 bidderId) constant returns (uint8 err, uint groupInd
 
 \subsection{Testing on a massive sample} \label{MassiveTesting}
 
-We downloaded the source code of 4,600 verified contracts (1,537,954
-lines of code) as of 4~October~2017 from Etherscan~\cite{EtherscanVerified} using a Java library JSoup~\cite{JSoup} and ran SmartCheck on this dataset.
+We downloaded the source code of $4\,600$ verified contracts ($1\,537\,954$ lines of code) as of 4~October~2017 from Etherscan~\cite{EtherscanVerified} using a Java library JSoup~\cite{JSoup} and ran SmartCheck on this dataset.
 
 % https://tex.stackexchange.com/a/99834/142924
+% $X$ causes errors
 \begin{figure}
 	\caption{Distribution of non-zero contract balances (ether)}
 	\centering
 	\begin{tikzpicture}
 	\pgfplotstableread{
 		Balance   			Contracts
-		100,000+			 8
-		10,000-100,000       14
-		1000-10,000      	 38
-		100-1,000      		 46
-		10-100     			 64
-		1-10				 90
-		0-1					 356
+		100\,000+			8
+		10\,000-100\,000    14
+		1\,000-10\,000      38
+		100-1\,000      	46
+		10-100     			64
+		1-10				90
+		0-1					356
 		%0					3984
 	}\datatable
 	
@@ -137,9 +149,9 @@ lines of code) as of 4~October~2017 from Etherscan~\cite{EtherscanVerified} usin
 \end{figure}
 
 The contract balances differ significantly (see Figure~\ref{BalancesFigure}).
-The vast majority (3984,~or 86.6\%)~of contracts have a zero balance.
-One contract holds over one~million ether (1,500,000, or \$440~million at the time of testing), which accounts for~38.4\% of the total balance of all contracts.
-Contracts have from 1 to 2,525~lines of code, with an average of 334~lines and a median of 221~lines.
+The vast majority ($3\,984$,~or $86.6$\%)~of contracts have a zero balance.
+One contract holds over one~million ether ($1\,500\,000$, or \$$440$~million at the time of testing), which accounts for~$38.4$\% of the total balance of all contracts.
+Contracts have from $1$ to $2\,525$~lines of code, with an average of $334$~lines and a median of $221$~lines.
 
 \let\letcs\texapiletcs
 \begin{figure}
@@ -183,10 +195,10 @@ Contracts have from 1 to 2,525~lines of code, with an average of 334~lines and a
 \end{figure}
 \let\letcs\etoolboxletcs
 
-SmartCheck analyzed the dataset in 7644 seconds (437~lines per second\footnote{Intel~Core~i5-4210M @ 2.60GHz, 12~GB RAM, Windows~8.1 64~bit}).
-As per SmartCheck, 99.9\% of contracts have issues, 63.2\% of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
+SmartCheck analyzed the dataset in $7\,644$ seconds (approximately $2$~hours and $7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
+As per SmartCheck, $99.9$\% of contracts have issues, $63.2$\% of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
 The findings are presented in Table~\ref{MassiveTestingTable} and Figure~\ref{MassiveTestingFigure} (colors denote severity levels: black -- high, dark gray -- medium, light gray -- low).
-The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for 67.296\% of all findings), is excluded from the figure for clarity.
+The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for $67.30$\% of all findings), is excluded from the figure for clarity.
 
 \let\letcs\texapiletcs
 \begin{table}[t]
@@ -196,27 +208,27 @@ The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisib
 		\hline
 		\textbf{Severity} & \textbf{Pattern} & \textbf{Findings} & \textbf{\% of all} \\
 		\hline
-		\multirow{3}{*}{high} & {\usevalue SolidityReentrancyExternalCall:name } & {\usevalue SolidityReentrancyExternalCall:occur } & 3.329 \\
-		 & {\usevalue SolidityUncheckedCall:name } & {\usevalue SolidityUncheckedCall:occur } & 0.818 \\
-		 & {\usevalue SolidityCallValue:name } & {\usevalue SolidityCallValue:occur } & 0.228 \\
+		\multirow{3}{*}{high} & {\usevalue SolidityReentrancyExternalCall:name } & {\usevalue SolidityReentrancyExternalCall:occur } & $3.329$ \\
+		 & {\usevalue SolidityUncheckedCall:name } & {\usevalue SolidityUncheckedCall:occur } & $0.818$ \\
+		 & {\usevalue SolidityCallValue:name } & {\usevalue SolidityCallValue:occur } & $0.228$ \\
 		\hline
-		\multirow{8}{*}{medium} & {\usevalue SolidityDosWithThrow:name } & {\usevalue SolidityDosWithThrow:occur } & 6.521 \\
-		& {\usevalue SolidityTimestampDependence:name } & {\usevalue SolidityTimestampDependence:occur } & 6.378 \\
-		& {\usevalue SoliditySend:name } & {\usevalue SoliditySend:occur } & 2.794 \\
-		& {\usevalue SolidityGasLimitAndLoops:name } & {\usevalue SolidityGasLimitAndLoops:occur } & 2.164 \\
-		& {\usevalue SolidityVar:name } & {\usevalue SolidityVar:occur } & 0.529 \\
-		& {\usevalue SolidityTxOrigin:name } & {\usevalue SolidityTxOrigin:occur } & 0.163 \\
-		& {\usevalue SolidityBalanceEquality:name } & {\usevalue SolidityBalanceEquality:occur } & 0.094 \\
+		\multirow{8}{*}{medium} & {\usevalue SolidityDosWithThrow:name } & {\usevalue SolidityDosWithThrow:occur } & $6.521$ \\
+		& {\usevalue SolidityTimestampDependence:name } & {\usevalue SolidityTimestampDependence:occur } & $6.378$ \\
+		& {\usevalue SoliditySend:name } & {\usevalue SoliditySend:occur } & $2.794$ \\
+		& {\usevalue SolidityGasLimitAndLoops:name } & {\usevalue SolidityGasLimitAndLoops:occur } & $2.164$ \\
+		& {\usevalue SolidityVar:name } & {\usevalue SolidityVar:occur } & $0.529$ \\
+		& {\usevalue SolidityTxOrigin:name } & {\usevalue SolidityTxOrigin:occur } & $0.163$ \\
+		& {\usevalue SolidityBalanceEquality:name } & {\usevalue SolidityBalanceEquality:occur } & $0.094$ \\
 		\hline
-		\multirow{10}{*}{low} & {\usevalue SolidityVisibility:name } & {\usevalue SolidityVisibility:occur } & 67.296 \\& {\usevalue SolidityPragmasVersion:name } & {\usevalue SolidityPragmasVersion:occur } & 3.067 \\
-		& {\usevalue SolidityIntegerDivision:name } & {\usevalue SolidityIntegerDivision:occur } & 1.432 \\
-		& {\usevalue SolidityStyleGuideViolation:name } & {\usevalue SolidityStyleGuideViolation:occur } & 1.348 \\
-		& {\usevalue SolidityPrivateModifier:name } & {\usevalue SolidityPrivateModifier:occur } & 1.014 \\
-		& {\usevalue SolidityErc20ApiViolation:name } & {\usevalue SolidityErc20ApiViolation:occur } & 1.169 \\
-		& {\usevalue SolidityMaliciousLibraries:name } & {\usevalue SolidityMaliciousLibraries:occur } & 1.157 \\
-		& {\usevalue SolidityLockedMoney:name } & {\usevalue SolidityLockedMoney:occur } & 0.439 \\
-		& {\usevalue SolidityRedundantFallbackReject:name } & {\usevalue SolidityRedundantFallbackReject:occur } & 0.053 \\
-		& {\usevalue SolidityBytesByte:name } & {\usevalue SolidityBytesByte:occur } & 0.006 \\
+		\multirow{10}{*}{low} & {\usevalue SolidityVisibility:name } & {\usevalue SolidityVisibility:occur } & $67.296$ \\& {\usevalue SolidityPragmasVersion:name } & {\usevalue SolidityPragmasVersion:occur } & $3.067$ \\
+		& {\usevalue SolidityIntegerDivision:name } & {\usevalue SolidityIntegerDivision:occur } & $1.432$ \\
+		& {\usevalue SolidityStyleGuideViolation:name } & {\usevalue SolidityStyleGuideViolation:occur } & $1.348$ \\
+		& {\usevalue SolidityPrivateModifier:name } & {\usevalue SolidityPrivateModifier:occur } & $1.014$ \\
+		& {\usevalue SolidityErc20ApiViolation:name } & {\usevalue SolidityErc20ApiViolation:occur } & $1.169$ \\
+		& {\usevalue SolidityMaliciousLibraries:name } & {\usevalue SolidityMaliciousLibraries:occur } & $1.157$ \\
+		& {\usevalue SolidityLockedMoney:name } & {\usevalue SolidityLockedMoney:occur } & $0.439$ \\
+		& {\usevalue SolidityRedundantFallbackReject:name } & {\usevalue SolidityRedundantFallbackReject:occur } & $0.053$ \\
+		& {\usevalue SolidityBytesByte:name } & {\usevalue SolidityBytesByte:occur } & $0.006$ \\
 		\hline
 	\end{tabular}
 	\label{MassiveTestingTable}

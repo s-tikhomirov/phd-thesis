@@ -18,7 +18,7 @@ We propose multiple potential countermeasures, including just-in-time routing.
 Evaluating them remains an exciting avenue for future work.
 
 
-\section{Privacy-efficiency tradeoff}
+\section{Privacy-efficiency trade-off}
 
 As described in Chapter~\ref{Chapter05IntroLightning}, a payment channel in the LN allows two parties to lock funds in a multisignature address and then modify the distribution of funds in nearly instant transactions, without confirming them in the blockchain.
 LN nodes gossip about channels available for routing and their total capacities.
@@ -36,8 +36,8 @@ LN payments often fail due to insufficient balance at an intermediary hop, becau
 In that case, the payment is attempted along multiple routes until it succeeds.
 Knowing channel balances in advance could therefore make routing more efficient.
 
-This constitutes a \textit{privacy-efficiency tradeoff}: hidden balances improve privacy but hinder routing efficiency.
-We argue that the way LN is currently addressing this tradeoff suboptimal.
+This constitutes a \textit{privacy-efficiency trade-off}: hidden balances improve privacy but hinder routing efficiency.
+We argue that the way LN is currently addressing this trade-off suboptimal.
 Channel balances are neither well protected nor utilized.
 
 In this Chapter, we describe a probing algorithm that reveals channel balances by sending fake payments.
@@ -332,7 +332,7 @@ The LN protocol does not prescribe how quickly a node should react.
 The only time limitation is the HTLC timeout, which is usually on the order of hours or days.
 Therefore, to probe all channels in reasonable time, we have to set a timeout in the order of seconds.
 For the main probing, we choose a $10$~seconds timeout.
-Our later results show that this is a reasonable tradeoff between probing speed and accuracy.
+Our later results show that this is a reasonable trade-off between probing speed and accuracy.
 
 \subsection{Route selection}
 
@@ -374,7 +374,7 @@ Nearly all onions $3$~hops and shorter return within $10$~seconds.
 The median of the $8256$ onions is at $3.36$~seconds.
 %\todo[inline]{Understand what it means}
 Recalling that $15.25\%$ of the onions timed out or gave a non usable error back, we computed the corrected median without the timed out and erring onions, which is $3.93$ seconds. 
-We conclude that the cutoff at $10$~seconds presents an acceptable tradeoff.
+We conclude that the cutoff at $10$~seconds presents an acceptable trade-off.
 Note also that the diameter of the strongly connected component on the LN is just $3$.\footnote{It is not always possible to use the shortest route, as it may not have sufficient balances in all channels.}
 
 \begin{figure}[]
@@ -651,7 +651,7 @@ Hanging HTLCs occupy the capacity of our channels, preventing us from probing wi
 %For example, in a channel of 10~million satoshis, two hanging HTLCs of 4.3~million satoshis each (the maximum amount for a single HTLC) decrease our effective channel capacity to 1.4~million satoshis.
 In that case, we must issue smaller probes and, as a result, obtain less information.
 Hanging HTLCs are hard to get rid of: the protocol does not allow to cancel them unilaterally, and closing a channel involves long timeouts until the funds are available and can be put into a new channel.
-This issue is similar to our own attack presented in~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
+This issue is similar to our own attack presented in Chapter~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
 
 
 
@@ -702,5 +702,5 @@ However, despite the intuitive impression that LN provides a high level of priva
 Our experiments show that a low-resource attacker can probe the balances of the majority of live and active channels with a high precision.
 %, revealing their balances and potentially tracking the flow of value through selected channels in near real time.
 We implement and evaluate our technique on the Bitcoin testnet, successfully probing a large portion of channels.
-We consider the tradeoff between balance privacy and routing efficiency, and describe multiple directions for future work that would evaluate the ways to find the right balance between the two.
+We consider the trade-off between balance privacy and routing efficiency, and describe multiple directions for future work that would evaluate the ways to find the right balance between the two.
 

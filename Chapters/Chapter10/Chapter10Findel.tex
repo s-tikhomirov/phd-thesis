@@ -16,26 +16,29 @@ We implement an Ethereum smart contract that acts as a marketplace for Findel co
 \section{Financial domain-specific languages}
 
 %Financial derivatives -- contracts defined in terms of other contracts -- play a major role in modern economy\footnote{The derivatives market is comparable in size to the world's GDP. The gross market value of all outstanding over-the-counter derivatives is \$20.7~trillion~\cite{InternationalSettlements2016} (2016). The world GDP in 2015 is \$73,9~trillion~\cite{WorldBank}.}.
-Financial industry lacks a universal domain-specific language.
-Natural language is unsuitable for expressing contracts due to its inherent ambiguity.
-An influential paper~\cite{PeytonJones2000} is one of many attempts to create a rigorous DSL that would mitigate disputes and stimulate automated processing of complex derivatives.
+The financial industry lacks a universal domain-specific language.
+Natural language is  inherently ambiguous.
+This leads to misinterpretation of contracts.
+
+There has been multiple proposals to create a rigorous DSL to mitigate disputes and stimulate automated processing of contracts.
+An influential paper~\cite{PeytonJones2000} describes one such language.
 It leverages ideas from functional programming and uses a succinct set of basic building blocks to express financial agreements.
-A key feature of this notation is composability: new indefinitely complex derivatives can be defined based on existing ones.
-Due to their nested structure, contracts in this DSL are well-suited for automated processing, including valuation.
-The authors do not specify an enforcement mechanism though: execution is performed by an implicit environment.
+A key feature of this notation is composability.
+New indefinitely complex derivative contracts can be defined based on existing ones.
+Due to their nested structure, contracts in this DSL are well-suited for automated processing and valuation.
 This work forms the basis for research~\cite{Gaillourdet2011, Schuldenzucker2014} and commercial~\cite{Frankau2009} projects.
+The authors do not specify an enforcement mechanism though.
+Execution is performed by an implicit environment.
 
-The idea of smart contracts -- computer programs for (semi-)automatic enforcement of agreements -- dates back to mid-1990s~\cite{Szabo1997}.
-Blockchain networks, notably Ethereum, became the first practical implementation of this idea and fueled interest in the concept~\cite{Castillo2016}.
-Ethereum is a network of mutually distrusting nodes, which nevertheless establish consensus on the results of computations without the need of a trusted third party.
+Blockchain networks presented for the first time an environment for automated contract enforcement.
+This fueled interest in the concept of smart contracts~\cite{Castillo2016}, theoretically described in the 1990-s~\cite{Szabo1997}.
+One approach to smart contract implementation to doing so is to encode the entire logic of an agreement on-chain.
+However, expressing complex clauses in a general-purpose programming language, like Ethereum's Solidity, is error-prone~\cite{Sirer2016, Atzei2017}.
 
-An obvious use case for blockchain-based smart contracts is to securely manage financial agreements.
-A naive approach to doing so is to encode the entire logic of an agreement inside a smart contract.
-Expressing complex clauses in a general-purpose programming language, like Ethereum's Solidity, is error-prone~\cite{Sirer2016, Atzei2017}.
 We propose a safer approach that separates the description of a contract from its execution.
-A user only defines what a contract \textit{is} ("I owe you \$10 tomorrow"), not \textit{how} it is executed ("if the timestamp is greater than $t_0$,~\dots").
-The entire execution logic is implemented inside a smart contract, which is executed by nodes of a blockchain network.
-Thus we take the best of both worlds: unambiguity and composability of a concise declarative DSL, and trustless execution of blockchain-based smart contracts.
+A user only defines what a contract \textit{is} ("I owe you \$$10$ tomorrow"), not \textit{how} it is executed ("if the timestamp is greater than $t_0$,~\dots").
+The entire execution logic is implemented inside a smart contract, which is executed on-chain.
+Thus we take the best of both worlds: unambiguity and composability of a concise declarative DSL, and trustless execution of a blockchain network.
 %Users should be able to rigorously prove properties of contracts and thus understand what they are agreeing to.
 %A contract in a well-designed financial DSL should be composed of simple parts and be both human- and machine-readable.
 
@@ -77,7 +80,8 @@ Thus we take the best of both worlds: unambiguity and composability of a concise
 	\end{grammar}
 \end{definition}
 
-We distinguish between composite and basic primitives, because the former contain other primitives as sub-nodes while the latter do not.
+We distinguish between composite and basic primitives.
+Composite primitives contain other primitives as sub-nodes, basic primitives do not.
 \(Currency\), \(number\), \(address\), and \(timestamp\) are implementation dependent data types.
 $D$ and $I$ can not be modified after a contract is created.
 
@@ -169,7 +173,7 @@ The execution outcome is fully determined by description $D$, execution time $t$
 
 \subsection{Example}
 
-Suppose Alice sells to Bob a zero-coupon (i.e.,~paying no interest) bond that pays~\$11 in one year for~\$10:
+Suppose Alice sells to Bob a zero-coupon (i.e.,~paying no interest) bond that pays~\$$11$ in one year for~\$$10$:
 
 \[c_{zcb} = \mathrm{And}(\mathrm{Give}(\mathrm{Scale}(10,\mathrm{One}(USD))),\mathrm{At}(\text{now+1 years},\mathrm{Scale}(11,\mathrm{One}(USD))))\]
 
@@ -182,10 +186,10 @@ We now show how \(c_{zcb}\) is executed step by step.
 	\begin{tabular}{| p{0.25\linewidth} | p{0.75\linewidth} |}
 		\hline
 		Alice's contracts & \\
-		Alice's balance & 100 \\
+		Alice's balance & $100$ \\
 		\multirow{2}{10em}{Bob's contracts} & \(\mathrm{Give}(\mathrm{Scale}(10,\mathrm{One}(USD)))\)\\
 		& \(\mathrm{At}(\text{now + 1 years},\mathrm{Scale}(11,\mathrm{One}(USD)))\)\\
-		Bob's balance & 10 \\
+		Bob's balance & $10$ \\
 		\hline    
 	\end{tabular}
 	
@@ -194,9 +198,9 @@ We now show how \(c_{zcb}\) is executed step by step.
 	\begin{tabular}{| p{0.25\linewidth} | p{0.75\linewidth} |}
 		\hline
 		Alice's contracts & \(\mathrm{Scale}(10,\mathrm{One}(USD))\) \\
-		Alice's balance & 100 \\
+		Alice's balance & $100$ \\
 		Bob's contracts & \(\mathrm{At}(\text{now + 1 years},\mathrm{Scale}(11,\mathrm{One}(USD)))\) \\
-		Bob's balance & 10 \\
+		Bob's balance & $10$ \\
 		\hline    
 	\end{tabular}
 	
@@ -205,9 +209,9 @@ We now show how \(c_{zcb}\) is executed step by step.
 	\begin{tabular}{| p{0.25\linewidth} | p{0.75\linewidth} |}
 		\hline
 		Alice's contracts & \\
-		Alice's balance & 110 \\
+		Alice's balance & $110$ \\
 		Bob's contracts & \(\mathrm{At}(\text{now + 1 years},\mathrm{Scale}(11,\mathrm{One}(USD)))\) \\
-		Bob's balance & 0 \\
+		Bob's balance & $0$ \\
 		\hline    
 	\end{tabular}
 	
@@ -216,9 +220,9 @@ We now show how \(c_{zcb}\) is executed step by step.
 	\begin{tabular}{| p{0.25\linewidth} | p{0.75\linewidth} |}
 		\hline
 		Alice's contracts & \\
-		Alice's balance & 99\\
+		Alice's balance & $99$ \\
 		Bob's contracts & \\
-		Bob's balance & 11\\
+		Bob's balance & $11$ \\
 		\hline    
 	\end{tabular}
 	
@@ -230,27 +234,28 @@ We now show how \(c_{zcb}\) is executed step by step.
 
 \section{Implementation} \label{sec:Ch10FindelImplementation}
 
-We develop an Ethereum smart contract, referred to as marketplace, that keeps track of users' balances and lets them create, trade, and execute Findel contracts.
+We develop an Ethereum smart contract, referred to as the \textit{marketplace}, that keeps track of users' balances and lets them create, trade, and execute Findel contracts.
 The Findel DSL is network-agnostic and can be implemented on top of any blockchain with sufficient programming capabilities.
 
 
-\subsubsection{Users and balances}
+\subsection{Users and balances}
 
-We implement the objects defined in Section~\ref{sec:Ch10FindelDefinitions} with struct data types \texttt{Description} and \texttt{Fincontract}.
+We implement the objects defined in Section~\ref{sec:Ch10FindelDefinitions} with \texttt{struct} data types \texttt{Description} and \texttt{Fincontract}.
 We also introduce the \texttt{User} type that contains the user's Ethereum address and balances in all supported currencies.
-Users, descriptions and contracts are stored in their respective mappings (a generic key-value storage type in Solidity) in the marketplace's storage.
+Users, descriptions, and contracts are stored in their respective mappings (a generic key-value storage type in Solidity) in the marketplace's storage.
 
-The ultimate effect of every financial agreement is changing the parties' balances (with clauses specifying when and under what conditions it should occur).
-We stick to a naive approach: each user is assigned an array of balances for each supported currency.
-Although easily implementable, it introduces a single point of failure: the marketplace holds users' deposits.
+The ultimate effect of every financial agreement is changing the parties' balances.
+Contract clauses specify when and under what conditions it should occur.
+Each user is assigned an array of balances for each supported currency.
+Although easily implementable, this approach introduces a single point of failure: the marketplace holds users' deposits.
 
 The only primitive that actually transfers value is \(\mathrm{One}\).
 The \texttt{enforcePayment} function implements its execution.
 It subtracts a given amount in a given currency from the issuer's balance and adds it to the owner's balance.
-Our current implementation does not enforce any constraints on users' balances that would prevent them from building up too much debt.
+Our current implementation does not enforce any constraints on users' balances and does not prevent them from building up debt.
 
 
-\subsubsection{Ownership transfer}
+\subsection{Ownership transfer}
 
 In addition to \texttt{issuer} and \texttt{owner} (see Definition~\ref{def:Ch10FindelFindelContract}), a \texttt{Fincontract} contains an auxiliary \texttt{proposedOwner} field.
 On contract creation, \texttt{issuer}, \texttt{owner}, and \texttt{proposedOwner} are initialized to \texttt{msg.sender}.
@@ -258,13 +263,15 @@ To transfer ownership, the owner sets \texttt{proposedOwner} either to the addre
 Only the proposed owner can (but does not have to) \texttt{join} the contract; \texttt{0x0} means anyone can do so\footnote{Beware of front-runners: Bob can monitor the network and try to join a contract as soon as he sees Alice's attempt to do so. Depending on the network latency and miner's behavior, either transaction can be confirmed.}.
 
 
-\subsubsection{Data sources and gateways} \label{def:Ch10FindelGateways}
+\subsection{Data sources and gateways} \label{def:Ch10FindelGateways}
 
-Ethereum contracts are intentionally isolated from the broader Internet and can not pull data from the Web, as it can not be consistently replicated~\cite{Greenspan2016}.
-Asynchronous requests usually solve the problem: a smart contract records an Ethereum event with request parameters properly encoded.
-A daemon process at an Ethereum node listens for such events, parses requests, and sends them to the Web.
+Ethereum contracts are intentionally isolated from the broader Internet and can not pull data from external data feeds~\cite{Greenspan2016}.
+Asynchronous requests usually solve the problem.
+They work as follows.
+A smart contract records an Ethereum event with request parameters properly encoded.
+A daemon process at an Ethereum node listens for such events, parses requests, and sends them to the external data source.
 The responses are then sent to the requesting smart contract on behalf of an Ethereum account affiliated with the daemon.
-The submitted data may be accompanied by a proof of authenticity (say, digital signature on a pre-approved public key)\footnote{BTCRelay is a prominent example: users submit Bitcoin block headers to a smart contract, which implies their authenticity from the validity of easily verifiable proof-of-work. After a header is stored on the Ethereum blockchain, users check with a Merkle proof that the Bitcoin block contains a given transaction.}.
+The submitted data may be accompanied by a proof of authenticity (i.e.,~ a digital signature on a previously approved public key)\footnote{BTCRelay is a prominent example: users submit Bitcoin block headers to a smart contract, which implies their authenticity from the validity of easily verifiable proof-of-work. After a header is stored on the Ethereum blockchain, users check with a Merkle proof that the Bitcoin block contains a given transaction.}.
 
 Financial derivatives often use external data.
 To prevent a malicious or careless user from creating a Findel contract using untrusted sources, we need to guarantee data authenticity.
@@ -273,7 +280,7 @@ To prevent a malicious or careless user from creating a Findel contract using un
 	A \textbf{gateway} is a smart contract that conforms to the API:
 	
 	\begin{itemize}
-		\item \textbf{int getValue()} Get the latest observed value\footnote{For simplicity, we only consider 256-bit integers as observable values. Boolean values can be trivially simulated via integers.}.
+		\item \textbf{int getValue()} Get the latest observed value.\footnote{For simplicity, we only consider 256-bit integers as observable values. Boolean values can be trivially simulated via integers.}
 		\item \textbf{uint getTimestamp()} Get the timestamp at which the latest value was observed.
 		\item \textbf{bytes getProof()} Get the authenticity proof for the latest value.
 		\item \textbf{update()} Update the value.
@@ -294,16 +301,16 @@ This would allow for more straightforward modeling of derivatives that depend on
 
 We assume that the original data sources (e.g.,~feeds of reputable financial media) are trustworthy.
 An extra safety catch would be to query multiple sources, exclude outliers and return an aggregated value.
-Authenticity of data sources is guaranteed by a secure connection (e.g.,~TLS) and the existing PKI for authentication (\cite{Fromknecht2014} and~\cite{Lewison2016} propose blockchain-based PKI architectures).
+Authenticity of data sources is guaranteed by a secure connection (e.g.,~TLS) and the existing public key infrastructure (PKI) for authentication (\cite{Fromknecht2014} and~\cite{Lewison2016} propose blockchain-based PKI architectures).
 
 Gateways without publicly available source code should not be trusted.
 
 
-\subsubsection{Execution implementation} \label{sec:Ch10FindelExecutionImplementation}
+\subsection{Execution} \label{sec:Ch10FindelExecutionImplementation}
 
 The \texttt{executeRecursively} function implements the execution logic defined in Section~\ref{sec:Ch10FindelExecutionModel} and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
 The execution of an expired contract ($t_0 < now$) returns \texttt{true} unconditionally\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\).} and deletes the contract\footnote{An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}.
-Every step in the life cycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
+Every step in the lifecycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
 
 Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
 Ethereum contracts can not act on their own: the owner must issue a transaction to trigger execution.
@@ -312,14 +319,14 @@ Thus we presume that Findel contracts are not guaranteed to execute\footnote{Com
 We discuss this issue in Section~\ref{sec:Ch10FindelEnforcement}.
 
 We model unbounded Findel contracts (i.e.,~with $INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
-Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~10~years).
+Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~ten~years).
 
 
-\subsection{Possible improvements}
+\section{Possible improvements}
 
 We now discuss the shortcomings of our model and ways to improve it.
 
-\subsubsection{Enforcement} \label{sec:Ch10FindelEnforcement}
+\subsection{Enforcement} \label{sec:Ch10FindelEnforcement}
 
 As mentioned in Section~\ref{sec:Ch10FindelExecutionImplementation}, Findel contracts are not guaranteed to execute.
 At first sight, it is a major problem, as contract must impose obligations on parties.
@@ -337,22 +344,21 @@ To prevent it, Alice attaches a "penalty" clause:
 \[P=After(t_0,\mathrm{If}(c_{executed},\mathrm{Zero},\mathrm{Scale}(2,\mathrm{One}(USD))))\]
 
 \(c_{executed}\) is the address of a gateway that indicates whether a particular Findel contract was executed.
-When Bob joins \(C_{penalty}=\mathrm{And}(C,\mathrm{Give}(P))\), Alice obtains the right to claim \$2 from Bob if he fails to fulfil his obligations.
+When Bob joins \(C_{penalty}=\mathrm{And}(C,\mathrm{Give}(P))\), Alice obtains the right to claim \$2 from Bob if he fails to fulfill his obligations.
 
 Note that \(C_{penalty}\) references \(C_{executed}\), which in turn must be aware of \(C_{penalty}\).
-Thus the gateway should be either adjustable (with Alice tuning the gateway with a special transaction) or generic (reports the state of a Findel contract taking its id as an argument).
+Thus the gateway should be either adjustable (with Alice tuning the gateway with a special transaction) or generic (reports the state of a Findel contract taking its identifier as an argument).
 
 
-\subsubsection{Defaulting on debt}
+\subsection{Defaulting on debt}
 
 A concise financial DSL does not prevent borrowers from defaulting on their debt.
 It is up to a marketplace to solve this problem.
 
-Requiring a~100\% guarantee deposit seems safe, but is questionable from an economical standpoint.
+Requiring a~$100$\% guarantee deposit seems safe, but is questionable from an economical standpoint.
 People and organizations borrow money to invest it.
 The no-arbitrage principle states that there is no guaranteed way to make a profit.
 The investor reward, e.g.~interest, is the premium for taking the inevitable risk of business failure.
-Thus, this approach hardly makes economical sense.
 
 A marketplace can also mimic the fractional reserve banking model by requiring users to always be able to pay at least $n$\% of their debt and punishing violators (e.g.,~by withholding their guarantee deposit).
 It does not solve the problem of defaults completely though.
@@ -360,11 +366,19 @@ In legacy finance, users have a fixed government-issued identity, allowing banks
 In a decentralized setting, users can create a practically indefinite number of identities.
 A production-ready marketplace should therefore take measures to combat Sybil attacks.
 
+\paragraph{2020 update}
+In the three years since the publication of the original paper, the market has shown that fully collateralized (and \textit{over}collateralized) loans do have useful applications.
+Ethereum-based stablecoin projects allow users to take loans in cryptocurrencies that are promised to hold parity with US~dollar~\cite{Mita2019}.
+A prominent example is the MakerDAO project, which manages a stablecoin called \textit{DAI}.
+To take out a loan of $X$~DAI, users must to deposit at least $1.5X$~worth of cryptocurrency, usually ether.
+If the \textit{collaterization ratio} falls below the threshold, the position is \textit{liquidated}: the collateral is forcibly sold.
+This system is useful for hedging against price volatility of cryptocurrencies and for leveraged betting on its future price increase.
 
-\subsubsection{Modeling balances with Tokens}
 
-A more refined approach to modeling users' balances is to use ERC20~\textbf{tokens} -- a de-facto standard API for implementing transferable units of value in Ethereum~\cite{Victor2019}.
-Tokens are primarily used to represent company shares during so-called initial coin offerings (ICOs).
+\subsection{Modeling balances with Tokens}
+
+A more refined approach to modeling users' balances is to use ERC20~\textit{tokens} -- a de-facto standard API for implementing transferable units of value in Ethereum~\cite{Victor2019}.
+%Tokens are primarily used to represent company shares during so-called initial coin offerings (ICOs).
 We assume that tokens can be freely exchanged to any currency the marketplace operates with.
 Given the address $\mathcal{T}$ of the Ethereum token contract, any Ethereum contract can query the balance of any user $U$, and transfer its tokens (if it has any) to an arbitrary address.
 Suppose Alice and Bob are token holders.
@@ -379,7 +393,7 @@ Certainly, for the execution to complete, the owner must either have enough toke
 Thus we delegate the banking functionality to the token smart contract and free the marketplace from holding and transferring money~\cite{Khovratovich2016}.
 
 
-\subsubsection{Multi-party contracts}
+\subsection{Multi-party contracts}
 
 We might want to extend the Findel contracts model to support more than two parties.
 An example of a three-party contract is buying a car with insurance.
@@ -391,7 +405,7 @@ If \(insuranceSigned\) indicates whether a user joined the insurance contract, t
 \[\mathrm{If}(insuranceSigned,\mathrm{And}(\mathrm{Give}(\mathrm{Scale}(P,\mathrm{One}(USD)),\mathrm{One}(CAR))),\mathrm{Zero})\]
 
 
-\subsubsection{Local client}
+\subsection{Local client}
 
 In order to communicate with a Findel marketplace, users need client-side software.
 Besides communicating with the Ethereum network, it might also implement other functions:
@@ -403,35 +417,27 @@ Besides communicating with the Ethereum network, it might also implement other f
 \end{itemize}
 
 
-%\subsubsection{Formal semantics}
+\section{Platform limitations}
 
-%Findel DSL would benefit from the development of formal semantics.
-%We leave this idea for future work.
+A Turing-complete programming language does not mean that all algorithms can be implemented inside an Ethereum contract.
+Apart from gas costs, the Ethereum network architecture implies additional limitations.
 
-
-
-\subsection{Platform limitations}
-
-A Turing-complete programming language does not mean that all a programmer can think of can be implemented inside an Ethereum contract.
-Gas costs aside, the Ethereum network architecture implies certain limitations.
-
-\subsubsection{Lack of precise clock}
-
+\subsection{Lack of precise clock}
 Timing is important for almost all financial contracts.
 Clock synchronization is a hard problem in decentralized systems, even more so if participants can profit from manipulating timestamps.
-Blocks in Ethereum are produced every 15~seconds; block timestamps provide causal ordering.
-Solidity contains keywords for time units, but timestamps are ultimately controlled by miners.
+Blocks in Ethereum are produced every $15$~seconds.
+Block numbers provide causal ordering.
+Solidity contains keywords for time units, but block timestamps are ultimately controlled by miners.
 %It is hardly possible to use Ethereum for applications that require a precise global clock.
 
-
-\subsubsection{Imperative paradigm}
+\subsection{Imperative paradigm}
 Functional programming paradigm is well suited for developing embedded DSLs~\cite{Gibbons2015}.
 The original papers by Peyton Jones~et~al. as well as all existing implementations of their DSL use functional languages (Haskell~\cite{PeytonJones2000, Jones2003, Straaten2007}, OCaml~\cite{LexiFi}, Scala~\cite{Walton2012, Chaudhary2015}).
-In contrast, Solidity and Serpent are imperative.
-Functional languages for Ethereum are in a very early stage of development~\cite{FpEthereum2017}.
+In contrast, Solidity is imperative.
+Functional languages for Ethereum~\cite{FpEthereum2017} are in a very early stage of development.
+\footnote{In 2020, Solidity is the dominant high-level language in Ethereum. Functional contract languages have seen virtually no progress.}
 
-
-\subsubsection{Underdeveloped type system}
+\subsection{Underdeveloped type system}
 Ethereum supports neither decimal nor floating-point types\footnote{A likely rationale: rounding issues break consensus.}, which often model amounts of money and currency exchange rates respectively.
 The only numeric data types in Solidity are integers of various bit lengths.
 Moreover, Solidity lacks type parameters, which could be useful for Gateways (i.e.,~\texttt{Gateway<int>}).
@@ -459,17 +465,17 @@ For testing purposes, we implement a gateway that uses the current timestamp as 
 		\hline
 		\textbf{Operation} & \textbf{Transaction cost} & \textbf{Execution cost} \\
 		\hline
-		Create a marketplace smart contract & 2221599 & 1681095 \\
+		Create a marketplace smart contract & $2\,221\,599$ & $1\,681\,095$ \\
 		\hline
-		Register a user & 79462 & 58190 \\
+		Register a user & $79\,462$ & $58\,190$ \\
 		\hline
-		Check user's balance & 47667 & 26395 \\
+		Check user's balance & $47\,667$ & $26\,395$ \\
 		\hline
-		Get contract info & 24407 & 959 \\
+		Get contract info & $24\,407$ & $959$ \\
 		\hline
-		Get description info & 24706 & 1258 \\
+		Get description info & $24\,706$ & $1\,258$ \\
 		\hline
-		Update a gateway & 36922 & 15650 \\
+		Update a gateway & $36\,922$ & $15\,650$ \\
 		\hline
 	\end{tabular}
 	\caption{Cost of setup and helper functions (in gas units)}
@@ -493,27 +499,27 @@ We also do not account for gateway update costs.
 		\hline
 		& \textbf{Tx cost} & \textbf{Exec cost} & \textbf{Tx cost} & \textbf{Exec cost} \\
 		\hline
-		One & 184239 & 177967 & 58493 & 93602 \\
+		One & $184\,239$ & $177\,967$ & $58\,493$ & $93\,602$ \\
 		\hline
-		Currency exchange (fixed rate) & 663149 & 656877 & 101878 & 138430 \\
+		Currency exchange (fixed rate) & $663\,149$ & $656\,877$ & $101\,878$ & $138\,430$ \\
 		\hline
-		Currency exchange (market rate) & 300842 & 294570 & 59822 & 96196 \\
+		Currency exchange (market rate) & $300\,842$ & $294\,570$ & $59\,822$ & $96\,196$ \\
 		\hline
-		Zero-coupon bond & 373783 & 367511 & 143891 & 201750 \\
+		Zero-coupon bond & $373\,783$ & $367\,511$ & $143\,891$ & $201\,750$ \\
 		\hline
-		Bond with two coupons & 939566 & 933294 & 346871 & 477100 \\
+		Bond with two coupons & $939\,566$ & $933\,294$ & $346\,871$ & $477\,100$ \\
 		\hline
-		European option & 519628 & 513356 & 278191 & 411103 \\
+		European option & $519\,628$ & $513\,356$ & $278\,191$ & $411\,103$ \\
 		\hline
-		Binary option & 402359 & 396087 & 59826 & 96204 \\
+		Binary option & $402\,359$ & $396\,087$ & $59\,826$ & $96\,204$ \\
 		\hline
 	\end{tabular}
 	\caption{Cost of handling Findel contracts for common derivatives (in gas units)}
 	\label{tab:Ch10FindelCost2}
 \end{table}
 
-As of January~2017, the gas cost~$10^{-9}$~ether per unit~\cite{Ethstats}; the price of ether fluctuated around~\$10~\cite{Worldcoinindex}.
-That brings the cost of a typical Findel contract operation ($10^5$ -- $10^6$~gas units) to 1.8 -- 18~US~cent.
+As of January~2017, the gas cost~$10^{-9}$~ether per unit~\cite{Ethstats}; the price of ether fluctuated around~\$$10$~\cite{Worldcoinindex}.
+That brings the cost of a typical Findel contract operation ($10^5$ -- $10^6$~gas units) to $1.8$ -- $18$~US~cents.
 
 
 %%%% SECTION 5 %%%%
@@ -533,8 +539,8 @@ For this reason we introduced \(If\) and \(\mathrm{Timebound}\) primitives to ex
 
 \subsection{Logic Portfolio Theory by Steffen Schuldenzucker}
 
-Steffen Schuldenzucker in~\cite{Schuldenzucker2016} proposes an axiomatic approach to proving no-arbitrage relationships between contracts based on the notation from~\cite{Jones2003}.
-Using a rigorously defined algebra of contracts, he proves well-known financial theorems, such as the put-call parity.
+\cite{Schuldenzucker2016} proposes an axiomatic approach to proving no-arbitrage relationships between contracts based on the notation from~\cite{Jones2003}.
+Using a rigorously defined algebra of contracts, the author proves well-known financial theorems, such as the put-call parity.
 Formal semantics of Findel can be introduced using a similar approach.
 This would enable formal verification techniques that could substantially increase confidence in the safety of our language.
 
@@ -542,17 +548,18 @@ This would enable formal verification techniques that could substantially increa
 \subsection{Preliminary draft by Nick Szabo}
 
 Smart contracts pioneer Nick Szabo in~\cite{Szabo2002} presents "a mini-language" that can be characterized as a middle ground between programming and legal speak.
-The basic building block is a \textit{right} (e.g.,~to receive~\$100 now).
+The basic building block is a \textit{right} (e.g.,~to receive~\$$100$ now).
 Rights are combined using well-defined operators (\(when\), \(then\), \(also\), \(with\) -- analogous to our primitives) and \textit{performed} depending on external events.
 Parties are assumed to have a trusted source of real-world information.
-The language is not purely declarative: contracts may perform calculations and save values in state variables, which allows for more flexibility\footnote{Szabo makes a case against state variables in general, stating that "they should be avoided unless utterly necessary".}.
+The language is not purely declarative: contracts may perform calculations and save values in state variables, which allows for more flexibility.
+\footnote{The author makes a case against state variables in general, stating that "they should be avoided unless utterly necessary".}
 
 
 
 \section{Conclusion}
 
-Smart contracts in public blockchain networks seem to be a perfect match for modeling financial agreements.
-Their unique value proposition is trustless execution, which reduces counterparty risks.
+Smart contracts in public blockchain networks seem to be a perfect environment for implementing financial agreements.
+The unique value proposition of blockchains is trustless execution, which reduces counterparty risks.
 We introduced Findel -- a declarative financial DSL built upon ideas from previous research in financial engineering.
 Formalizing contract clauses using Findel makes them unambiguous and machine-readable.
 We proved Ethereum to be a suitable platform for trading and executing Findel contracts.
@@ -575,12 +582,12 @@ Programmers who wish to implement a usable smart contract for handling financial
 	\[\mathrm{Scale}(10, \mathrm{And}(\mathrm{Give}(\mathrm{One}(EUR)), ScaleObs(addr,\mathrm{One}(USD))))\]
 	
 	
-	\item A \textbf{zero-coupon bond}: the owner receives \$100 at \(t_0\).
+	\item A \textbf{zero-coupon bond}: the owner receives \$$100$ at \(t_0\).
 	
 	\[\mathrm{Timebound}(t_0-\delta, t_0+\delta, \mathrm{Scale}(100, \mathrm{One}(USD)))\]
 	
 	
-	\item A \textbf{bond with coupons}: the owner receives~\$1000 (face value) in three years (maturity date) and two coupon payments of~\$50 at regular intervals before the maturity date.
+	\item A \textbf{bond with coupons}: the owner receives~\$$1\,000$ (face value) in three years (maturity date) and two coupon payments of~\$$50$ at regular intervals before the maturity date.
 	
 	\[\mathrm{And}(\mathrm{At}(\text{now + 3 years},c_{face}),\mathrm{And}(\mathrm{At}(\text{now + 1 years}, c_{cpn}),\mathrm{At}(\text{now + 1 years},c_{cpn})))\]
 	
@@ -601,7 +608,7 @@ Programmers who wish to implement a usable smart contract for handling financial
 	\[\mathrm{Timebound}(now, t_0+\delta, \mathrm{Or}(c, \mathrm{Zero}))\]
 	
 	
-	\item A \textbf{binary option}: the owner receives \$10 if a predefined event took place at \(t_0\) and nothing otherwise.
+	\item A \textbf{binary option}: the owner receives \$$10$ if a predefined event took place at \(t_0\) and nothing otherwise.
 	
 	\[\mathrm{If}(addr, \mathrm{Scale}(10, \mathrm{One}(USD)), \mathrm{Zero})\]
 	

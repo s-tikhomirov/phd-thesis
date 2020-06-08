@@ -1,32 +1,11 @@
-\section{Introduction}
 
-Ethereum was introduced in 2014 and launched in 2015~\cite{Buterin2014}.
-Ethereum nodes store data, execute smart contracts, and maintain a shared view of the global state using a proof-of-work consensus mechanism similar to that in Bitcoin~\cite{Tikhomirov2017}.
-Contrary to previous attempts at blockchain programming, e.g.,~Bitcoin scripting, Ethereum language is Turing complete and thus able to express arbitrarily complex logic.
+\section{Security challenges in Ethereum} \label{SecurityChallenges}
 
-Developers write contracts in high-level languages (the most popular and mature one is Solidity) and compile them to bytecode of the Ethereum virtual machine (EVM) -- a stack-based VM operating on 256-bit words\footnote{It is also possible to write contracts in bytecode directly.}.
-Compared to general purpose VMs like the Java virtual machine, EVM is relatively simple, executes deterministically, and natively supports certain cryptographic primitives~\cite{Buterin2017}.
-A contract is deployed by broadcasting a transaction containing its bytecode and initialization parameters.
-Miners include it in a block, permanently storing the contract at a unique blockchain address.
-Users interact with the contract by broadcasting transactions with its address, the function to be called, and its arguments.
-Upon request, the contract can call other contracts and send units of \textit{ether} -- the Ethereum native cryptocurrency -- to users or other contracts.
-
-Though Ethereum only stores bytecode, users are reluctant to trust contracts without published source code.
-Decompiling bytecode to source code is hardly possible as the information about function and variable names is lost during compilation.
-Nevertheless it is possible to display bytecode as a sequence of mnemonics or convert it into an intermediate higher-level representation suitable for analysis.
-Bytecode analysis tools are available~\cite{Norvill2017, Suiche2017}.
-
-To make spamming costly, the Ethereum protocol specifies a cost (denominated in \textit{gas} units) for each EVM operation~\cite{Wood2014}.
-A user pays upfront for the expected amount of gas the computation will consume and gets a partial refund after a successful execution.
-If an exception (including ``out of gas``) occurs, all state changes are reverted, but the gas may not be refunded\footnote{Gas refunds depend on the exception type: \texttt{assert} consumes all gas, \texttt{require} does not (starting from the Byzantium release in October~2017).}.
-The ether price of a gas unit is determined by the market.
-
-Ethereum allows people and companies globally to programmatically encode and trustlessly enforce complex financial agreements.
+Ethereum allows to encode and trustlessly enforce complex financial agreements.
 This opens up new business models and constitutes a dramatic change in the digital economy.
-New software development tools are required to ensure correctness and security of smart contracts.
-
-
-\subsection{Security challenges in Ethereum} \label{SecurityChallenges}
+Smart contracts operate in a highly adversarial environment and are hard to debug once deployed.
+Multiple high-profile contracts have been compromised~\cite{Sirer2016, Palladino2017}.
+This highlights the importance of software tools to ensure correctness and security of smart contracts.
 
 Security is a primary concern in Ethereum programming for multiple reasons:
 \begin{itemize}
@@ -45,16 +24,3 @@ Security is a primary concern in Ethereum programming for multiple reasons:
 	\item \textbf{Suboptimal high-level language}.
 	Some argue that Solidity itself inclines programmers towards unsafe development practices~\cite{ydtm2016}.
 \end{itemize}
-
-A textbook example of an Ethereum contract exploit is the DAO hack.
-The DAO was an Ethereum-based venture capital fund.
-In May~2016, it collected around \$150 million in the largest crowdfunding campaign to date.
-In June~2016, an unknown hacker exploited multiple vulnerabilities in the DAO code and gained control over ether worth around \$50 million at that time~\cite{Sirer2016}.
-Though the Ethereum protocol executed correctly, the core developers proposed a hard fork to restore stakeholders' deposits, violating the premise of decentralized applications running ``exactly as programmed``\footnote{Concerns about Ethereum's governance lead to the creation of Ethereum~Classic~\cite{EthereumClassic} -- a continuation of the Ethereum blockchain without the DAO fork.}.
-More recent examples of high-profile loss of ether due to software vulnerabilities include two incidents with the Parity multi-signature wallet in July and November~2017~\cite{Palladino2017}.
-These and many similar events of a smaller scale illustrate the importance of security in Ethereum.
-
-For the purposes of this paper, we assume correctness of the Ethereum core infrastructure and focus on security from a contract developer's viewpoint.
-We classify issues in Solidity source code and develop a static analysis tool -- SmartCheck -- that detects them.
-We test SmartCheck on a large set of real-world contracts and measure the relative prevalence of various code issues.
-SmartCheck shows significant improvements over existing alternatives in terms of false discovery rate (FDR) and false negative rate (FNR).

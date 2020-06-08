@@ -89,7 +89,7 @@ In this experiment, we aim to identify the impact of these security and privacy 
 	\caption{\label{fig:wormhole-attack} An illustrative example of value privacy (top), relationship anonymity (middle), and the wormhole attack (bottom).}
 \end{figure*}
 
-\subsubsection{Value privacy~\cite{Malavolta2017}}
+\subsubsection{Value privacy}
 Intuitively, value privacy ensures that for a transaction involving only honest users, 
 corrupted users outside of the path learn no information about the transaction value.
 This notion thus heavily relies on the existence of paths without adversarial nodes.  
@@ -97,7 +97,7 @@ Otherwise, an adversarial intermediary node can trivially learn the (upper bound
 For instance, in~\cref{fig:wormhole-attack} the adversary $u_3$
 forwards $1.2$ coins to $u_4$, estimating the transaction amount at around $1$ coin plus forwarding fees.
 
-\subsubsection{Relationship anonymity~\cite{Malavolta2017}}
+\subsubsection{Relationship anonymity}
 Intuitively, relationship anonymity ensures that given two simultaneous transactions 
 between two pairs of nodes $(u_1, u_2)$ and $(u'_1, u'_2)$ routed through the same path of intermediary 
 users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than $1/2$.
@@ -108,7 +108,7 @@ For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$
 and $u_4$ can determine that $u_1$ is transacting with $u_5$ as the same value $y$ is used along the whole path. 
 Similarly, $u_2$ and $u_4$ can determine that $u'_1$ is transacting with $u'_5$ as the same $y'$ is being used along the path. 
 
-\subsubsection{The wormhole attack~\cite{Malavolta2019}}
+\subsubsection{The wormhole attack}
 In the wormhole attack, two colluding nodes in a transaction path prevent honest intermediaries from 
 participating in the successful completion of the payment, stealing the 
 fees initially intended for honest intermediaries.\footnote{One may argue that this is not an attack, as from the sender's point of view the payment is delivered. Yet, this attack takes the economic incentive that honest users have to forward payments in the first place.} 

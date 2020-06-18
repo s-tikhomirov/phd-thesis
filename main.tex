@@ -74,7 +74,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 \usepackage{tikz}
-\usepackage{tikz-qtree}
+\usepackage{qtree}
 \usepackage{xcolor}
 \usepackage{listings}
 
@@ -153,6 +153,7 @@ headsepline, % Uncomment to get a line under the header
 \mainmatter % Begin numeric (1,2,3...) page numbering
 
 \pagestyle{thesis} % Return the page headers back to the "thesis" style
+%\pagestyle{empty} % empty headers and footers
 
 % Include the chapters of the thesis as separate files from the Chapters folder
 % Uncomment the lines as you write the 	chapters
@@ -201,7 +202,6 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 
 \printbibliography[heading=bibintoc]
-
 \setcounter{secnumdepth}{-1}
 \input{ListOfPublications}
 %----------------------------------------------------------------------------------------

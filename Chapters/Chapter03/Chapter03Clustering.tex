@@ -239,7 +239,7 @@ For Dash and Monero, we ran the clustering algorithm without calculating an exte
 We obtained clearly visible clusters, which indicated that our approach is applicable for these cryptocurrencies as well.
 
 All linkage experiments were done on our own transactions and when possible on the testnets.
-The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of 1000~nodes (out of approximately 10\,000).
+The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of 1000~nodes (out of approximately 10\,000 reachable nodes at any given time~\cite{Bitnodes}).
 
 % California: experiment-1541509693
 % Tokyo: experiment-1541511845
@@ -477,7 +477,7 @@ We considered a number of wallets for Android.
 \footnote{The full list and privacy analysis is presented in Chapter~\ref{Chapter04Wallets}.}
 Most wallets connect to the P2P network indirectly via a trusted server maintained by the wallet's developers.
 From the wallets that connect to the P2P network directly (we refer to them as P2P wallets), most rely on the BitcoinJ library for networking.
-None of them uses randomizes broadcasts with diffusion or trickling.
+None of them uses randomized broadcasts with diffusion or trickling.
 Unlike Bitcoin~Core, BitcoinJ sends \texttt{TX} unconditionally\footnote{Note that in this case a full node receiving a \texttt{TX} message from an SPV node can be sure that the transaction originated at that SPV node whereas receiving an \texttt{INV} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}.
 The BitcoinJ developers acknowledge that the three-step \texttt{INV} -- \texttt{GETDATA} -- \texttt{TX} exchange in Bitcoin~Core improves privacy, but argue that since BitcoinJ is used by light nodes with a priori weaker privacy guarantees, the three-step broadcast would only decrease efficiency.
 BitcoinJ and BRD broadcast a new transaction to a subset of entry nodes and wait for the announcement from other ones, which is taken as a sign of network acceptance.
@@ -640,9 +640,7 @@ Transactions originating from a full node without incoming connections (ex. comp
 In order to prevent that, the user can re-launch the software after making a transaction, so that each transaction would be broadcast through a new set of entry nodes.
 
 \paragraph{Light wallets}
-The majority of Bitcoin users use light wallets, i.e.,~they delegate validation to another full node using simple payment verification (SPV).
-From the networking perspective, most light wallets, especially mobile ones, do not even connect to a P2P network.
-Instead, they send transactions to the server of the wallet provider via TLS, which in turn broadcasts them to the P2P network.\footnote{Apart from clustering, this poses an arguably more serious privacy threat, which is outside the scope of this work: the wallet provider can log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
+
 Proposed countermeasures for light wallets would be:
 \begin{itemize}
 	\item Use wallets that connect to the actual P2P network and broadcast transactions without relying on a centralized server (e.g.,~Bitcoin wallet for Android~\cite{BitcoinWallet});
@@ -650,13 +648,7 @@ Proposed countermeasures for light wallets would be:
 	\item If the above advice is inapplicable, at least choose a popular light wallet to increase the anonymity set.
 \end{itemize}
 
-\paragraph{Mobile wallets}
-There is an inherent trade-off between wallets with centralized and P2P broadcast.
-Centralized wallets may better protect the user's privacy from external adversaries, but can themselves link users' transactions and correlate them with additional information obtained from the app.
-Users must also trust centralized wallet providers for availability.
-%If the wallet's server is down, the service is inaccessible, as happened with both Coinomi~\cite{CoinomiDownReddit} and Mycelium~\cite{MyceliumDownReddit}.
-Wallets with P2P broadcast eliminate the danger of censorship, denial of service or deanonymization by the wallet provider, but reveal more information to an external observer.
-
+\todo[inline]{Edit, merge}
 Users of P2P wallets should connect to a trusted full node and avoid sending multiple transactions within a short time frame.
 The best practices for secure coding are especially relevant for mobile wallets, which run on devices storing lots of personal data.
 Wallet developers should use as few permissions as possible, open-source the code, provide alternative installation methods (F-Droid, direct APK download), and implement additional network-level measures to prevent traffic analysis.
@@ -669,14 +661,8 @@ We leave this research direction for future work.
 
 \paragraph{Dandelion}
 
-Dandelion~\cite{Venkatakrishnan2017} and its improvement Dandelion++~\cite{Fanti2018} are message propagation protocols for P2P networks designed to prevent deanonymization attacks.
-Its key idea is introducing asymmetry: a message is first sent along a random path, and only then broadcast gossip-style.
-Message propagation in Dandelion++\footnote{We focus on the latest, improved version of the protocol.} proceeds in two stages: the "stem" phase and the "fluff" stage.
-In the stem phase, a new message is broadcast along a random path in the anonymity graph: an approximately regular random graph based on the same set of nodes as the regular P2P network.
-In the fluff phase, the latest node to receive the message disperses it using the regular gossip-style broadcast.
-The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism, though at the cost of a several second propagation delay and additional sensitivity to DoS attacks at stem phase. 
-
-Though the authors mention (Section~4.2) that some configurations of the protocol may be prone to transaction  correlation attacks, our approach is not suitable against Dandelion++.
+Our approach is not suitable against Dandelion++.
+\footnote{The authors mention (Section~4.2) that some configurations of the protocol may be prone to transaction correlation attacks.}
 The key feature that allows our well-connected listening node to gather useful information is that nodes choose neighbors to propagate messages at random, without distinguishing incoming and outgoing connections.
 This means that by saturating 50\% of a node's connection slots we have a 50\% chance to be the first to receive a new transaction from it.
 In Dandelion++, nodes choose neighbors for the stem phase propagation only from outgoing connections.

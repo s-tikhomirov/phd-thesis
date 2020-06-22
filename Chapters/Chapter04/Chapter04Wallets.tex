@@ -16,33 +16,9 @@ Our results indicate that most mobile wallets do not follow important security a
 Privacy conscious users are rather limited in their choice of a mobile wallet for Bitcoin, and even more so -- for privacy-focused cryptocurrencies.
 
 
-\section{Taxonomy of cryptocurrency nodes}
-
-A cryptocurrency is based on P2P network of \textit{nodes}.
-\textit{Full} nodes download and validate the whole blockchain.
-\textit{Light}, or \textit{thin}, nodes query information from other nodes to save storage space and bandwidth.
-
-Light nodes present trade-offs in terms of security and privacy.
-Validating the entire blockchain on a mobile device with limited resources is often impractical.
-Therefore, mobile wallets depend on other entities to inform them of the state of the blockchain.
-
-A simple but trust-based way is to connect to a server maintained by the wallet developers.
-This server would in turn connect to the P2P network (or multiple networks, for multi-currency wallets), index transactions, and inform the mobile wallet of them.
-Note that the server can deny service and learn what addresses each user controls.
-
-The second way, roughly outlined in the original Bitcoin paper~\cite{Nakamoto2008}, is called \textit{simplified payment verification} (SPV).
-An SPV node connects to peers in the P2P network but instead of downloading full blocks only asks for transactions related to specific addresses and proofs that they are included in the main (heaviest) chain.
-
-SPV is less secure compared to full nodes, because only proof-of-work in the headers can be checked independently, but not the validity of the blocks themselves.
-SPV nodes mutt therefore ensure they are not eclipse-attacked (so that they know what the true main chain is).
-This is achieved by either connecting to a random set of nodes (bootstrapping), or to a trusted node.
-Moreover, SPV provides weaker privacy, as the full node learns which addresses belong to the SPV node.
-To mitigate this threat, \textit{Bloom filters} have been introduced to mitigate this threat, but their privacy guarantees have also been questioned~\cite{Gervais2014}.
-
-
 \section{Minimal privacy criteria} \label{section:Ch04Initialprivacycriteria}
 
-We argue that the following criteria are minimally necessary for a mobile wallet\footnote{For wallets which require registration, we may not have checked all other criteria.}:
+We argue that the following privacy criteria are minimally necessary for a mobile wallet\footnote{For wallets which require registration, we may not have checked all other criteria.}:
 \begin{enumerate}
 	\item No registration required. Otherwise, the user's transactions can be linked together and deanonymized by the wallet provider. 
 	\item Open-sourced code. A malicious closed-source application can track users or even steal their funds. Open-sourced code decreases the risk of backdoors or other unintended functionality. 

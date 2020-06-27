@@ -2,39 +2,40 @@
 
 \label{Chapter04Wallets}
 
-In this Chapter, we study the privacy of mobile cryptocurrency wallets.
-\footnote{This Chapter is based on~\cite{Biryukov2019}.}
 
 %Mobile devices have surpassed desktops by Internet traffic.
-Smartphones have become the primary computing device for many millions of people.
-Mobile devices play an increasingly important role in the cryptocurrency ecosystem.
-We systematize various privacy-related characteristics of mobile cryptocurrency wallets.
-We compare a selection of $23$~wallets for Android -- the most prevalent mobile operating system.
-We analyze their features and source code, both manually and using static analysis tools.
-
-Our results indicate that most mobile wallets do not follow important security and privacy guidelines.
+Smartphones have become the primary computing device for many millions of people and play an increasingly important role in the cryptocurrency ecosystem.
+In this Chapter, we study the privacy of mobile cryptocurrency wallets for Android -- the most prevalent mobile operating system.
+\footnote{This Chapter is based on~\cite{Biryukov2019}.}
+We systematize privacy-related characteristics of popular wallets.
+We study $23$~selected wallets in more detail.
+We compare their privacy-related properties and analyze their source code, both manually and using static analysis tools.
+Our results indicate that most mobile wallets do not follow important privacy guidelines.
 Privacy conscious users are rather limited in their choice of a mobile wallet for Bitcoin, and even more so -- for privacy-focused cryptocurrencies.
 
 
 \section{Minimal privacy criteria} \label{section:Ch04Initialprivacycriteria}
 
-We argue that the following privacy criteria are minimally necessary for a mobile wallet\footnote{For wallets which require registration, we may not have checked all other criteria.}:
+We argue that the following privacy criteria are minimally necessary for a mobile wallet:
 \begin{enumerate}
 	\item No registration required. Otherwise, the user's transactions can be linked together and deanonymized by the wallet provider. 
 	\item Open-sourced code. A malicious closed-source application can track users or even steal their funds. Open-sourced code decreases the risk of backdoors or other unintended functionality. 
-	\item Private keys generated locally. A hosted wallet (which stores keys on a server) requires full trust and can run away with the money.
-	\item P2P networking. The wallet must request blockchain data and broadcast transactions via the P2P network directly, not via a trusted server, which can deanonymize and censor transactions.
+	\item Private keys generated and stored locally. A wallet that stores the keys on a server requires full trust.
+	\item P2P networking. The wallet should request blockchain data and broadcast transactions to the P2P network directly. Otherwise, a remote server can deanonymize and censor transactions.
 \end{enumerate}
-We check the first criterion by installing a wallet and attempting to generate a receiving address without registering or providing any personal information.
+We check the first criterion by attempting to generate a receiving address in the wallet without registering or providing any personal information.
+If we succeed, we proceed to check the next criteria.
 We consider the second criterion met if there is a publicly available code repository with a fully fledged Android application linked from the wallet's official website.\footnote{Strictly speaking, \textit{reproducible builds} are required to assure that the file in the Play~Store is not modified compared to the repository. We do not check this in this work.}
 We check the third and the fourth criteria based on the official documentation and the source code, if available.
 
+We compile a list of wallets recommended on the official websites of the considered cryptocurrencies: Bitcoin, Dash, Monero, and Zcash.
+Additionally, we consider the most popular wallets (based on the publicly available approximate number of Play~Store downloads).
 The following wallets satisfy these criteria (Bitcoin unless specified): Bitcoin wallet, Bither, BRD, Dash wallet (Dash), Electrum\footnote{Electrum is originally a desktop application; the official GitHub repository gives instructions on how to generate an APK file using Kivy GUI. Electrum wallet relies on an independent network of nodes (Electrum servers) to receive blockchain data and broadcast transactions. Though Electrum servers are not genuine cryptocurrency P2P nodes, we consider Electrum satisfy the P2P criteria, as a user can technically choose which Electrum servers to connect to, including their own.}, Monerujo (Monero), Simple Bitcoin (marked in bold in Table~\ref{tab:minimal-criteria}).
 No multi-currency wallets and no Zcash wallets satisfy these criteria.
 
 \begin{table*}
 	\normalsize
-	\caption{Four privacy criteria for selected wallets}
+	\caption{Minimal privacy criteria for selected wallets}
 	\centering
 	%\resizebox{\textwidth}{!}{% use resizebox with textwidth
 	\begin{tabular}{ | l | c c c c | c | c | c | c | }
@@ -128,27 +129,24 @@ No multi-currency wallets and no Zcash wallets satisfy these criteria.
 
 \section{Analysis of selected wallets} \label{section:Ch04Analysis}
 
-We compile a list of wallets recommended on the official websites of the
-considered cryptocurrencies: Bitcoin, Dash, Monero, and Zcash.
 The following wallets have passed the minimal privacy criteria: Bitcoin Wallet, Bither, BRD, Dash~Wallet, Electrum, Monerujo, and Simple~Bitcoin.
 % Samourai, despite English spelling being "Samurai"
-\footnote{Note that Samourai connects to a selected trusted node via RPC, not P2P, and requires full control over it~\cite{SamouraiRPC} (marked with “+*” in Table~\ref{tab:all-wallets}).}
-Additionally, we consider the most popular wallets (based on the publicly available approximate number of Play~Store downloads), and Samourai, because of its heavy emphasis on privacy in its marketing materials.
-We now compare these wallets using a number of manual and automated techniques.
+We add Samourai wallet to our list due to its heavy emphasis on privacy.
+\footnote{Strictly speaking, Samourai did not pass our initial test: it connects to a remote node via RPC, not P2P, and requires full control over it~\cite{SamouraiRPC}. We mark it with “+*” in Table~\ref{tab:all-wallets}.}
+We not study these wallets in more detail.
 
 
 \subsection{Manual inspection}
 
 \paragraph{Independent installation}
-The most prevalent way of installing Android apps is the Google Play store, which requires a Google account.
+The most prevalent way of installing Android applications is the Google Play store, which requires a Google account.
 A privacy-conscious user may want to avoid linking their cryptocurrency activity with their Google profile.
-Alternative ways to install Android apps are F-Droid (an independent app store for free and open source apps~\cite{FDroid}) or manual installation from an APK file.
-
-Out of seven~wallets, three are available in F-Droid, and five~can be installed from an APK file (see Table~\ref{tab:installation}).
+Alternative ways to install Android applications are F-Droid (an independent application store for free and open source applications~\cite{FDroid}) and manual installation from an APK file.
+Out of the seven~wallets we considered, three are available in F-Droid, and five~can be installed from an APK file (see Table~\ref{tab:installation}).
 
 \begin{table*}
 	\normalsize
-	\caption{Availability of installation via independent sources}
+	\caption{Alternative installation methods of selected wallets}
 	\centering
 	\begin{tabular}{| l | l l l l l l l | l l l l l l l |}
 		\hline
@@ -167,13 +165,14 @@ Out of seven~wallets, three are available in F-Droid, and five~can be installed 
 \paragraph{Permissions}
 Android \textit{permissions} restrict access to certain user information and device functionality.
 Each application declares the necessary permissions in its \textit{manifest file}.
-The user grants permissions at installation time or at runtime.\footnote{Starting from Android~6.0.}
+The user grants permissions at installation time or at runtime\footnote{Starting from Android~6.0.}.
 Permissions that give access to critical functionality or personal information are refereed to as \textit{dangerous}~\cite{Android}.
 
-Airbitz requires the highest number of permissions (15).
-Two apps require access to both coarse and fine location (Airbitz, BRD), and sending SMS (BRD, Samourai).
-Electrum requests the lowest number of permissions: three~dangerous and one~other.
-All wallets require at least one dangerous permission: camera access is needed to scan cryptocurrency addresses presented as QR codes.
+Airbitz requires the highest number of permissions ($15$).
+Two applications require access to both coarse and fine location (Airbitz, BRD), and sending SMS (BRD, Samourai).
+Electrum requests the lowest number of permissions -- four, three of which are dangerous.
+All wallets require at least one dangerous permission -- camera access.
+This is usually required to scan cryptocurrency addresses presented as QR codes.
 The summary of the requested permissions are presented in Table~\ref{tab:permissions} (dangerous permissions in bold).
 
 \begin{table*}
@@ -219,7 +218,7 @@ The summary of the requested permissions are presented in Table~\ref{tab:permiss
 		receive SMS & - & - & - & - & - & - & - & - & - & - & - & - & - & + \\
 		reroute out calls & - & - & - & - & - & - & - & - & - & - & - & - & - & + \\
 		\hline
-		Total permissions & 9 & 13 & 14 & 10 & 4 & 6 & 5 & 9 & 12 & 11 & 5 & 9 & 15 & 11 \\
+		Total permissions & $9$ & $13$ & $14$ & $10$ & $4$ & $6$ & $5$ & $9$ & $12$ & $11$ & $5$ & $9$ & $15$ & $11$ \\
 		\hline
 	\end{tabular}
 	%}
@@ -228,27 +227,31 @@ The summary of the requested permissions are presented in Table~\ref{tab:permiss
 
 
 \paragraph{Privacy policies}
-According to Google~Play~store rules, all Android apps that handle "personal or sensitive user data" must have a privacy policy.
+According to Google~Play~store rules, all Android applications that handle "personal or sensitive user data" must have a privacy policy.
 We compare the privacy policies of the selected wallets.
 
-Privacy policies of Bitcoin wallet~\cite{BitcoinWalletPrivacyPolicy}, Dash wallet~\cite{DashWalletPrivacyPolicy}, Bither~\cite{BitherWalletPrivacyPolicy}, and Monerujo~\cite{MonerujoPrivacyPolicy} are concise and often only justify the use of certain permissions; privacy policies of BRD~\cite{BRDPrivacyPolicy} and Electrum~\cite{ElectrumPrivacyPolicy} are much more elaborate.
+Privacy policies of some wallets (Bitcoin wallet~\cite{BitcoinWalletPrivacyPolicy}, Dash wallet~\cite{DashWalletPrivacyPolicy}, Bither~\cite{BitherWalletPrivacyPolicy}, Monerujo~\cite{MonerujoPrivacyPolicy}) are quite concise and only justify the use of some of the required permissions.
+Privacy policies of BRD~\cite{BRDPrivacyPolicy} and Electrum~\cite{ElectrumPrivacyPolicy} are much more elaborate.
 Bither privacy policy provides the rationale behind a permission to record audio: it allows for "collecting ambience entropy for XRandom".
-BRD uses cookies and trackers, as well as third-party providers for analytics: Google Analytics and Firebase (these tools allow wallet developers to collect and analyze crash reports, and collect app usage patterns and engagement information, which may link users' activity with unique identifiers of their devices).
+BRD uses cookies and trackers, as well as third-party providers for analytics: Google Analytics and Firebase.
+These tools allow wallet developers to collect and analyze crash reports, and collect application usage patterns.
+This may be used to link users' activity with unique identifiers of their devices.
 %GreenBits is the only wallet which reserves the right to collect users' Bitcoin addresses.
-Simple Bitcoin does not have a privacy policy: the link from Google Play refers to the wallet's official website~\cite{SimpleBitcoin}, which does not specify whether the app collects, stores or transmits the users' personal data.
-Monerujo privacy policy notes that the app uses the exchange rate information provided by the public API of \url{kraken.com}, and an exchange service \url{xmr.to}, which are subjects to their own privacy policies (marked with (+) in Table~\ref{tab:privacy-policies}).
-Mycelium transmits a report to the developers' server in case of a crash; the developers claim they "took care that it does not contain unnecessary privacy relevant information".
+Simple Bitcoin does not have a privacy policy.
+The link from Google Play refers to the wallet's official website~\cite{SimpleBitcoin}, which does not specify whether the application collects, stores or transmits the users' personal data.
+Monerujo privacy policy notes that the application uses the exchange rate information provided by the public API of \url{kraken.com}, and an exchange service \url{xmr.to}, which are subjects to their own privacy policies (marked with (+) in Table~\ref{tab:privacy-policies}).
+Mycelium transmits a report to the developers' server in case of a crash.
+The developers claim they "took care that it does not contain unnecessary privacy relevant information".
 %It is not clear which information is being transmitted.
-The Samourai wallet collects users' IP addresses "with replaced last byte", which can hardly be considered anonymization, as one may still infer the approximate location from the first three bytes of the IP address (marked with "+*" in Table~\ref{tab:privacy-policies}).
-Airbitz broadcasts transactions through Electrum servers; a user may choose one or more trusted servers.
-
-We also note that in many cases the link to the privacy policy from the wallet's Play store page leads to the privacy policy of the corresponding \textit{website}, not the \textit{wallet}.
-
+The Samourai wallet collects users' IP addresses "with replaced last byte".
+This can hardly be considered anonymization, as one may still infer the approximate location from the first three bytes of the IP address (marked with "+*" in Table~\ref{tab:privacy-policies}).
+Airbitz broadcasts transactions through Electrum servers; a user may choose a server.
+In many cases the link to the privacy policy from the wallet's Play~Store page leads to the privacy policy of the corresponding \textit{website}, not the \textit{wallet}.
 Table~\ref{tab:privacy-policies} summarizes the finding regarding the privacy policies.
 
 \begin{table*}
 	\normalsize
-	\caption{Information that wallet developers reserve the right to obtain, as per Privacy policies of selected wallets}
+	\caption{Privacy policies of selected wallets: information that the developers may obtain}
 	\centering
 	\begin{tabular}{| l | l l l l l l l | l l l l l l l |}
 		\hline
@@ -279,25 +282,32 @@ Table~\ref{tab:privacy-policies} summarizes the finding regarding the privacy po
 \end{table*}
 
 
-
-
-\paragraph{Connecting to the network}
+\paragraph{Networking}
 %We inspected the source code of the open sourced P2P wallets (see Table~\ref{tab:source-code}).
 All wallets with P2P transaction broadcasting except Monerujo use hard-coded DNS seeds to bootstrap.
 %BRD adds its own DNS seed.
 %\footnote{\texttt{seed.breadwallet.com.}; does not resolve at the time of writing.}
 Simple Bitcoin adds one random node from a hard-coded list to a list of peers obtained via bootstrapping.
-\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable at the time of writing.}
-Electrum connects to two random servers from a hard-coded list of 52~servers; it requests the transaction history from a single server and checks it against block headers sent by other servers.
-Monerujo lets the user either choose from 3 hard-coded URLs which resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide credentials for connecting to a custom node.
-We tried to connect Bitcoin P2P wallets to our own full node: Bitcoin wallet and Simple~Bitcoin did connect,\footnote{Version strings \texttt{/bitcoinj:0.14.7/Bitcoin Wallet:6.29/} and \texttt{/bitcoinj:0.14.4/Bitcoin:1.075/} respectively.} BRD did not, Bither does not provide this option.
-Most wallets with P2P networking have a \textit{network monitor} which displays the IP addresses of connected nodes.
-\footnote{Exceptions: BRD shows only the IP of the "primary node" (without specifying what it means), Electrum shows the address of the server used to query the transaction history (other servers are used to check it), Simple~Bitcoin only shows the number of connected peers.}
-The summary of the connectivity-related issues is presented in Table~\ref{tab:connectivity-issues}.
+\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable as of 2018.}
+Electrum connects to two random servers from a hard-coded list of $52$~servers.
+It requests the transaction history from a single server and checks it against block headers sent by other servers.
+Monerujo lets the user either choose from three hard-coded URLs which resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide the credentials for connecting to a custom node.
+
+We tried to connect Bitcoin wallets with P2P broadcast to our own full node.
+Bitcoin wallet and Simple~Bitcoin did connect,\footnote{Version strings: \texttt{/bitcoinj:0.14.7/Bitcoin Wallet:6.29/}, \texttt{/bitcoinj:0.14.4/Bitcoin:1.075/}.} BRD did not.
+Bither did not provide this option.
+
+Wallets with P2P networking have a \textit{network monitor} which displays the IP addresses of connected nodes.
+BRD shows only the IP of the "primary node" (without specifying what it means).
+Electrum shows the address of the server used to query the transaction history (other servers are used to check it).
+Simple~Bitcoin only shows the number of connected peers.
+Different wallets try to establish different number of connections.
+
+The summary of the networking characteristics is presented in Table~\ref{tab:connectivity-issues}.
 
 \begin{table*}
 	\normalsize
-	\caption{Connectivity-related characteristics of selected wallets}
+	\caption{Networking characteristics of selected wallets}
 	\centering
 	\begin{tabular}{| l | l l l l l l l | l l l l l l l |}
 		\hline
@@ -315,8 +325,8 @@ The summary of the connectivity-related issues is presented in Table~\ref{tab:co
 	\label{tab:connectivity-issues}
 \end{table*}
 
+\iffalse
 Table~\ref{tab:source-code} lists the classes containing implementations of the networking functionality, including transaction broadcasting.
-
 \begin{table}
 	\normalsize
 	\caption{References to transaction broadcast implementations}
@@ -347,61 +357,71 @@ Table~\ref{tab:source-code} lists the classes containing implementations of the 
 	\end{tabular}
 	\label{tab:source-code}
 \end{table}
+\fi
 
 
 \subsection{Static analysis}
 
 \subsubsection*{FlowDroid}
 
-We scanned the wallets with FlowDroid~\cite{Arzt2014} -- an open source static analysis tool (source code available at~\cite{FlowDroid})\footnote{The analyses of Bitcoin wallet, Bither, and Monerujo were stopped after a 2~hour timeout. Samourai was not scanned due to a technical limitation: the app is labeled as unreleased, which prevented us from downloading the APK}.
-It uses data flow analysis to detect execution paths which transfer data from sources (functions which return sensitive data) into sinks (functions which send data elsewhere).
-FlowDroid detected potential data leaks in 8 out of 14 apps.
+We scanned the wallets with FlowDroid~\cite{Arzt2014} -- an open source static analysis tool\footnote{The source code is available at~\cite{FlowDroid}.}
+It uses data flow analysis to detect execution paths which transfer data from \textit{sources} (functions that may return sensitive data) into \textit{sinks} (functions that send data elsewhere).
+The analyses of Bitcoin wallet, Bither, and Monerujo were stopped after a 2~hour timeout.
+Samourai was not scanned due to a technical limitation: the application is labeled as unreleased, which prevented us from downloading the APK.
+FlowDroid detected potential data leaks in $8$~out of $14$~applications (see Table~\ref{tab:static-analysis}).
 
 \subsubsection*{SmartDec Scanner}
-We scan the wallets using a proprietary static analysis tool SmartDec Scanner~\cite{SmartDec2018}.
+We scanned the wallets with a proprietary static analysis tool SmartDec~Scanner~\cite{SmartDec2018}.
 %\footnote{The reference is not provided in this version of the paper to maintain anonymity for the review.}.
-We manually inspected the results and summarize prevalent privacy-related issues detected by the tool, roughly in decreasing order of potential threat.
+We manually inspected the results and summarized the most prevalent privacy-related issues detected by the tool, roughly in decreasing order of potential threat.
 Note that these issues do not directly lead to an exploit.
 
 \paragraph{Leak to external storage}
-Android provides internal and external storage\footnote{Historically, external storage was assumed to be on a removable memory card, now this may not be the case.}.
-An app can only access its own directory in the internal storage; external storage is available for other apps.
+Android provides internal and external storage\footnote{Historically, external storage was assumed to be on a removable memory card, which now may not be the case.}.
+An application can only access its own directory in the internal storage.
+External storage is available for other applications.
+
 Sensitive data should only be kept in the internal storage.
-Android automatically backs up data and settings of apps which did not opt out by setting \texttt{android:allowBackup="false"} in the Manifest file.
-Automatic backups should be disabled for privacy-critical apps.
+Android automatically backs up data and settings of applications which did not opt out\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}.
+Automatic backups should be disabled for privacy-critical applications.
 %Only Electrum and Simple~Bitcoin allow backup (other wallets explicitly forbid it).
 %Simple Bitcoin also stores scanned QR~codes in the external storage.
 
 \paragraph{XSS attacks via Javascript in WebView}
-One method of developing dynamic user interfaces on Android is using JavaScript inside a WebView (an Android component for displaying web pages).
-By default, execution of JavaScript code in WebView is disabled, but this setting can be overridden (\texttt{setJavaScriptEnabled(true)}).
-Executing malicious\footnote{Even trusted code, e.g.,~from the app's resources, may contain unintended side effects or bugs, as well as implicitly leak information.} JavaScript code may lead to cross-site scripting (XSS) and other attacks.
+One method of developing dynamic user interfaces on Android is using JavaScript inside a \texttt{WebView} -- an Android component that displays web pages.
+By default, execution of JavaScript code in \texttt{WebView} is disabled, but this setting can be overridden (\texttt{setJavaScriptEnabled(true)}).
+Executing malicious\footnote{Even trusted code, e.g.,~from the application's resources, may contain unintended side effects or bugs, as well as implicitly leak information.} JavaScript code may lead to cross-site scripting (XSS) and other attacks.
 We detect two instances of this issue (in \texttt{FragmentSupport} and \texttt{WebViewActivity} classes) in BRD.
 In both cases, the warning from Android Lint -- a static analyzer built into the standard Android development environment -- is suppressed.
 
 \paragraph{Insecure connection}
 Parameters of a TLS connection in Java are specified in the \texttt{X509TrustManager} class.
-Its methods can be overridden to accept all certificates (not only those authenticated by a chain of signatures up to a trusted root CA), which may lead to a man-in-the-middle attack.
+Its methods can be overridden to accept all certificates (not only those authenticated by a chain of signatures up to a trusted root CA).
+This may lead to a man-in-the-middle attack.
 Connections between Electrum servers, unlike the Bitcoin protocol, are encrypted and authenticated with TLS.
-Bitcoin wallet and Dash wallet, though communicating with the respective networks via their P2P protocols, use Electrum servers for querying the balance when sweeping a paper wallet (see the \texttt{X509TrustManager}-inherited \texttt{RequestWalletBalanceTask} class).
+Bitcoin wallet and Dash wallet, though communicating with the respective networks via their P2P protocols, use Electrum servers for querying the balance when sweeping a paper wallet.
+% (see the \texttt{X509TrustManager}-inherited \texttt{RequestWalletBalanceTask} class).
 Bither defines HTTP URLs of its own API (\url{bither.net}) and a block explorer \url{blockchain.info} (class \texttt{BitherUrl}), which can lead to displaying incorrect balances or fake transactions in case of a man-in-the-middle attack.
-Simple Bitcoin uses five hard-coded URLs to query current fees; one of them\footnote{\url{http://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
+Simple Bitcoin uses five hard-coded URLs to query current fees.
+One of them\footnote{\url{http://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
 This may lead to incorrect fee estimation (and thus a potential denial of service attack, as transactions with very low fees may never be confirmed), though this scenario requires four other APIs served over HTTPS to fail simultaneously.
 
 \paragraph{Leak into logs}
 Android applications can write to their own log.
-Applications can also read their own logs with the \texttt{READ\_LOGS} permission (prior to Android~4.0, this also granted access to other apps' logs).
+Applications can also read their own logs with the \texttt{READ\_LOGS} permission.
+Prior to Android~4.0, this permission also granted access to logs of other applications.
+
 It is possible to access logs on a rooted device, or using developer tools.
-All wallets log details about their operation, including error messages, which may include sensitive data (e.g.,~a trusted node's IP).
-This issue is present at least to some extent in all wallets, as all wallets use logging in exception handlers.
+All wallets log details about their operation, including error messages, which may include sensitive data (e.g.,~the IP address of a trusted node).
+This issue is present to some extent in all wallets, as all wallets use logging in exception handlers.
 One may find all occurrences of this issue by searching for the methods of the \texttt{Log} class, \texttt{print}, \texttt{println}, and exception handlers with \texttt{ex.printStackTrace()}.
 Further investigation is needed to determine the impact and probability of data leaks.
 
-The summary of the results obtained with static analysis (both FlowDroid and SmartCheck) is presented in Table~\ref{tab:static-analysis}.
+The summary of the results obtained with static analysis (both FlowDroid and SmartDec~Scanner) is presented in Table~\ref{tab:static-analysis}.
 
 \begin{table*}
 	\normalsize
-	\caption{Potential issues of selected wallets revealed by static analysis}
+	\caption{Static analysis of selected wallets}
 	\centering
 	\begin{tabular}{| l | l l l l l l l | l l l l l l l |}
 		\hline
@@ -410,7 +430,7 @@ The summary of the results obtained with static analysis (both FlowDroid and Sma
 		Leaks (FlowDroid) & 0 & 4 & 3 & 1 & 0 & 2 & 1 & 0 & 6 & 4 & 0 & 0 & 4 & ? \\
 		Leak to ext. storage & - & - & - & - & + & - & + & - & - & - & + & + & + & - \\
 		XSS WebView & - & - & + & - & - & - & - & + & - & + & + & + & + & - \\
-		Inseure conn. & + & + & - & + & - & - & + & - & - & - & - & - & - & - \\
+		Insecure conn. & + & + & - & + & - & - & + & - & - & - & - & - & - & - \\
 		Leak into logs & + & + & + & + & + & + & + & + & + & + & + & + & + & + \\
 		\hline
 	\end{tabular}
@@ -426,12 +446,12 @@ The summary of the results obtained with static analysis (both FlowDroid and Sma
 We studied Android wallets for Bitcoin and the major privacy focused cryptocurrencies.
 Most wallets do not satisfy our minimal privacy criteria.
 Many wallets obtain dangerous permissions and potentially leak users' private information.
-Static analysis reveals multiple defects in their source code.
-P2P wallets do not implement privacy enhancing broadcast mechanisms such as diffusion, which is used by Bitcoin~Core.
+Static analysis revealed defects in their source code.
+%P2P wallets do not implement privacy enhancing broadcast mechanisms such as diffusion, which is used by Bitcoin~Core.
 
-Considering the influx of new people into the blockchain space, usable yet secure lightweight blockchain software is needed.
-Cryptographically sound systems may fail to gain traction due to usability issues~\cite{Ruoti2015}.
-Research in human-computer interaction is needed to make cryptocurrencies usable by general public.
+%Considering the influx of new people into the blockchain space, secure and usable lightweight blockchain software is needed.
+%Research in human-computer interaction is needed to make cryptocurrencies usable by general public.
+%Cryptographically sound systems may fail to gain traction due to usability issues~\cite{Ruoti2015}.
 
-The best practices for secure coding are especially relevant for mobile wallets, which run on devices storing lots of personal data.
-Wallet developers should use as few permissions as possible, open-source the code, provide alternative installation methods (F-Droid, direct APK download), and implement additional network-level measures to prevent traffic analysis.
+Secure development practices are are especially important for mobile wallets, which store lots of personal data and can be easily lost or stolen.
+Mobile developers should require as few permissions as possible, open-source the code, provide alternative installation methods (F-Droid, direct APK download), and implement additional privacy-preserving measures to prevent deanonymization of users.

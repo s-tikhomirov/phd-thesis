@@ -184,7 +184,7 @@ For instance, Lightning-related transactions indistinguishable from other transa
 
 \paragraph{Eltoo}
 
-\textit{Eltoo}\textit{Stylized as \textit{eltoo} in the original paper.} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
+\textit{Eltoo}\footnote{Stylized as \textit{eltoo} in the original paper.} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
 In Eltoo, intermediary transactions are linked to each other linearly, as opposed to the LN where all of them spend the same funding transaction output.
 On channel closure, the final transaction is "re-attached" to the funding transaction's output.
 This allows for more efficient state replacement.
@@ -257,7 +257,7 @@ This enables the state replacement mechanism (described below), which provides e
 
 Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
 %An HTLC gives the funds either to one party, if it provides a preimage of a given hash, or to the other party after a timeout.
-An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$~and $u_2$) and release them according to the encoded conditions.
+An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$~and~$u_2$) and release them according to the encoded conditions.
 The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$~of coins, and a timeout $t$, as follows: 
 (i) If $u_2$~reveals a value $r$~such that $H(r) = y$~before $t$~expires, $u_1$~pays $x$~to $u_2$; 
 (ii) if $t$~expires, $u_1$~receives $x$~back.

@@ -44,8 +44,8 @@ Spillman channels, introduced in 2013, is the first version of unidirectional ch
 This protocol is a modified implementation of Nakamoto's transaction replacement protocol~\cite{Spillman2013}.
 It has been implemented in BitcoinJ, a popular Bitcoin library written in Java~\cite{BitcoinJ}.
 
-Initially, the two parties lock coins into a multi-signature output.
 The channel participants are often described as a customer and a merchant.
+Initially, they lock coins into a multi-signature output.
 Additionally, they establish a time-locked refund transaction.
 It allows the customer to withdraw all funds in case the merchant goes offline.
 Then the customer signs a transaction that distributes the coins from the funding transaction in a new proportion, allocating more funds to the merchant.
@@ -57,19 +57,18 @@ This closes the channel and confirms the latest agreed upon balances.
 This protocol has two major drawbacks.
 First, it is unidirectional.
 The customer can pay the merchant but not vice versa.
-Second, the lifetime of a channels is limited by the timelock of the refund transaction.
+Second, the lifetime of a channel is limited by the timelock of the refund transaction.
 
 A similar unidirectional payment channel design uses \texttt{CHECKLOCKTIMEVERIFY} (CLTV).
 This opcode was added to Bitcoin script in 2015~\cite{Todd2014}.
 It allows specifying absolute timelocks for each transaction output independently.
 In contrast, \texttt{nLockTime} only described transaction-level timelocks.
-%This allows to implement Spillman channels without the malleability vulnerability.
 
 \paragraph{State replacement}
 Let us pause for a moment and explain why the protocols described so far do not support bidirectional payments.
 Consider a channel between Alice and Bob.
 Initially, Alice commits $10$~coins to a multi-signature address.
-Thus she has $10$~coins, and Bob has none.
+Thus, she has $10$~coins, and Bob has none.
 Alice sends $2$~coins to Bob by signing a new transaction that spends the multi-signature output and distributes the coins as follows: $8$~coins to Alice, $2$~coins to Bob.
 She sends this transaction to Bob.
 However, Bob cannot send $1$~coin back to her.
@@ -83,7 +82,7 @@ In other words, only the last of multiple co-signed transactions should be accep
 All previous transactions, representing old channel states, must be provably invalidated.
 
 The state replacement mechanism in unidirectional channels is referred to as \textit{revocation by incentive}~\cite{Gudgeon2019}.
-Bob is \textit{expected} to close the channel using the last transaction, because that transaction gives him the largest amount of money.
+Bob is \textit{incentivized} to close the channel using the last transaction, because that transaction gives him the largest amount of money.
 To implement bi-directional channels, other state replacement mechanisms are required.
 
 
@@ -93,12 +92,12 @@ Bidirectional channels can be implemented using timelocks.
 The two parties exchange a series of transactions.
 Each of them becomes valid at a point in time closer to the present than the previous transaction.
 The transaction with the lowest time lock represents the latest state.
-Any channel party can close the channel with the latest state before other transactions become valid.
+Any channel party can close the channel by submitting the latest state to the blockchain before other states become valid.
 This protocol has two shortcomings.
 First, similar to BitcoinJ's unidirectional channels, timelock-based bidirectional channels have a limited lifetime.
 It is determined by the timelock of the first transaction.
 Second, such channels only support a limited number of updates.
-The delta between timelocks of subsequent transactions must not be smaller than some security margin.
+The delta between the timelocks of subsequent transactions must not be smaller than some security margin.
 This ensures that each party can close the channel with the latest state before older states become valid.
 Therefore, the maximum number of channel updates is determined by the channel lifetime and the minimal allowed difference between timelocks.
 This type of state replacement is known as \textit{replace by timelock}.
@@ -125,7 +124,7 @@ Contrary to earlier protocol, Lightning uses relative timelocks, as opposed to a
 A relative timelock makes a UTXO valid only after a certain time has passed after the transaction that created this UTXO is confirmed.
 This functionality was implemented in BIP-112~\cite{BtcDrak2015} (\texttt{CHECKSEQUENCEVERIFY}) and activated in 2016.
 An important advantage is that a transaction with a relative timelock may be signed but not broadcast for an indefinite period of time.
-This allow Lightning channels to be left open indefinitely.
+This allows Lightning channels to be left open indefinitely.
 Let us now discuss the other Bitcoin update that made Lightning possible -- \textit{Segregated Witness}, or \textit{SegWit} -- in more detail.
 
 
@@ -142,31 +141,29 @@ Transaction malleability was a critical roadblock preventing the development of 
 A payment channels is generally initiated in three steps.
 First, the parties co-sign the funding transaction that creates a multi-signature output.
 Second, they co-sign a transaction that spends that output and reflect the initial distribution of funds.
-Third, they broadcast the funding transaction.
+Third, they confirm the funding transaction on the blockchain.
 
-Note that the transaction created on step two refers to the output of the funding transaction that is not yet broadcast.
+Note that the transaction created on step two refers to the output of the funding transaction, which is not yet broadcast.
 Transaction malleability makes this step unreliable.
-One of the parties may modify the signature of the funding transaction before it is confirmed.
-This would change its hash and, consequently, make the subsequent transaction invalid~\cite{Harding2016}.
+One of the parties may broadcast a modified version of the funding transaction, which has the same semantics but a different hash.
+As a result, the original funding transaction would be become invalid~\cite{Harding2016}.
 
 Additionally, transaction malleability complicates fraud prevention.
-L2 protocols assume that parties watch the blockchain for events of interest, such as broadcasts of old channel states.
-With transaction malleability, the transaction hash is not uniquely defined by its semantics.
-This makes watching the blockchain for relevant events hard, if not impossible.
+L2 protocols often assume that parties watch the blockchain for events of interest, such as broadcasts of old channel states.
+With transaction malleability, the transaction hash does not uniquely define transaction semantics.
+This issue makes watching the blockchain for relevant events hard, if not impossible.
 
 SegWit, introduced in 2017, mitigated transaction malleability.
-This update \textit{segregated} the \textit{witness} (i.e.,~the signature) from other components of a transaction.
-As a result, a signature can no longer be modified to change the transaction hash.
+This update introduced a new category of transaction outputs, where the \textit{witness} (i.e.,~the signature) and other components of a transaction are \textit{segregated}.
+As a result, the signature no longer affects the transaction hash, which mitigates the problem.
 This opened the way for the practical implementation and deployment of more advanced Bitcoin-based L2 protocols.
 
 
 \subsubsection*{Lightning development}
 
-The development of the LN is guided by a set of request for comments (RFC) documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, 
-which are then followed by several implementation teams.
+The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, which are then followed by several implementation teams.
 The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
-Other implementations at earlier stages of development include
-Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
+Other implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
 
 As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC.
 The protocol is under heavy development.
@@ -178,16 +175,16 @@ Let us outline some of the directions for future developments of Lightning.
 
 \paragraph{Schnorr-Taproot}
 
-A \textit{Schnorr signatures} is a digital signature algorithm that is considered preferable to ECDSA currently used in Bitcoin\footnote{Schnorr signature was covered by US patent~\cite{Schnorr1989}, which expired in 2008.}
+\textit{Schnorr signatures} is a digital signature algorithm that is considered preferable to ECDSA currently used in Bitcoin\footnote{Schnorr signature was covered by US patent~\cite{Schnorr1989}, which expired in 2008. This prevented its implementation in the original version of Bitcoin.}
 In particular, this signature scheme allows for arithmetic on signatures.
 In the context of Bitcoin, this allows for multi-signatures that are indistinguishable from signatures with a single signer.
 Schnorr signatures are being integrated in Bitcoin as part of a complex \textit{Schnorr-Tapscript-Taproot} update~\cite{Hertig2020}.
 For Lightning Network, Schnorr signatures allow for privacy improvements.
 For instance, Lightning-related transactions indistinguishable from other transaction types from an external observer.
 
-\paragraph{eltoo}
+\paragraph{Eltoo}
 
-\textit{Eltoo} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
+\textit{Eltoo}\textit{Stylized as \textit{eltoo} in the original paper.} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
 In Eltoo, intermediary transactions are linked to each other linearly, as opposed to the LN where all of them spend the same funding transaction output.
 On channel closure, the final transaction is "re-attached" to the funding transaction's output.
 This allows for more efficient state replacement.
@@ -259,20 +256,17 @@ Bob's version imposes analogous restrictions on his output.
 This enables the state replacement mechanism (described below), which provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
 
 Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
-An HTLC gives the funds either to one party, if it provides a preimage of a given hash, or to the other party after a timeout.
-
-An HTLC is implemented as an excerpt from the Bitcoin's scripting language.
-It permits a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$ and $u_2$) and release them according to the encoded conditions.
-The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$ of coins, and a timeout $t$, as follows: 
-(i) If $u_2$ reveals a value $r$ such that $H(r) = y$ before $t$ expires, $u_1$ pays $x$ to $u_2$; 
-(ii) if $t$ expires, $u_1$ receives $x$ back.
+%An HTLC gives the funds either to one party, if it provides a preimage of a given hash, or to the other party after a timeout.
+An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$~and $u_2$) and release them according to the encoded conditions.
+The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$~of coins, and a timeout $t$, as follows: 
+(i) If $u_2$~reveals a value $r$~such that $H(r) = y$~before $t$~expires, $u_1$~pays $x$~to $u_2$; 
+(ii) if $t$~expires, $u_1$~receives $x$~back.
 
 A simple LN payment proceeds as follows.
-If Alice wants to send $x$ coins to Bob, she first asks him for a \textit{payment hash}.
-Bob generates $r$ uniformly at random and sends its hash $H(r)$ to Alice in an \textit{invoice} message.
-Alice then \textit{offers} Bob an HTLC that would give him $x$~coins if he provides the preimage of $H(r)$ before time $t$, or return the coins to Alice otherwise.
-Therefore an HTLC can be \textit{resolved} in one of two ways.
-Either Bob provides the preimage and \textit{redeems} the coins before time $t$, or Alice gets the coins back.
+If Alice wants to send $x$~coins to Bob, she first asks him for a \textit{payment hash}.
+Bob generates $r$~uniformly at random and sends its hash $H(r)$~to Alice in an \textit{invoice} message.
+Alice then \textit{offers} Bob an HTLC that can be \textit{resolved} in one of two ways.
+Either Bob reveals $r$~and \textit{redeems} the coins before time $t$, or Alice gets the coins back.
 A payment channel can keep track of multiple concurrent unresolved HTLCs, which are also called \textit{in-flight} HTLCs.
 
 
@@ -280,13 +274,13 @@ A payment channel can keep track of multiple concurrent unresolved HTLCs, which 
 
 \begin{figure*}[h]
 	\includegraphics[width=\textwidth]{htlc-figure}
-	\caption{An HTLC-based payment in the LN. The node $u_1$ pays $u_5$ using $u_2$, $u_3$ and $u_4$ as intermediaries. 
-		Here we assume that each node charges a fee of $0.1$ and time is measured in days.}
+	\caption{An HTLC-based payment in the LN. The node $u_1$~pays $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries. 
+		Here we assume that each node charges a fee of $0.1$~and time is measured in days.}
 	\label{fig:htlc}
 \end{figure*}
 
 A multi-channel transaction leverages a path of channels between a sender and a receiver, who might not share a channel between them.
-To initiate a multi-channel transaction, the receiver generates a random $r$ and sends its hash $H(r)$ to the sender.
+To initiate a multi-channel transaction, the receiver generates a random $r$~and sends its hash $H(r)$~to the sender.
 The sender then constructs a path to the receiver and sets up an HTLC with the next node in the path.
 The second node sets up an HTLC with the \textit{same} hash value with the third node, and so on.
 Finally, the receiver redeems the payment from the last channel by revealing $r$, which in turn allows all involved channels to be updated.
@@ -296,21 +290,21 @@ This aims to achieve atomicity.
 None of the intermediate channels can be updated before the receiver reveals $r$, and all of them can be updated after that.
 
 An illustrative example of an HTLC-based transaction is depicted in~\cref{fig:htlc}.
-Here, the user $u_1$ transfers $1$~coin to $u_5$ using $u_2$, $u_3$ and $u_4$ as intermediaries.
-For that, $u_5$ locally chooses a value $r$ uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$ to the sender in an \textit{invoice} (step 1).
+Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries.
+For that, $u_5$~locally chooses a value $r$~uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$~to the sender in an \textit{invoice} (step 1).
 Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, starting from the sender, establishes an HTLC using $y$.
 After the commit phase is finished, the transaction enters the release phase.
-Here, the receiver reveals $r$ to $u_4$ to fulfill the contract (step 6), triggering the release phase where every pair of nodes fulfills their contract from the receiver to the sender (steps 6-9).
+Here, the receiver reveals $r$~to $u_4$~to fulfill the contract (step 6), triggering the release phase where every pair of nodes fulfills their contract from the receiver to the sender (steps 6-9).
 
 Intermediaries may charge fees for their forwarding service.
-For instance, $u_2$ receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins.
+For instance, $u_2$~receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins.
 No fees are collected if a payment fails, as all pending balance updates roll back.
 In the actual LN protocol, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the value being transferred.
 \footnote{Note that LN fee structure is different from fees on L1, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the amount of value being transferred. This may result in the economics of LN fees being significantly different from that in Bitcoin. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
 
 Note that the time parameter of the HTLCs along the path is decreasing to ensure a safety margin between the timeouts.
-For example, the HTLC between $u_1$ and $u_2$ sets a timeout of four days, whereas the timeout in the HTLC between $u_2$ and $u_3$ is only three days.
-This ensures that $u_2$ has enough time to settle the contract with $u_1$ after receiving $r$ from $u_3$, even if $u_3$ reveals the preimage just before the corresponding timeout expires.
+For example, the HTLC between $u_1$~and $u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and $u_3$~is only three days.
+This ensures that $u_2$~has enough time to settle the contract with $u_1$~after receiving $r$~from $u_3$, even if $u_3$~reveals the preimage just before the corresponding timeout expires.
 There is an inherent trade-off regarding timeout lengths.
 Short timeouts open the risk of not being able to dispute a fraudulent transaction in case of blockchain congestion.
 Long timeouts open up a DoS vector, where an attacker can route many unsettled payments through a channel and effectively block it until the timelock expires.
@@ -332,7 +326,7 @@ This may happen in one of three ways:
 
 This state replacement mechanism is the key element of LN, which makes it superior to earlier payment channel designs.
 Lightning channels have an unlimited lifetime (the parties do not have to close the channel if none of them wants to) and supports payments in both directions.
-However, the trade-off here is that parties must be online to notice potential malicious channel closures and broadcast justice transactions.
+However, there is a trade-off here: the parties must be online to notice potential malicious channel closures and broadcast justice transactions.
 This functionality can be outsourced.
 Entities that watch the blockchains for malicious channel closures and dispute them on behalf of a user are called \textit{watchtowers}.
 Implementing effective, economically incentivized, and privacy-preserving watchtowers in an active area of research~\cite{McCorry2019}.
@@ -351,7 +345,7 @@ But how does the sender construct such a path?
 LN nodes gossip about newly opened channels that are marked as available for routing.
 Based on this information, each node maintains a local model of the network graph, and uses it to generate routes to the receiver.
 Total capacities of public channels are known.
-Therefore, the sender only considers channels with the capacity larger than $X$ for a payment of amount $X$.
+Therefore, the sender only considers channels with the capacity larger than $x$~for a payment of amount $x$.
 
 However, this is insufficient to prevent routing failures.
 The ability of channel parties to send or forward payments is limited by their \textit{local} channel balances.

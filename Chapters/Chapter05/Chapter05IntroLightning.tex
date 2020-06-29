@@ -118,6 +118,12 @@ The key insight in Lightning is its \textit{revocation-based state replacement}.
 The transactions reflecting channel states are constructed in such a way that each next update \textit{invalidates} the previous one.
 Despite the fact that all intermediate states are valid Bitcoin transactions (and can be broadcast and confirmed on the blockchain), broadcasting any state except the latest one by one party allows the other party to withdraw \textit{all} funds from the channel, punishing the cheater.
 
+The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, which are then followed by several implementation teams.
+The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
+Other implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
+As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC.
+A separate Lightning Network also operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency very similar to Bitcoin.
+
 Lightning takes advantage of two relatively recent updates in Bitcoin.
 One of them is \textit{relative timelocks}.
 Contrary to earlier protocol, Lightning uses relative timelocks, as opposed to absolute ones.
@@ -157,46 +163,6 @@ SegWit, introduced in 2017, mitigated transaction malleability.
 This update introduced a new category of transaction outputs, where the \textit{witness} (i.e.,~the signature) and other components of a transaction are \textit{segregated}.
 As a result, the signature no longer affects the transaction hash, which mitigates the problem.
 This opened the way for the practical implementation and deployment of more advanced Bitcoin-based L2 protocols.
-
-
-\subsubsection*{Lightning development}
-
-The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, which are then followed by several implementation teams.
-The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
-Other implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
-
-As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC.
-The protocol is under heavy development.
-Lightning Network also operates with Litecoin~\cite{1MLLitecoin} -- an alternative cryptocurrency very similar to Bitcoin.
-
-The future of Lightning depends in part on the planned modifications in the Bitcoin protocol.
-Such changes usually take years to implement, test, and roll out.
-Let us outline some of the directions for future developments of Lightning.
-
-\paragraph{Schnorr-Taproot}
-
-\textit{Schnorr signatures} is a digital signature algorithm that is considered preferable to ECDSA currently used in Bitcoin\footnote{Schnorr signature was covered by US patent~\cite{Schnorr1989}, which expired in 2008. This prevented its implementation in the original version of Bitcoin.}
-In particular, this signature scheme allows for arithmetic on signatures.
-In the context of Bitcoin, this allows for multi-signatures that are indistinguishable from signatures with a single signer.
-Schnorr signatures are being integrated in Bitcoin as part of a complex \textit{Schnorr-Tapscript-Taproot} update~\cite{Hertig2020}.
-For Lightning Network, Schnorr signatures allow for privacy improvements.
-For instance, Lightning-related transactions indistinguishable from other transaction types from an external observer.
-
-\paragraph{Eltoo}
-
-\textit{Eltoo}\footnote{Stylized as \textit{eltoo} in the original paper.} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
-In Eltoo, intermediary transactions are linked to each other linearly, as opposed to the LN where all of them spend the same funding transaction output.
-On channel closure, the final transaction is "re-attached" to the funding transaction's output.
-This allows for more efficient state replacement.
-
-Eltoo requires a new \textit{signature flag} -- \texttt{SIGHASH\_NOINPUT}~\cite{Decker2017}.
-A signature flag specifies whether a transaction signature commits to all or only some of the inputs.
-Allowing a transaction to \textit{not} commit to any input allows for "re-attaching" it to any compatible output.
-If \texttt{SIGHASH\_NOINPUT} is deployed, this replacement mechanism can be used in LN or in a separate payment channel network.
-
-\paragraph{Privacy-preserving channels}
-A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technology (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatibility with Bitcoin and renamed to zkChannels~\cite{Akinyele2020}.
-
 
 
 \section{Lightning Network architecture}
@@ -358,4 +324,56 @@ The fact that local channel balances are not public makes routing unreliable, es
 If a payment fails, an error message notifies the sender which channel has failed.
 The sender then tries a different route.
 The process repeats until the payment succeeds.
-Optimizing path-finding for payment channel networks is an active area of research~\cite{Pickhardt2019a, Prihodko2016, Grunspan2018, Pickhardt2019, Piatkivskyi2018, Sivaraman2018, Bagaria2019, Roos2018}.
+
+
+\subsection{The future of Lightning}
+
+The future of Lightning depends in part on the planned modifications in the Bitcoin protocol.
+Such changes usually take years to implement, test, and roll out.
+Let us outline some of the directions for future developments of Lightning.
+
+\paragraph{Schnorr-Taproot}
+
+\textit{Schnorr signatures} is a digital signature algorithm that is considered preferable to ECDSA currently used in Bitcoin\footnote{Schnorr signature was covered by US patent~\cite{Schnorr1989}, which expired in 2008. This prevented its implementation in the original version of Bitcoin.}
+In particular, this signature scheme allows for arithmetic on signatures.
+In the context of Bitcoin, this allows for multi-signatures that are indistinguishable from signatures with a single signer.
+Schnorr signatures are being integrated in Bitcoin as part of a complex \textit{Schnorr-Tapscript-Taproot} update~\cite{Hertig2020}.
+For Lightning Network, Schnorr signatures allow for privacy improvements.
+For instance, Lightning-related transactions indistinguishable from other transaction types from an external observer.
+
+\paragraph{Eltoo}
+
+\textit{Eltoo}\footnote{Stylized as \textit{eltoo} in the original paper.} is an alternative payment channel proposal proposed by Decker, Russell, and Osuntokun in 2018~\cite{Decker2018}.
+In Eltoo, intermediary transactions are linked to each other linearly, as opposed to the LN where all of them spend the same funding transaction output.
+On channel closure, the final transaction is "re-attached" to the funding transaction's output.
+This allows for more efficient state replacement.
+
+Eltoo requires a new \textit{signature flag} -- \texttt{SIGHASH\_NOINPUT}~\cite{Decker2017}.
+A signature flag specifies whether a transaction signature commits to all or only some of the inputs.
+Allowing a transaction to \textit{not} commit to any input allows for "re-attaching" it to any compatible output.
+If \texttt{SIGHASH\_NOINPUT} is deployed, this replacement mechanism can be used in LN or in a separate payment channel network.
+
+
+\section{Research directions in payment channel networks}
+
+Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019},  liquidity~\cite{Dandekar2011, MorenoSanchez2018, Conoscenti2019}, topology~\cite{Martinazzi2019, Seres2019}, and routing~\cite{Engelmann2017, Prihodko2016, Malavolta2017a, Grunspan2018, Osuntokun2018, Piatkivskyi2018, Roos2018, Sivaraman2018, Bagaria2019, Pickhardt2019, Pickhardt2019a, ZmnSCPxj2019, ZmnSCPxj2019a, ZmnSCPxj2019b}.
+We now outline the related work in the directions that are most relevant for our work.
+
+\paragraph{Security}
+One important aspect of payment channel network security is the resilience to DoS attacks.
+Such network operate in a permissionless environment: anyone can join and start routing payments.
+In the current LN design, no fees are charged if a payment fails, but failed payments consume network resources.
+This may lead to DoS attacks.
+Various DoS attacks have been described: based on route hijacking~\cite{Tochner2019}, depleting channel capacity~\cite{PerezSola2019}, and exceeding the supported number of concurrent in-flight HTLCs~\cite{Mizrahi2020}.
+
+\paragraph{Privacy}
+From the privacy point of view, layer-two protocols constitute an improvement compared to layer-one.
+In L2, all transactions ever made are not conveniently stored in a globally distributed open database, available for future analysis.
+However, multiple weaknesses in the LN privacy have been identified.
+It has been demonstrated that payment privacy can be breached due to short routes and strong statistical hints~\cite{Beres2019}.
+A potential countermeasure -- adding noise to channel balances -- has been shown ineffective~\cite{Tang2019}.
+An attack that allows to determine channel balances, similar to our contribution presented in Chapter~\ref{Chapter06LNprobing}, has also been proposed~\cite{HerreraJoancomarti2019}.
+Lightning network privacy remains an active research area~\cite{Malavolta2017, Kohen2019, Tang2020, Rohrer2020, Kappos2020}.
+
+A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technology (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatibility with Bitcoin and renamed to zkChannels~\cite{Akinyele2020}.
+

@@ -20,24 +20,17 @@ Our results are concerned with the LN as described in the specification, and thu
 
 We obtained a snapshot of LN on 25~February~2020 from~\cite{fiatjaf2020} and parsed with the code in~\cite{Tikhomirov2019}.
 This snapshot consists of $5929$~nodes and $35233$~channels.
-We model this data as an undirected multi-graph (i.e., may contain multiple edges between each pair of nodes), 
-as several channels can be shared by two LN nodes.
-We only considered the largest connected component, 
-which contains $5862$~nodes $(98.87\%)$~and $35196$~channels $(99.89\%)$.
-We observe that this subgraph contains a representative sample of the LN.
+We model this data as an undirected multi-graph (i.e., may contain multiple edges between each pair of nodes), as several channels can be shared by two LN nodes.
+We only considered the largest connected component, which contains $5862$~nodes $(98.87\%)$~and $35196$~channels $(99.89\%)$.
 We refer to this dataset as \emph{LN20}.
 
 Based on \emph{LN20}, 
 LN nodes have an average degree of $12.01$~and a median degree of $3$~(see~\cref{fig:node-degree-histogram,fig:channel-capacity-histogram}).
 The majority of nodes have very few channels, 
-whereas there is a small number of nodes with many channels. 
+whereas there is a small number of nodes with many channels.
 In particular, there are more than $1744$~nodes with degree 1, and the most connected node has $1198$~channels.
 The capacity is also unequally distributed.
-These observations motivate the methodology in our experiments in~\cref{sec:sec-priv-attacks}. 
-
-We also derive a series of historic snapshots which represent the state of LN on the first day of each month from April~2018 to February~2020.
-We refer to this dataset as \textit{LNHist} and use it in our experiments in Chapter~\ref{Chapter08HTLClimit}.
-\todo[inline]{Move to Chapter08}
+These observations motivate the methodology in our experiments in~\cref{sec:sec-priv-attacks}.
 
 \begin{figure}[tb]
 	\centering
@@ -53,7 +46,7 @@ We refer to this dataset as \textit{LNHist} and use it in our experiments in Cha
 
 \paragraph{Ethical considerations} 
 Our analysis is based solely on publicly available data.
-All our calculations are based on a local representation of the LN network graph obtained from~\cite{fiatjaf2020}, without connecting to LN nodes. 
+All our calculations are based on a local representation of the LN network graph obtained from~\cite{fiatjaf2020}, without connecting to LN nodes.
 We do not interfere with the LN activity, nor deanonymize any node.
 
 
@@ -61,70 +54,54 @@ We do not interfere with the LN activity, nor deanonymize any node.
 \section{Security and privacy: theory and practice}
 \label{sec:sec-priv-attacks}
 
-As introduced in~\cref{sec:background}, the LN builds upon Hash Time-Lock Contracts aiming to achieve 
-atomicity in multi-hop payments.
+As introduced in~\cref{sec:background}, the LN builds upon Hash Time-Lock Contracts aiming to achieve atomicity in multi-hop payments.
 However,~\cite{Malavolta2019} argues that due to the \emph{wormhole attack} atomicity does not hold in LN.
 Another LN study~\cite{Malavolta2017} shows that privacy of LN users and their transactions can be breached.
-While the aforementioned works demonstrate the feasibility of these attacks, 
-their effectiveness in practice depends, among other factors, on the topology of the LN.
+While the aforementioned works demonstrate the feasibility of these attacks, their effectiveness in practice depends, among other factors, on the topology of the LN.
 In this experiment, we aim to identify the impact of these security and privacy issues in our snapshot of the LN.
 
 \subsection{Security and privacy attacks: background}
 
 \begin{figure*}[tb]
 	\includegraphics[width=\textwidth]{vp-figure.pdf}
-	
 	\vspace{0.3cm}
-	
 	\includegraphics[width=\textwidth]{ra-figure.pdf}
-	
 	\vspace{0.3cm}
-	
 	\includegraphics[width=\textwidth]{wa-figure.pdf}
-	
-	\caption{\label{fig:wormhole-attack} An illustrative example of value privacy (top), relationship anonymity (middle), and the wormhole attack (bottom).}
+	\caption{An illustrative example of value privacy (top), relationship anonymity (middle), and the wormhole attack (bottom).}
+	\label{fig:wormhole-attack}
 \end{figure*}
 
 \subsubsection{Value privacy}
-Intuitively, value privacy ensures that for a transaction involving only honest users, 
-corrupted users outside of the path learn no information about the transaction value.
-This notion thus heavily relies on the existence of paths without adversarial nodes.  
-Otherwise, an adversarial intermediary node can trivially learn the (upper bound of the) amount of a transaction that it forwards. 
-For instance, in~\cref{fig:wormhole-attack} the adversary $u_3$
-forwards $1.2$ coins to $u_4$, estimating the transaction amount at around $1$ coin plus forwarding fees.
+Intuitively, value privacy ensures that for a transaction involving only honest users, corrupted users outside the path learn no information about the transaction value.
+This notion thus heavily relies on the existence of paths without adversarial nodes.
+Otherwise, an adversarial intermediary node can trivially learn the (upper bound of the) amount of a transaction that it forwards.
+For instance, in~\cref{fig:wormhole-attack} the adversary $u_3$ forwards $1.2$~coins to $u_4$, estimating the transaction amount at around $1$~coin plus forwarding fees.
 
 \subsubsection{Relationship anonymity}
-Intuitively, relationship anonymity ensures that given two simultaneous transactions 
-between two pairs of nodes $(u_1, u_2)$ and $(u'_1, u'_2)$ routed through the same path of intermediary 
-users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than $1/2$.
+Intuitively, relationship anonymity ensures that given two simultaneous transactions between two pairs of nodes $(u_1, u_2)$ and $(u'_1, u'_2)$ routed through the same path of intermediary users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than $1/2$.
 However, this is not achieved in the LN.
-An adversary controlling $i_1$ and $i_n$ can use the cryptographic challenge included in the HTLC to 
-determine who pays to whom.
-For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$ 
-and $u_4$ can determine that $u_1$ is transacting with $u_5$ as the same value $y$ is used along the whole path. 
-Similarly, $u_2$ and $u_4$ can determine that $u'_1$ is transacting with $u'_5$ as the same $y'$ is being used along the path. 
+An adversary controlling $i_1$ and $i_n$ can use the cryptographic challenge included in the HTLC to determine who pays to whom.
+For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$ and $u_4$ can determine that $u_1$ is transacting with $u_5$ as the same value $y$ is used along the whole path.
+Similarly, $u_2$ and $u_4$ can determine that $u'_1$ is transacting with $u'_5$ as the same $y'$ is being used along the path.
 
 \subsubsection{The wormhole attack}
-In the wormhole attack, two colluding nodes in a transaction path prevent honest intermediaries from 
-participating in the successful completion of the payment, stealing the 
-fees initially intended for honest intermediaries.\footnote{One may argue that this is not an attack, as from the sender's point of view the payment is delivered. Yet, this attack takes the economic incentive that honest users have to forward payments in the first place.} 
+In the wormhole attack, two colluding nodes in a transaction path prevent honest intermediaries from participating in the successful completion of the payment, stealing the fees initially intended for honest intermediaries.
+One may argue that this is not an attack, as from the sender's point of view the payment is delivered.
+Yet, this attack takes the economic incentive that honest users have to forward payments in the first place.
 
-An example of the wormhole attack is depicted in~\cref{fig:wormhole-attack}. 
-Here, $u_4$ does not send the opening value $r$ to $u_3$ (step 7 in~\cref{fig:htlc}) to fulfill the HTLC previously set in this channel. 
-Instead, $u_4$ sends the value $r$ to $u_2$ outside of the LN protocol, which allows $u_2$ to settle the HTLC with $u_1$. 
-As a consequence, contracts with $u_3$ expire, simulating transaction failure and
-preventing $u_3$ from participating in the successful completion of the transaction. 
+An example of the wormhole attack is depicted in~\cref{fig:wormhole-attack}.
+Here, $u_4$ does not send the opening value $r$ to $u_3$ (step 7 in~\cref{fig:htlc}) to fulfill the HTLC previously set in this channel.
+Instead, $u_4$ sends the value $r$ to $u_2$ outside the LN protocol, which allows $u_2$ to settle the HTLC with $u_1$.
+As a consequence, contracts with $u_3$ expire, simulating transaction failure and preventing $u_3$ from participating in the successful completion of the transaction.
 
 
 \subsection{Methodology}
-In this section, we describe how we study the proneness of the LN to attacks with respect to the value privacy, relationship anonymity, and wormhole attack scenarios. 
+In this section, we describe how we study the proneness of the LN to attacks with respect to the value privacy, relationship anonymity, and wormhole attack scenarios.
 
 We first compute the paths between pairs of nodes.
-Given a pair of nodes $u_1$ and $u_2$, 
-we compute the list of paths that connect them with one restriction:
-we consider only the paths with at most three intermediary nodes.
-We observe that paths of this length suffice to allow more than $85\%$ of 
-transactions between a random pair of nodes (\cref{fig:payment-success}).
+Given a pair of nodes $u_1$ and $u_2$, we compute the list of paths that connect them with one restriction: we consider only the paths with at most three intermediary nodes.
+We observe that paths of this length suffice to allow more than $85\%$ of transactions between a random pair of nodes (\cref{fig:payment-success}).
 
 We also note that these paths allow us to exemplify all attacks that we want to study in this experiment.
 \begin{figure}
@@ -134,80 +111,65 @@ We also note that these paths allow us to exemplify all attacks that we want to 
 	\label{fig:payment-success}
 \end{figure}
 
-Let $\textit{paths}_{\langle u_1, u_2 \rangle}$ be the set of paths between $u_1$ and $u_2$ thereby computed. 
-We further prune the set $\textit{paths}_{\langle u_1, u_2 \rangle}$ into a subset 
-$\textit{paths}_{\langle u_1, u_2 \rangle, x}$, containing  only the paths that 
-allow to transfer at least $x$ satoshis. 
-For instance, $\textit{paths}_{\langle u_1, u_2 \rangle, 10}$ 
-contains the paths between $u_1$ and $u_2$ allowing to transfer at least $10$ satoshis. 
+Let $\textit{paths}_{\langle u_1, u_2 \rangle}$ be the set of paths between $u_1$ and $u_2$ thereby computed.
+We further prune the set $\textit{paths}_{\langle u_1, u_2 \rangle}$ into a subset $\textit{paths}_{\langle u_1, u_2 \rangle, x}$, containing only the paths that allow to transfer at least $x$ satoshis.
+For instance, $\textit{paths}_{\langle u_1, u_2 \rangle, 10}$ contains the paths between $u_1$ and $u_2$, which allows transferring at least $10$~satoshis.
 
-For a channel to be capable of transferring $x$ satoshis from $u_i$ to $u_j$, $u_i$ must have a balance of 
-at least $x$ satoshis. However, the current balance of each counterparty in a channel is not publicly available. 
-Thus, we consider a path suitable for a given transaction if the total capacity of every channel 
-in the path is not lower than the transaction amount, independently of how this capacity 
-is distributed among the two channel counterparties. 
+For a channel to be capable of transferring $x$ satoshis from $u_i$ to $u_j$, $u_i$ must have a balance of at least $x$ satoshis.
+However, the current balance of each counterparty in a channel is not publicly available.
+Thus, we consider a path suitable for a given transaction if the total capacity of every channel in the path is not lower than the transaction amount, independently of how this capacity is distributed among the two channel counterparties.
 This heuristic might consider a path suitable for a transaction while it is not.
-We nevertheless follow this heuristic as it is also used by LN nodes in practice. 
+We nevertheless follow this heuristic as it is also used by LN nodes in practice.
 
 As the next step, we study the effectiveness of the selected attack.
-For a chosen transaction amount $x$,
-we split the set $\textit{paths}_{\langle u_1, u_2 \rangle, x}$ into two subsets:
-(i) $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$: The subset of paths that are prone to the attack;
-(ii) $\textit{paths-safe}_{\langle u_1, u_2 \rangle, x}$:  The subset of paths that are not susceptible to being attacked. 
-The definition of a path of the form $u_1 \rightarrow i_1 \rightarrow  \ldots \rightarrow i_n \rightarrow u_2$  being 
-prone to the specific attack depends on the type of the attack:
+For a chosen transaction amount $x$, we split the set $\textit{paths}_{\langle u_1, u_2 \rangle, x}$ into two subsets:
+
+\begin{enumerate}
+	\item $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$: the subset of paths that are prone to the attack;
+	\item $\textit{paths-safe}_{\langle u_1, u_2 \rangle, x}$: the subset of paths that are not susceptible to being attacked.
+\end{enumerate}
+
+The definition of a path of the form $u_1 \rightarrow i_1 \rightarrow \ldots \rightarrow i_n \rightarrow u_2$ being prone to the specific attack depends on the type of the attack:
+
 \begin{itemize}
+	\item \textit{Value privacy}: We say that a path is prone to the value privacy attack if any of the intermediary nodes is under adversarial control.
 	
-	\item \textit{Value privacy:} We say that a path is prone to the 
-	value privacy attack if any of the intermediary nodes is under adversarial control. 
+	\item \textit{Relationship anonymity}: We say that a path is prone to the relationship anonymity attack if nodes $i_1$ and $i_n$ are under adversarial control.
 	
-	\item \textit{Relationship anonymity:} We say that a path  
-	is prone to the relationship anonymity attack if nodes $i_1$ and $i_n$ are under adversarial control.
-	
-	\item \textit{Wormhole attack:} We say that a path  
-	is prone to the wormhole attack if there exist two non-neighboring intermediary 
-	nodes $i_j$ and $i_k$ that are under adversarial control (i.e., $j < k$ and $k \neq j + 1$). 
-	
+	\item \textit{Wormhole attack}: We say that a path is prone to the wormhole attack if there exist two non-neighboring intermediary 
+	nodes $i_j$ and $i_k$ that are under adversarial control (i.e.,~$j < k$ and $k \neq j + 1$).
 \end{itemize}
 
-We remark that there exist a difference in the definition of a prone path in the wormhole attack and the relationship anonymity attack. 
+We remark that there exist a difference in the definition of a prone path in the wormhole attack and the relationship anonymity attack.
 For the relationship anonymity attack we do not require that there is an honest user between the two adversarial nodes.
-For instance, a path of the form $u_1 \rightarrow i_1 \rightarrow i_2 \rightarrow u_2$ where $i_1$ and $i_2$ are under adversarial control,  would be considered prone to the relationship anonymity attack but safe against the wormhole attack. 
+For instance, a path of the form $u_1 \rightarrow i_1 \rightarrow i_2 \rightarrow u_2$ where $i_1$ and $i_2$ are under adversarial control, would be considered prone to the relationship anonymity attack but safe against the wormhole attack.
 
 Another aspect that we consider is which nodes are under adversarial control.
-We follow three strategies. 
-First, we assume that nodes with highest degree (i.e.,~highly connected nodes) are colluding to carry out an attack. 
-Highly connected nodes are interesting to study as they are the ones with the highest stake in the network. 
+We follow three strategies.
+First, we assume that nodes with the highest degrees (i.e.,~highly connected nodes) are colluding to carry out an attack.
+Highly connected nodes are interesting to study as they are the ones with the highest stake in the network.
 Thus, an adversary might attempt to corrupt them (e.g.,~by bribery or stealing the private key) to maximize the effect of the attack.
 Second, we assume that nodes with the highest total capacity in their adjacent channels are corrupted.
-Finally, we consider that random nodes in the network are colluding to carry out an attack. 
+Finally, we consider that random nodes in the network are colluding to carry out an attack.
 We model here that any node (independently of its node degree) might be corrupted.
-For instance, the same user might create several LN nodes and place them at strategic positions in the LN to carry out the attacks we study here. 
+For instance, the same user might create several LN nodes and place them at strategic positions in the LN to carry out the attacks we study here.
 
-We refine our aforementioned path datasets to consider these three attacks strategies.
-In particular, for each number of malicious nodes ($y$) and each strategy, we re-split the set $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$ 
-between those prone to the attack and those otherwise safe.
-For instance, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-con}}$ 
-the subset of paths between 
-$u_1$ and $u_2$ that allow to transfer $x$ satoshis and that are prone 
-to the attack if $y$ nodes with the highest node degree are corrupted. 
-Correspondingly, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-ran}}$ 
-the subset of paths between 
-$u_1$ and $u_2$ that allow to transfer $x$ satoshis and that are prone 
-to the attack if $y$ nodes chosen uniformly at random are corrupted. 
+We refine our aforementioned path datasets to consider these three attack strategies.
+In particular, for each number of malicious nodes ($y$) and each strategy, we re-split the set $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$ between those prone to the attack and those otherwise safe.
+For instance, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-con}}$ the subset of paths between $u_1$ and $u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes with the highest node degree are corrupted.
+Correspondingly, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-ran}}$ the subset of paths between $u_1$ and $u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes chosen uniformly at random are corrupted.
 
-Finally, for each attack strategy, we consider $$\alpha_{\langle u_i, u_j \rangle} := \frac{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}|}{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}| + |\textit{paths-safe}_{\langle u_i, u_j \rangle, x, y}|}$$ 
-the probability that a transaction between $u_i$ and $u_j$ is vulnerable to the attack. 
+Finally, for each attack strategy, we consider $$\alpha_{\langle u_i, u_j \rangle} := \frac{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}|}{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}| + |\textit{paths-safe}_{\langle u_i, u_j \rangle, x, y}|}$$ the probability that a transaction between $u_i$ and $u_j$ is vulnerable to the attack.
 Averaging across all the pairs of nodes tested, we extract the final probabilities reported in~\cref{fig:fig-all-attacks}.
 
 
 \subsection{Results and discussion}
 
-In this section, we present the results shown in~\cref{fig:fig-all-attacks} and discuss their implications. 
+In this section, we present the results shown in~\cref{fig:fig-all-attacks} and discuss their implications.
 \begin{figure*}
 	\centering
 	\includegraphics[width=\textwidth]{fig-all-attacks}
-	\caption{Share of vulnerable paths for each attack, considering that highest degree nodes are compromised (top), highest capacity nodes are compromised (middle), or random nodes are compromised (bottom).}
+	\caption{Share of vulnerable paths for each attack, considering that the highest degree nodes are compromised (top), the highest capacity nodes are compromised (middle), or random nodes are compromised (bottom).}
 	\label{fig:fig-all-attacks}
 \end{figure*}
 
@@ -215,87 +177,53 @@ For every attack and a given number of compromised nodes, the share of prone pat
 This indicates that the payment amount does not significantly affect the security of payments.
 
 The three attacks differ in how quickly the share of prone paths changes as the number of compromised nodes increases.
-For value privacy, the effect of additional highly-connected nodes being compromised is the most profound: 
-the share of prone paths is $50\%$ if only the $5$ most connected nodes are compromised 
-and nearly $100\%$ if the $100$ most connected nodes are compromised. 
-We conclude thus that an adversary needs to corrupt only $2\%$ of the nodes to (almost) completely nullify any value privacy guarantee in the LN.
+For value privacy, the effect of additional highly-connected nodes being compromised is the most profound.
+The share of prone paths is $50\%$~if only the $5$~most connected nodes are compromised, and nearly $100\%$~if the $100$~most connected nodes are compromised.
+We conclude thus that an adversary needs to corrupt only $2\%$~of the nodes to almost nullify any value privacy guarantee in the LN.
 
 We observe that the average share of prone paths decreases for relationship anonymity.
-Yet, the adversary controlling the $100$ most connected nodes can launch the relationship anonymity attack on about $70\%$ of the paths. 
+Yet, the adversary controlling the $100$~most connected nodes can launch the relationship anonymity attack on about $70\%$~of the paths.
 Interestingly, the adversary has fewer possibilities to launch the wormhole attack.
-For instance, even with $100$ most connected nodes corrupted, around $30\%$ of the paths are prone to the attack.
-While this is still a crucial security issue, this reduction in the effectiveness of the attack 
-may be explained by the fact that the wormhole attack is the most restrictive on path structure, and thus it 
-has the lowest share of vulnerable paths. 
+For instance, even with $100$~most connected nodes corrupted, around $30\%$~of the paths are prone to the attack.
+While this is still a crucial security issue, this reduction in the effectiveness of the attack may be explained by the fact that the wormhole attack is the most restrictive on path structure, and thus it has the lowest share of vulnerable paths.
 
-Increasing the number of compromised nodes results in fewer vulnerable paths if compromised nodes are those with the channels holding the highest capacity, as opposed to highest degree nodes.
+Increasing the number of compromised nodes results in fewer vulnerable paths if compromised nodes are those with the channels holding the highest capacity, as opposed to the highest degree nodes.
 This distinction is most profound for relationship anonymity, e.g.,~there are around $50\%$~for $50$~highest degree corrupted nodes, but only around $25\%$~vulnerable paths for $50$~highest capacity corrupted nodes.
 This may be explained by the fact that routing algorithms optimize for low path length.
 Note that capacity of forwarding channels is not as important as good connectivity, especially for payments of small and medium amounts.
 
 Finally, we consider random nodes compromised instead of the most connected nodes.
-In contrast to the previous results, we observe that less than $10\%$ of paths are prone to value privacy and nearly no path is prone 
+In contrast to the previous results, we observe that less than $10\%$~of paths are prone to value privacy and nearly no path is prone 
 to relationship anonymity and wormhole attack.
 We conjecture that this is because randomly selected nodes have few connections (note the degree distribution in Figure~\ref{fig:node-degree-histogram}), and thus their compromise does not affect routing at large.
 
-In summary, 
-the results of this experiment show that highly connected nodes and nodes with high capacity links have a high impact on the security and privacy of the LN.
-Assuming that paths are selected uniformly at random from the set of available paths, 
-an adversary that selectively corrupts $100$ (i.e.,~only $2\%$) 
-of LN nodes can effectively learn all the transaction values, 
-the sender and the receiver for the vast majority of transactions, 
-as well as carry out the wormhole attack in about $30\%$ of the paths. 
-This shows that the security and privacy attacks shown in theory are indeed crucial in practice. 
+In summary, the results of this experiment show that highly connected nodes and nodes with high capacity links have a high impact on the security and privacy of the LN.
+Assuming that paths are selected uniformly at random from the set of available paths, an adversary that selectively corrupts $100$~(i.e.,~only $2\%$) of LN nodes can effectively learn all the transaction values, the sender and the receiver for the vast majority of transactions, as well as carry out the wormhole attack in about $30\%$~of the paths.
+This shows that the security and privacy attacks shown in theory are indeed crucial in practice.
 
-Carrying out such an attack might not be infeasible in the live network. We 
-note that a large number of highly connected LN nodes is controlled by an unknown entity under the pseudonym LNBIG.
-It controls 23~out of top~50 highest connected nodes~\cite{1MLTopConnected} and $40\%$ of the network capacity~\cite{TheBlockLNBIG}.
+Carrying out such an attack might not be infeasible in the live network.
+We note that a noticeable share of highly connected LN nodes is controlled by an unknown entity under the pseudonym LNBIG.
+It controls $23$~out of top~$50$~highest connected nodes~\cite{1MLTopConnected} and $40\%$~of the network capacity~\cite{TheBlockLNBIG}.
 
 
 \subsection{Countermeasures}
-We assume in our study that every two nodes carry out their transactions  
-along a subset of paths chosen uniformly at random from the set of all available paths between them. 
+We assume in our study that every two nodes carry out their transactions along a subset of paths chosen uniformly at random from the set of all available paths between them.
 However, LN nodes might implement different routing strategies.
-For instance, while routing through well-connected nodes improves the chances to reach the receiver through a short, highly liquid path, 
-the sender might connect to low degree nodes.
-This would make the node degree distribution more even at the cost of connectivity and reduce the probability of choosing paths prone to the 
-attacks studied in this experiment. 
-We envision thus that there is a trade-off between connectivity on the one hand and security and privacy on the other,
-which constitutes a venue for future work.
-A node may also route transactions through a trusted proxy node, 
-thus guaranteeing that the first node in a path is not compromised.
+For instance, while routing through well-connected nodes improves the chances to reach the receiver through a short, highly liquid path, the sender might connect to low degree nodes.
+This would make the node degree distribution more even at the cost of connectivity and reduce the probability of choosing paths prone to the attacks studied in this experiment.
+We envision thus that there is a trade-off between connectivity on the one hand and security and privacy on the other, which constitutes a venue for future work.
+A node may also route transactions through a trusted proxy node, thus guaranteeing that the first node in a path is not compromised.
 This would mitigate the relationship anonymity and wormhole attacks (if the total path length is bounded to contain at most three intermediaries).
-As the LN protocol is still evolving, the results of the experiments presented in this section should be considered 
-for the next design decisions.
-
-Routing protocols for the LN is an active research area~\cite{Roos2018, Sivaraman2018, Malavolta2017a, Prihodko2016, Grunspan2018, Bagaria2019, Osuntokun2018, Pickhardt2019, ZmnSCPxj2019, ZmnSCPxj2019a, ZmnSCPxj2019b}.
-Our results suggest that, although largely omitted so far, 
-the security and privacy attacks here studied are a crucial variable to consider when designing routing protocols. 
-
-
-\section{Related work}
-
-Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019}, privacy~\cite{Malavolta2017, HerreraJoancomarti2019, Kohen2019}, concurrency~\cite{Malavolta2017}, routing~\cite{Malavolta2017a, Roos2018, Sivaraman2018, Prihodko2016}, liquidity~\cite{Dandekar2011,MorenoSanchez2018}, efficiency~\cite{Decker2018}, and incentive compatibility~\cite{Engelmann2017}.
-These works mainly share the lack of a quantitative analysis of the impact of their findings in the current LN.
-
-A group of papers more closely related to ours conveys experimental analyses of various aspects of the LN.
-Herrera-Joancomart\'{i} et al.~\cite{HerreraJoancomarti2019} describe an adversarial 
-strategy to determine the current balance of a channel in the network.
-Tang et al.~\cite{Tang2019} study 
-the trade-offs between balance privacy and routing effectiveness. 
-Martinazzi~\cite{Martinazzi2019} and Seres et al.~\cite{Seres2019} study the evolution of topological aspects of the LN graph.
-Conoscenti et al.~\cite{Conoscenti2019} study the dependency of the LN on payment hubs 
-and the rebalancing mechanisms that ameliorate the effect of depleted channels.
+As the LN protocol is still evolving, the results of the experiments presented in this section should be considered for the next design decisions.
+Our results suggest that, although largely omitted so far, the security and privacy attacks here studied are a crucial variable to consider when designing routing protocols.
 
 
 \section{Conclusion}
 \label{sec:conclusions}
 
 The Lightning Network (LN) has emerged as the most widely deployed solution for the scalability issue affecting current blockchains such as Bitcoin.
-Despite its conceptual appeal and growing adoption,  several works~\cite{Malavolta2017, Malavolta2019} have identified 
- security, anonymity and scalability limitations. A quantitative 
-analysis of their impact, however, is missing and this paper aims at filling this gap.
+Despite its conceptual appeal and growing adoption, several works~\cite{Malavolta2017, Malavolta2019} have identified security, anonymity and scalability limitations.
+A quantitative analysis of their impact, however, is missing and this paper aims at filling this gap.
 
-We quantitatively study for the first time the proneness of the current Lightning Network to the 
-wormhole attack as well as attacks against value privacy and relationship anonymity. 
-We observe that a moderately resourceful adversary controlling only $2\%$ of the total node count can carry out these attacks with high success probability.
+We quantitatively study for the first time the proneness of the current Lightning Network to the wormhole attack as well as attacks against value privacy and relationship anonymity.
+We observe that a moderately resourceful adversary controlling only $2\%$~of the total node count can carry out these attacks with high success probability.

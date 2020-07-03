@@ -4,7 +4,6 @@
 
 In this Chapter, we present an Ethereum-based privacy-preserving KYC scheme for token white-listing.
 \footnote{This Chapter is based on~\cite{Biryukov2018}, which in turn described a hackathon project. A proof-of-concept implementation of the design described above was created in May~2017 during the Luxblock hackathon in Luxembourg, and was awarded a joint first prize. The team included Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad. Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for Section~\ref{sec:PrivacyPreservingKYC}).}
-
 We describe the current approach of identity management and propose KYCE -- a privacy-preserving KYC scheme on Ethereum.
 
 
@@ -24,7 +23,6 @@ In order to comply with regulation, financial institutions must verify the ident
 Modern finance adheres to the centralized identity model and depends on government-issued identities.
 Regulation in most jurisdictions demand that banks obtain proof of identity from customers before doing business with them ("know your customer", or KYC).
 "Anti money laundering" (AML) and "counter terrorist financing" (CTF) are related regulations that require banks to stop and report suspicious transactions.
-%In financial services,  and privacy violation can lead to serious consequences.
 
 Modern KYC practices diminish users' control over their personal information and threats their privacy.
 Financial institutions store sensitive information in private databases.
@@ -61,7 +59,7 @@ From the point of view of the system, $U$ is whoever possesses $priv_U$.
 
 In the centralized model of identity, which is prevalent on the Internet today, users delegate managing their private keys to a trusted party and use a password to access them when necessary.
 This approach is sub-optimal in many regards.
-First of all, users do not control their identities.
+First, users do not control their identities.
 The trusted party always has the technical ability to sign messages without the user's consent or to prevent the user from signing the message they want.
 Moreover, users' personal data is stored by a centralized entity, which creates additional incentives for malicious actors to attack it.
 Finally, users have to create a new identity for each website they wish to register with.
@@ -268,8 +266,8 @@ The technique to make a composite proof of knowledge (PoK) is straightforward, a
 	\item The Prover collects a set $\mathcal{C}$ of commitments asserted in sub-proofs $PK_w$ and $PK_s$.
 	\item The Prover makes necessary randomization of $\mathcal{C}$ to create $t$-values $\mathcal{T}$.
 	\item The Prover computes $c \leftarrow H(\mathcal{C},\mathcal{T})$.
-	\item The Prover computes $s$-values  $\mathcal{S}$ using
-	$\mathcal{C}$,  $\mathcal{T}$, and $c$.
+	\item The Prover computes $s$-values $\mathcal{S}$ using
+	$\mathcal{C}$, $\mathcal{T}$, and $c$.
 	\item The proof $P$ is $(\mathcal{C}, \mathcal{S},c)$.
 	To verify it one computes asserted $t$-values $\widehat{\mathcal{T}}$ and verifies
 	$$

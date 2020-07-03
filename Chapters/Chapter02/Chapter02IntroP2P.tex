@@ -72,7 +72,7 @@ Alternative cryptocurrencies based on a modified Bitcoin~Core codebase, such as 
 
 \paragraph{Bootstrapping}
 
-Any P2P network faces the bootstrapping problem: a new peers does not know any other peers.
+Any P2P network faces the bootstrapping problem: a new peer does not know any other peers.
 Bitcoin solves this issue in two ways.
 The reference implementation (Bitcoin~Core) supports two bootstrapping methods.
 The default method is \textit{DNS bootstrapping}.
@@ -200,7 +200,7 @@ The simplest modification of the full protocol is not to store old blocks.
 Nodes in this mode of operation are referred to as \textit{pruned}.
 A pruned node performs the initial block download and validates all blocks, but removes the old blocks once they are validates.
 This allows to significantly reduce the storage requirements.
-For instance, Bitcoin~Core allows to allocate as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $270$~GB as of 2020).
+For instance, Bitcoin~Core allows allocating as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $270$~GB as of 2020).
 Pruned nodes do not support transaction indexing and can not serve blockchain data to others.
 
 \paragraph{SPV nodes}

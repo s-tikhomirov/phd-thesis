@@ -41,7 +41,7 @@ We refer to this limitation as the \textit{HTLC limit}.
 Despite the perceived focus on micropayments, LN does not fully support transactions of very small value.
 Every HTLC makes the potential closing transaction larger, and the on-chain fees higher.
 Redeeming very small outputs on-chain can be more expensive than their value.
-Therefore BOLT specifications prescribe that nodes negotiate the \textit{dust limit} before opening a channel, and for payments below this limit, no HTLCs are created (see \textit{trimmed HTLCs}~\cite{BOLT3Trimmed}).
+Therefore, BOLT specifications prescribe that nodes negotiate the \textit{dust limit} before opening a channel, and for payments below this limit, no HTLCs are created (see \textit{trimmed HTLCs}~\cite{BOLT3Trimmed}).
 Out of the three most popular LN implementations, c-lightning and Eclair use the default dust limit of $546$~satoshis.
 LND estimates the dust limit dynamically.
 We thus hereby assume $546$~satoshis as the dust limit.
@@ -182,7 +182,7 @@ We also do not account for non-public channels, which may account for $28\%$~of 
 Yet, our approach allows us to calculate the effect of the HTLC limit, as both estimations (capacity-based limit and HTLC limit) are calculated under the same assumptions.
 Our estimation shows that the HTLC limit reduces the number of concurrent channel updates for payments under certain average transaction amount.
 
-The fact that the HTLC limit manifests itself at low transaction amounts negatively affects scalability and some of the potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
+The fact that the HTLC limit manifests itself at low transaction amounts negatively affects scalability and some potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
 Our calculations show that for payments of $1000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
 
 The low value for the default minimum transaction amount and the reduced number of in-flight transactions open a DoS attack vector with a moderate cost for the adversary.

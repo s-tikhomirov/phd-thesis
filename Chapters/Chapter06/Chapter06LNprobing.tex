@@ -125,7 +125,7 @@ We close all the connections after this step, except for the connections to our 
 
 \paragraph{Heuristic 2: Pre-probing}
 To further optimize probing, we introduce an additional pre-probing step.
-We send a probe of $1000$~satoshis to every channel marked as active in the gossip data\footnote{We use the same probing function as for the main probing described below.}.
+We send a probe of $1\,000$~satoshis to every channel marked as active in the gossip data\footnote{We use the same probing function as for the main probing described below.}.
 If we get no response, we consider the channel dead and do not consider it in the main probing step.
 For the first round of probing, we consider all live channels, where a channel is defined as live if either heuristic 1 or heuristic 2 classify it as live.
 
@@ -315,15 +315,6 @@ We choose nodes to connect to based on the following requirements (as reported b
 	\item located relatively close to our node (i.e.,~in Europe) to decrease latency.
 \end{itemize}
 
-\paragraph{Hanging HTLCs}
-Our method assumes that for each probe an error is returned quickly (within seconds, as Figure~\ref{fig:route-length-timings} shows).
-If some intermediary hop does not return an error, we are left with an unresolved in-flight HTLC that we call \textit{hanging}.
-Hanging HTLCs occupy the capacity of our channels, preventing us from issuing large probes from the affected channel.
-Hanging HTLCs are hard to get rid of.
-The protocol does not allow to cancel them unilaterally, and closing a channel involves long timeouts until the funds are available and can be put into a new channel.
-Therefore, we use multiple entry channels, so that we can tolerate some hanging HTLCs in some of them.
-This issue is similar to our own attack presented in Chapter~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
-
 \paragraph{Choosing the timeout}
 One of the decisions we had to make is to set a timeout after which we declare a channel unresponsive and move to the next one.
 The LN protocol does not prescribe how quickly a node should react.
@@ -337,8 +328,8 @@ Note that route generation is a local operation.
 In our experiments, one route generation took under $10$~ms.
 This is two orders of magnitude lower than the average probe response time ($3$~seconds).
 
-In our main experiment, we performed $12895$~payments.
-We rejected $96768$~routes because of low balance.
+In our main experiment, we performed $12\,895$~payments.
+We rejected $96\,768$~routes because of low balance.
 That is, we filtered out around $8$~routes per payment.
 Hence, our method of route generation did not significantly increase the time of our experiment.
 This approach may be improved with custom route generation.
@@ -348,20 +339,28 @@ The LN protocol limits the length of a route to $20$~channels.
 Longer routes allow collecting more information per probe, but increase the probability of failure at one of the intermediary channels.
 For our experiment, we limited the length of routes to $10$~channels.
 
+\paragraph{Hanging HTLCs}
+Our method assumes that for each probe an error is returned quickly (within seconds, as Figure~\ref{fig:route-length-timings} shows).
+If some intermediary hop does not return an error, we are left with an unresolved in-flight HTLC that we call \textit{hanging}.
+Hanging HTLCs occupy the capacity of our channels, preventing us from issuing large probes from the affected channel.
+The protocol does not allow to cancel them unilaterally, and closing a channel involves long timeouts until the funds are available and can be put into a new channel.
+Therefore, we use multiple entry channels, so that we can tolerate some hanging HTLCs in some of them.
+This issue is similar to our own attack presented in Chapter~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
+
 
 \section{Results} \label{sec:results}
 
 We performed the experiment on 26~February~2020.
-At that time, the LN on Bitcoin~testnet contained $1974$~nodes and $5884$~channels (including $2527$~announced as active).
-The initial estimate showed that $207$~nodes and $1625$~channels were live.
+At that time, the LN on Bitcoin~testnet contained $1\,974$~nodes and $5\,884$~channels (including $2\,527$~announced as active).
+The initial estimate showed that $207$~nodes and $1\,625$~channels were live.
 We detected $3$~additional live channels during the first probing pass.
-The strongly connected component of the live subgraph contained $1489$~channels.
+The strongly connected component of the live subgraph contained $1\,489$~channels.
 The other $139$~channels where pointing towards nodes for which we could not get meaningful error messages.
 
-In total, we sent $12895$~probes: $3153$~($24.45\%$) during the pre-probing and $9742$~($75.55\%$) during the main probing phase.
-Out of $9742$~probes in the main phase, $8256$~($84.75\%$) returned errors which we could use to improve the estimates of balances on payment channels ("channel temporary unavailable" and "incorrect or unknown payment details").
+In total, we sent $12\,895$~probes: $3\,153$~($24.45\%$) during the pre-probing and $9\,742$~($75.55\%$) during the main probing phase.
+Out of $9\,742$~probes in the main phase, $8\,256$~($84.75\%$) returned errors which we could use to improve the estimates of balances on payment channels ("channel temporary unavailable" and "incorrect or unknown payment details").
 Our code was running for~$14$~hours and~$6$~minutes. % 50770 seconds
-Probing $1628$~live channels took $65\%$~of the time (roughly $9$~hours).
+Probing $1\,628$~live channels took $65\%$~of the time (roughly $9$~hours).
 The rest was spent on slow-responding channels or channels which replied with an unexpected error.
 
 
@@ -378,7 +377,7 @@ Figure~\ref{fig:route-length-timings} shows the distribution of probing times fo
 \end{figure}
 
 Nearly all probes $3$~hops and shorter return within $10$~seconds.
-The median of the $8256$~probes is at $3.36$~seconds.
+The median of the $8\,256$~probes is at $3.36$~seconds.
 Recall that $15.25\%$~of the probes timed out or returned an error that we could not interpret within out algorithm.
 The corrected median without the timed out and erring probes is $3.93$~seconds. 
 We conclude that the cutoff at $10$~seconds presents an acceptable trade-off.
@@ -415,7 +414,7 @@ A large channel can only be fully probed, if the local balance at one of its end
 \end{figure}
 
 Figure~\ref{fig:cdf-channel-coefficients} represents the distribution of channels by their information coefficients.
-We obtained full balance information on over $1000$~of $1628$~channels.
+We obtained full balance information on over $1\,000$~of $1\,628$~channels.
 Note that the jump at $0.5$~for the large channels is expected:the maximum standard channel capacity ($0.167$~BTC) is approximately four times higher than the maximum HTLC amount ($0.043$).
 Consider a channel with the total capacity of $0.167$~BTC and the local balance between $0.043$~BTC and $0.167 - 0.043 = 0.124$~BTC.
 We probe this channel from both sides and receive the "unknown hash" error in both cases.
@@ -549,7 +548,7 @@ It may be forwarded through a parallel channel instead.
 This is true for all channels along the route.
 We accept this as a limitation of our approach.
 
-As seen from our LN snapshot dated 25~February~2020, the mainnet LN contained $1438$~parallel channels ($17.64\%$~of all channels), which indicates that the effects on the probing precision could be significant on mainnet\footnote{There may be private parallel channels, we can not estimate their effect on our results.}.
+As seen from our LN snapshot dated 25~February~2020, the mainnet LN contained $1\,438$~parallel channels ($17.64\%$~of all channels), which indicates that the effects on the probing precision could be significant on mainnet\footnote{There may be private parallel channels, we can not estimate their effect on our results.}.
 However, the vast majority of \textit{node pairs} have no more than one channel, and can be probed using our method.
 Note also that while the LN specification allows non-strict forwarding, the c-lightning implementation that we use does not support opening multiple channels to the same node.
 The other two popular implementations, LND and Eclair, allow parallel channels.

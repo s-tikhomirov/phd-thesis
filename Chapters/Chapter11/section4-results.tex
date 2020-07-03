@@ -2,7 +2,8 @@
 
 \subsection{Goals and definitions}
 
-We compare SmartCheck with three freely available vulnerability detection tools (Oyente, Remix, and Securify\footnote{In case of Securify, we consider only partial results, since full results are not displayed in the publicly available version of the tool.}) and with the results of manual audit.
+We compare SmartCheck with the results of manual audit (Section~\ref{ManualAudit}) and the three freely available vulnerability detection tools -- Oyente, Remix, and Securify (Section~\ref{MassiveTesting}).
+\footnote{For Securify, we only consider partial results from the publicly available version of the tool.}
 
 We define a true finding as an issue (detected by a tool with manual verification or manually) that is a bad practice and should be fixed from our viewpoint.
 It may or may not be an exploitable vulnerability.
@@ -13,21 +14,20 @@ For each tool, the false discovery rate (FDR) is the number of FPs for this tool
 
 \[FDR = FP / (TP + FP)\]
 
-False negative rate (FNR) is the number of FNs for this tool divided by the number of all true findings (found by any of the tools or manually), which is the sum of TP and FN for this tool: FNR = FN / (TP + FN).
+False negative rate (FNR) is the number of FNs for this tool divided by the number of all true findings (found by any of the tools or manually):
 
-Section~\ref{ManualAudit} assesses FDR and FNR of SmartCheck and three other tools on three typical contracts.
-Section~\ref{MassiveTesting} measures the prevalence of code issues on a large set of real-world contracts.
+\[FNR = FN / (TP + FN)\]
 
 
 \subsection{Case studies} \label{ManualAudit}
 
-We consider three contracts: Genesis (``the platform for the private trust management market``~\cite{Genesis}, source code ~\cite{GenesisGithub}, analyzed at commit \texttt{1ecf99d}), Hive (``the first crypto currency invoice financing platform``~\cite{Hive}, source code ~\cite{HiveGithub}, analyzed at commit \texttt{0d54699}), and Populous (``an online platform that matchmakes invoice sellers to invoice buyers hosted on the blockchain``~\cite{Populous}, source code ~\cite{PopulousGithub}, analyzed at commit \texttt{10de4ae}).
-
+We consider three contracts: Genesis ("the platform for the private trust management market"~\cite{Genesis}, source code ~\cite{GenesisGithub}, analyzed at commit \texttt{1ecf99d}), Hive ("the first crypto currency [sic] invoice financing platform"~\cite{Hive}, source code ~\cite{HiveGithub}, analyzed at commit \texttt{0d54699}), and Populous ("an online platform that matchmakes invoice sellers to invoice buyers hosted on the blockchain"~\cite{Populous}, source code ~\cite{PopulousGithub}, analyzed at commit \texttt{10de4ae}).
 The FDR and FNR for each tool (in \% and in absolute numbers) are presented in Table~\ref{CaseStudyTable}.
+
 \begin{table*}[t]
 	\centering
 	\caption{Tools results on the three projects and overall}
-	\begin{tabular}{|c|c|c|c|c|c|}
+	\begin{tabular}{|l|l|r|r|r|r|}
 		\hline
 		\textbf{Project} &  & \textbf{Oyente} & \textbf{Remix} & \textbf{Securify} & \textbf{SmartCheck} \\
 		\hline
@@ -65,22 +65,24 @@ The FDR and FNR for each tool (in \% and in absolute numbers) are presented in T
 
 Oyente and Securify did not show any TPs on these three contracts.
 Remix detected TPs only in the Populous contract.
-Remix and SmartCheck showed an overall FDR of $97$\% and $69$\% respectively, and an overall FNR of $92$\% and $47$\% respectively.
+Remix and SmartCheck showed an overall FDR of $97\%$~and $69\%$~respectively, and an overall FNR of $92\%$~and $47\%$~respectively.
 This means that SmartCheck showed better FDR and FNR compared to its closest competitor.
-Overall, SmartCheck reported $87$ issues in the three contracts.
+Overall, SmartCheck reported $87$~issues in the three contracts.
 
 Requirements for code analysis tools differ across platforms and domains.
-Due to a peculiar security landscape in smart contract programming (see Section~\ref{SecurityChallenges}), low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
+Due to a special security requirements in smart contract programming, low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
 Most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
 
-Though SmartCheck's FDR of $69$\% may seem pretty high, it is not a serious issue in this domain.
-$47$\% is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
+Though SmartCheck's FDR of $69\%$~may seem pretty high, it is not a serious issue in this domain.
+$47\%$~is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
 Most of SmartCheck's FNs were found manually (not by other tools).
 
 SmartCheck detected a critical issue in one of the contracts: an attacker could create an unlimited number of internal entities and block the normal operation of the contract.
 A public function (i.e.,~such that any Ethereum user can call it) allowed to add an element to an internal array (Listing~\ref{AddingGroup}).
-Several critical functions then iterated through this array (e.g.,~Listing~\ref{Iterating}), so an attacker could make those functions permanently fail (a function call would require more gas than the block gas limit).
+Several critical functions then iterated through this array (e.g.,~Listing~\ref{Iterating}).
+An attacker could make those functions permanently fail, as the function call would require more gas than the block gas limit.
 
+\begin{minipage}{\linewidth} 
 \begin{lstlisting}[caption={Adding an element to the internal array},label={AddingGroup},language=Solidity]
 function createGroup(string _name, uint _goal)
     onlyOpenAuction
@@ -100,7 +102,9 @@ function createGroup(string _name, uint _goal)
 	}
 }
 \end{lstlisting}
+\end{minipage}
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={Iterating through the internal array},label={Iterating},language=Solidity]
 function findBidder(bytes32 bidderId) constant returns (uint8 err, uint groupIndex, uint bidderIndex) {
 	for(groupIndex = 0; groupIndex < groups.length; groupIndex++) {
@@ -113,10 +117,16 @@ function findBidder(bytes32 bidderId) constant returns (uint8 err, uint groupInd
 	return (1, 0, 0);
 }
 \end{lstlisting}
+\end{minipage}
 
 \subsection{Testing on a massive sample} \label{MassiveTesting}
 
-We downloaded the source code of $4\,600$ verified contracts ($1\,537\,954$ lines of code) as of 4~October~2017 from Etherscan~\cite{EtherscanVerified} using a Java library JSoup~\cite{JSoup} and ran SmartCheck on this dataset.
+A \textit{blockchain explorer} is a website that displays information about blockchain transactions.
+Etherscan~\cite{EtherscanVerified} is a popular Ethereum blockchain explorer.
+Among other information, it offers \textit{contract verification} as a service.
+A contract developer would upload the source code to Etherscan, which would then confirm that the deployed bytecode was indeed obtained from the provided source code.
+We downloaded the source code of $4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
+We then ran SmartCheck on this dataset.
 
 % https://tex.stackexchange.com/a/99834/142924
 % $X$ causes errors
@@ -138,7 +148,7 @@ We downloaded the source code of $4\,600$ verified contracts ($1\,537\,954$ line
 	
 	\begin{axis}[
 	xbar stacked,   % Stacked horizontal bars
-	xmin=0,         % Start x axis at 0
+	xmin=0,         % Start x-axis at 0
 	ytick=data,     % Use as many tick labels as y coordinates
 	yticklabels from table={\datatable}{Balance}
 	]
@@ -149,16 +159,16 @@ We downloaded the source code of $4\,600$ verified contracts ($1\,537\,954$ line
 \end{figure}
 
 The contract balances differ significantly (see Figure~\ref{BalancesFigure}).
-The vast majority ($3\,984$,~or $86.6$\%)~of contracts have a zero balance.
-One contract holds over one~million ether ($1\,500\,000$, or \$$440$~million at the time of testing), which accounts for~$38.4$\% of the total balance of all contracts.
-Contracts have from $1$ to $2\,525$~lines of code, with an average of $334$~lines and a median of $221$~lines.
+The vast majority ($3\,984$,~or $86.6\%$)~of contracts have a zero balance.
+One contract holds over one~million ether ($1\,500\,000$, or \$$440$~million at the time of testing), which accounts for~$38.4\%$~of the total balance of all contracts.
+Contracts have from $1$~to $2\,525$~lines of code, with an average of $334$~lines and a median of $221$~lines.
 
 \let\letcs\texapiletcs
 \begin{figure}
 	\caption{Findings on the big dataset \\ (excluding {\usevalue SolidityVisibility:name })}
 	\centering
-	\resizebox{0.5\textwidth}{!}{
-	\begin{tikzpicture}[x={(.001,0)}]
+	\resizebox{0.8\textwidth}{!}{
+	\begin{tikzpicture}[x={(.001,0)}, font=\large]
 	\definecolor{darkgray}{RGB}{128,128,128}
 	\definecolor{lightgray}{RGB}{232,232,232}
 	\foreach  \l/\x/\c[count=\y] in {
@@ -195,10 +205,10 @@ Contracts have from $1$ to $2\,525$~lines of code, with an average of $334$~line
 \end{figure}
 \let\letcs\etoolboxletcs
 
-SmartCheck analyzed the dataset in $7\,644$ seconds (approximately $2$~hours and $7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
-As per SmartCheck, $99.9$\% of contracts have issues, $63.2$\% of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
+SmartCheck analyzed the dataset in $7\,644$~seconds (approximately $2$~hours and $7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
+As per SmartCheck, $99.9\%$~of contracts have issues, $63.2\%$~of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
 The findings are presented in Table~\ref{MassiveTestingTable} and Figure~\ref{MassiveTestingFigure} (colors denote severity levels: black -- high, dark gray -- medium, light gray -- low).
-The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for $67.30$\% of all findings), is excluded from the figure for clarity.
+The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for $67.30\%$~of all findings), is excluded from the figure for clarity.
 
 \let\letcs\texapiletcs
 \begin{table}[t]

@@ -8,17 +8,15 @@ In this Chapter, we study the security of smart contracts in Solidity.
 \footnote{This Chapter is based on~\cite{Tikhomirov2018}. The author of this thesis contributed to researching and formalizing the types of vulnerabilities and writing the paper. The author thanks Evgeny Marchenko for the help in adding "2020 updates" to reflect the changes in the applicability of the patterns since the original publication.}
 
 We provide a comprehensive classification of code issues in Solidity and propose SmartCheck -- an extensible static analysis tool.
-\footnote{The source code is available at \url{https://github.com/smartdec/smartcheck}.}
+\footnote{The source code is available at~\cite{SmartCheck}.}
 SmartCheck translates Solidity source code into an XML-based intermediate representation and checks it against XPath patterns.
-We evaluate our tool on a big dataset of real-world contracts and compared the results with manual audit on three contracts.
+We evaluate our tool on a big dataset of real-world contracts and compare the results with manual audit on three contracts.
 SmartCheck shows significant improvements over existing alternatives in terms of false discovery rate (FDR) and false negative rate (FNR).
 While SmartCheck has its limitations, we believe that a static analyzer should be an essential part of contract developers' toolbox.
 Automated detection of simple bugs lets developers allocate more effort to complex issues.
 
 %%%% SECTION 1: INTRODUCTION %%%%
-\input{Chapters/Chapter11/section1-introduction.tex}
-
-%\input{smartcheck-code-correctness-approaches.tex}
+% moved to Chapter09
 
 %%%% SECTION 2: CLASSIFICATION %%%%
 \input{Chapters/Chapter11/section2-classification.tex}
@@ -30,7 +28,7 @@ Automated detection of simple bugs lets developers allocate more effort to compl
 \input{Chapters/Chapter11/section4-results.tex}
 
 %%%% SECTION 5: RELATED WORK %%%%
-\input{Chapters/Chapter11/section5-related-work.tex}
+% moved to Chapter09
 
 %%%% SECTION 6: CONCLUSION %%%%
 \input{Chapters/Chapter11/section6-conclusion.tex}

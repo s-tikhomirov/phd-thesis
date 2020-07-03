@@ -573,8 +573,7 @@ This allows to mine these cryptocurrencies using off-the-shelf equipment, mostly
 
 ASIC resistance may raise the probability of 51\%~attacks.
 GPUs, unlike ASICs, are widely available and used for gaming and scientific computing.
-Therefore, an attacker can sell the GPUs after the attack, at least partially recouping the initial investment.
- \footnote{The attacker can also \textit{rent} hashing power only for the duration of the attack using hashrate markets. Multiple cryptocurrencies (Ethereum~Classic, Bitcoin~Gold) have been 51\%-attacked in practice~\cite{Xazax3102019}.}
+Therefore, an attacker can sell the GPUs after the attack, at least partially recouping the initial investment.\footnote{The attacker can also \textit{rent} hashing power only for the duration of the attack using hashrate markets. Multiple cryptocurrencies (Ethereum~Classic, Bitcoin~Gold) have been 51\%-attacked in practice~\cite{Xazax3102019}.}
 
 It is not clear if ASIC-resistance can be maintained in the long term.
 An economic argument suggests that mining will be professionalized for any PoW, given sufficient incentives.
@@ -752,15 +751,15 @@ This thesis is structured as follows.
 	In Chapter~\ref{Chapter05IntroLightning}, we provide the historical context of layer-two protocols in Bitcoin, and payment channels in particular.
 	We then provide a technical introduction to the Lightning Network architecture.
 		\item
-	In Chapter~\ref{Chapter06LNprobing}, we introduce a \textit{probing} attack on LN.
+	In Chapter~\ref{Chapter06LNprobing}, we introduce a \textit{probing} attack on LN\@.
 	Our method lets an adversary accurately reveal LN users' balances, which are assumed to be private.
 	We implement and evaluate the attack on the Bitcoin testnet.
 		\item
 	In Chapter~\ref{Chapter07LNattacks}, we quantitatively assess the probability of three privacy attacks on the Lightning Network.
 	From a simulation based on an LN snapshot we conclude that compromising a few influential nodes significantly raises the attack success rates.
 		\item
-	In Chapter~\ref{Chapter08HTLClimit}, we quantify a known limitation on concurrent payments in the LN.
-	We quantify how this affects the network throughput and how this effect has changed during the lifetime of LN.
+	In Chapter~\ref{Chapter08HTLClimit}, we quantify a known limitation on concurrent payments in the LN\@.
+	We quantify how this affects the network throughput and how this effect has changed during the lifetime of LN\@.
 	\end{itemize}
 
 	\item

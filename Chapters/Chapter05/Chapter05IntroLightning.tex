@@ -120,7 +120,7 @@ Despite the fact that all intermediate states are valid Bitcoin transactions (an
 The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, which are then followed by several implementation teams.
 The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
 Other implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
-As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC.
+As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC\@.
 A separate Lightning Network also operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency very similar to Bitcoin.
 
 Lightning takes advantage of two relatively recent updates in Bitcoin.
@@ -177,7 +177,7 @@ Additionally, the owner can assign a human-readable alias to their node.
 Operations from a node are authorized with a digital signature created with the corresponding signing key.
 One user can potentially own several nodes.
 
-Nodes connect to each other in the P2P network identifying themselves by the IP address and the node ID.
+Nodes connect to each other in the P2P network identifying themselves by the IP address and the node ID\@.
 Revealing the IP address is optional, but it is required if the node owner wants other nodes to be able to connect.
 Nodes exchange information about the currently open channels and their fee policies.
 Nodes communicate with an underlying bitcoin node (such as Bitcoin~Core) to receive information on the confirmed transactions.\footnote{Some LN implementations partially support \textit{pruned} nodes~\cite{LNDInstall}.}
@@ -236,7 +236,7 @@ A payment channel can keep track of multiple concurrent unresolved HTLCs, which 
 
 \begin{figure*}[h]
 	\includegraphics[width=\textwidth]{htlc-figure}
-	\caption{An HTLC-based payment in the LN. The node $u_1$~pays $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries. 
+	\caption{An HTLC-based payment in the LN\@. The node $u_1$~pays $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries. 
 		Here we assume that each node charges a fee of $0.1$~and time is measured in days.}
 	\label{fig:htlc}
 \end{figure*}

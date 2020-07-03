@@ -54,10 +54,10 @@ We do not interfere with the LN activity, nor deanonymize any node.
 \label{sec:sec-priv-attacks}
 
 As introduced in~\cref{sec:background}, the LN builds upon Hash Time-Lock Contracts aiming to achieve atomicity in multi-hop payments.
-However,~\cite{Malavolta2019} argues that due to the \emph{wormhole attack} atomicity does not hold in LN.
+However,~\cite{Malavolta2019} argues that due to the \emph{wormhole attack} atomicity does not hold in LN\@.
 Another LN study~\cite{Malavolta2017} shows that privacy of LN users and their transactions can be breached.
-While the aforementioned works demonstrate the feasibility of these attacks, their effectiveness in practice depends, among other factors, on the topology of the LN.
-In this experiment, we aim to identify the impact of these security and privacy issues in our snapshot of the LN.
+While the aforementioned works demonstrate the feasibility of these attacks, their effectiveness in practice depends, among other factors, on the topology of the LN\@.
+In this experiment, we aim to identify the impact of these security and privacy issues in our snapshot of the LN\@.
 
 \subsection{Security and privacy attacks: background}
 
@@ -79,7 +79,7 @@ For instance, in~\cref{fig:wormhole-attack} the adversary $u_3$ forwards $1.2$~c
 
 \subsubsection{Relationship anonymity}
 Intuitively, relationship anonymity ensures that given two simultaneous transactions between two pairs of nodes $(u_1, u_2)$ and $(u'_1, u'_2)$ routed through the same path of intermediary users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than $1/2$.
-However, this is not achieved in the LN.
+However, this is not achieved in the LN\@.
 An adversary controlling $i_1$ and $i_n$ can use the cryptographic challenge included in the HTLC to determine who pays to whom.
 For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$ and $u_4$ can determine that $u_1$ is transacting with $u_5$ as the same value $y$ is used along the whole path.
 Similarly, $u_2$ and $u_4$ can determine that $u'_1$ is transacting with $u'_5$ as the same $y'$ is being used along the path.
@@ -178,7 +178,7 @@ This indicates that the payment amount does not significantly affect the securit
 The three attacks differ in how quickly the share of prone paths changes as the number of compromised nodes increases.
 For value privacy, the effect of additional highly-connected nodes being compromised is the most profound.
 The share of prone paths is $50\%$~if only the $5$~most connected nodes are compromised, and nearly $100\%$~if the $100$~most connected nodes are compromised.
-We conclude thus that an adversary needs to corrupt only $2\%$~of the nodes to almost nullify any value privacy guarantee in the LN.
+We conclude thus that an adversary needs to corrupt only $2\%$~of the nodes to almost nullify any value privacy guarantee in the LN\@.
 
 We observe that the average share of prone paths decreases for relationship anonymity.
 Yet, the adversary controlling the $100$~most connected nodes can launch the relationship anonymity attack on about $70\%$~of the paths.
@@ -196,7 +196,7 @@ In contrast to the previous results, we observe that less than $10\%$~of paths a
 to relationship anonymity and wormhole attack.
 We conjecture that this is because randomly selected nodes have few connections (note the degree distribution in Figure~\ref{fig:node-degree-histogram}), and thus their compromise does not affect routing at large.
 
-In summary, the results of this experiment show that highly connected nodes and nodes with high capacity links have a high impact on the security and privacy of the LN.
+In summary, the results of this experiment show that highly connected nodes and nodes with high capacity links have a high impact on the security and privacy of the LN\@.
 Assuming that paths are selected uniformly at random from the set of available paths, an adversary that selectively corrupts $100$~(i.e.,~only $2\%$) of LN nodes can effectively learn all the transaction values, the sender and the receiver for the vast majority of transactions, as well as carry out the wormhole attack in about $30\%$~of the paths.
 This shows that the security and privacy attacks shown in theory are indeed crucial in practice.
 

@@ -132,7 +132,7 @@ The details of the KYC procedure do not affect our design.
 \end{definition}
 
 \begin{definition}
-	A financial service is \textbf{KYC-compliant} w.r.t. the KYC procedure if and only if all users are eligible for all transactions they perform.
+	A financial service is \textbf{KYC-compliant} w.r.t.~the KYC procedure if and only if all users are eligible for all transactions they perform.
 \end{definition}
 
 \begin{definition}
@@ -316,7 +316,7 @@ This allows citizens to hold their wealth in currency portfolios of their choice
 \paragraph{Transaction-dependent checks}
 
 Many jurisdictions impose additional restrictions that depend on the value of the transaction.
-E.g.,~the EU regulation~\cite{EU847} states that "the obligation to check whether information on the payer or the payee is accurate should [...] be imposed only in respect of individual transfers of funds that exceed \EUR{1\,000}".
+E.g.,~the EU regulation~\cite{EU847} states that "the obligation to check whether information on the payer or the payee is accurate should \textelp{} be imposed only in respect of individual transfers of funds that exceed \EUR{1\,000}".
 EU member states impose further restrictions for transactions of higher value, e.g.,~exceeding \EUR{10\,000} in Belgium, \EUR{15\,000} in Germany and in the Netherlands~\cite{PWC2015}.
 Either the exchange contract or the token contract can perform such checks by storing the following mappings:
 \begin{itemize}
@@ -400,7 +400,7 @@ We proposed a modular design of an Ethereum-based financial service with an exte
 	Personal data is neither stored on the blockchain nor transmitted to third parties.
 	\item \textbf{Financial services} greatly simplify the KYC process: it boils down to a single API call.
 	Our design lets them cut KYC costs while at the same time diminishing risks of handling sensitive data.
-	\item \textbf{Governments} get an opportunity to stimulate innovation in the financial sector by providing a unified and simple KYC API.
+	\item \textbf{Governments} get an opportunity to stimulate innovation in the financial sector by providing a unified and simple KYC API\@.
 	This is especially important in the context of rapidly growing fintech and blockchain industries.
 \end{itemize}
 

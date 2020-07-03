@@ -12,7 +12,7 @@ This limitation has been pointed out~\cite{EmelyanenkoK2017} but never quantitat
 We study the management of concurrent payments in the LN and quantify its negative effect on scalability.
 We observe that for micropayments, the forwarding capability of up to $50\%$~of channels is restricted to a value smaller than the overall channel capacity.
 This phenomenon not only hinders scalability but also opens the door for DoS attacks.
-We estimate that a network-wide DoS attack costs within $1.5M$~USD, while isolating the biggest community from the rest of the network costs only $225k$~USD.
+We estimate that a network-wide DoS attack costs within $1.5M$~USD, while isolating the biggest community from the rest of the network costs only $225k$~USD\@.
 We also evaluate the evolution of this phenomenon over the two years of LN existence, based on the historical data.
 
 
@@ -46,7 +46,7 @@ LND estimates the dust limit dynamically.
 We thus hereby assume $546$~satoshis as the dust limit.
 
 
-\subsection{The HTLC limit effect on LN scalability}	\label{estimating-concurrent channel updates}
+\subsection{The HTLC limit effect on LN scalability}
 
 In this section, we estimate the effect of the HTLC limit on the number of concurrent channel updates.
 We used the same dataset obtained from~\cite{fiatjaf2020} in February~2020 as in Chapter~\ref{Chapter07LNattacks}.
@@ -125,7 +125,7 @@ The attacker can thereby deplete a channel, making it unusable.
 The cost for this attack depends on the minimum transaction amount.
 We assume it equal to the dust limit of $546$~satoshis (the default value in 2 out of 3 major implementations).
 
-We calculate the total capital requirements for an attacker to block the complete LN.
+We calculate the total capital requirements for an attacker to block the complete LN\@.
 To block all $31084$~channels, the attacker would send, in the worst case, $966$~transactions of $546$~satoshi to each channel.
 This brings the total capital requirements to approximately $163.9482$~BTC ($1.64M$~USD).
 
@@ -203,7 +203,7 @@ While not removing the limitation on the number of concurrent transactions, this
 
 \section{Conclusion}
 
-We quantitatively analyze the negative effect on scalability produced by the limit on concurrent payments in the LN.
+We quantitatively analyze the negative effect on scalability produced by the limit on concurrent payments in the LN\@.
 We calculate that the limited concurrency in the LN implies that an adversary can block the complete LN investing around $1.5M$~USD ($18.5\%$~of the network capacity).
 In comparison to~\cite{PerezSola2019}, our HTLC depletion attack achieves the same result (a victim node can not forward payments), but exploits the HTLC limit at each channel rather than its capacity.
 Compared to~\cite{Mizrahi2020}, we properly account for the way LN handles payments below the dust limit.

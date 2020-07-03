@@ -70,8 +70,8 @@ In that case, a cluster represents transactions from multiple clients connected 
 \subsection{Weight functions and clustering}
 
 Let $tx$ be a transaction.
-Let $p^{tx} = [p^{tx}_1, p^{tx}_2, ... p^{tx}_N]$ be the vector of the first $N$ IP addresses which relayed $tx$ to us.
-Let $t^{tx} = [t^{tx}_1, t^{tx}_2, ... t^{tx}_N]$ be the vector of the corresponding \textit{relative} timestamps.
+Let $p^{tx} = [p^{tx}_1, p^{tx}_2, \dots, p^{tx}_N]$ be the vector of the first $N$ IP addresses which relayed $tx$ to us.
+Let $t^{tx} = [t^{tx}_1, t^{tx}_2, \dots, t^{tx}_N]$ be the vector of the corresponding \textit{relative} timestamps.
 A \textit{relative} timestamp is defined as $t = t^{abs}_i - t^{abs}_0$, where $t_{abs}^i$ is the absolute time (UNIX timestamp) when we received transaction $tx_i$ (i.e.,~we subtract the timestamp of the first announcement of each transaction from all its announcements).
 For each $p^{tx}_i \in p^{tx}$, we assign a parameterized weight as follows:
 
@@ -307,9 +307,9 @@ Following the terminology of~\cite{Biryukov2014}, we refer to peers that accept 
 	\normalsize
 	\caption{Experimental results on Bitcoin testnet and Zcash}
 	\centering
-	\begin{tabular}{ | l | l | c | c | c | c | c | }
+	\begin{tabular}{|l|l|c|c|c|c|c|}
 		\hline
-		Network & Listener & Anon. deg. & Servers & Avg free slots & Tx INVs & \texttt{addr}s \\
+		Network & Listener & Anon\@. deg. & Servers & Avg free slots & Tx INVs & \texttt{addr}s \\
 		\hline
 		Bitcoin test & California & $0.83$ & $1141$ & $64$ & $139$ & $402$ \\
 		Bitcoin test & Tokyo & $0.80$ & $1128$ & $64$ & $193$ & $414$ \\
@@ -460,7 +460,7 @@ Transactions from the control set that involve shielded addresses are marked wit
 %The Zcash network is much smaller than the Bitcoin testnet.
 We notice that Zcash peers offer far fewer free connection slots on average: $36$~compared to $64$~on Bitcoin testnet (see Figure~\ref{fig:free-slots}).
 A relatively high number of servers only provided our listener with up to ten connection slots.
-This may indicate a larger share of "protected" nodes, i.e.,~nodes which are configured (using firewalls or other network-level mechanisms) to only provide a limited number of connections to each IP.
+This may indicate a larger share of "protected" nodes, i.e.,~nodes which are configured (using firewalls or other network-level mechanisms) to only provide a limited number of connections to each IP\@.
 Note than a resourceful adversary may overcome this limitation by purchasing IP addresses from a cloud provider.
 
 \begin{figure*}
@@ -686,10 +686,10 @@ By default, Bitcoin nodes relay transactions through $8$~outgoing connections an
 Assuming an average node has a total of $125$~slots, $125 - 43 = 82$~slots eventually get occupied.
 An adversary needs to maintain $10\,000 \times 43 = 430\,000$ connections, or approximately $5\,244$~times more than a regular node.
 Considering that one month ($30$-days) is $720$~hours, we conclude that an estimated cost of an hour-long attack is approximately $5244 \div 720 = 7.3$~times the monthly cost of running a regular full node.
-That leads to an estimation of bandwidth costs between $20$~and $150$~USD.
+That leads to an estimation of bandwidth costs between $20$~and $150$~USD\@.
 Even taking into account the cost of computation and storage, the total cost of the attack is on the order of hundreds of US~dollars -- well within reach of even amateur adversaries, not to mention professional black-hat hackers and nation states.
 
-All our experiments on Bitcoin testnet and Zcash mainnet cost $35$~USD.
+All our experiments on Bitcoin testnet and Zcash mainnet cost $35$~USD\@.
 This can likely be decreased by optimizing the scripts, storing data locally, etc.
 
 

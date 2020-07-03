@@ -9,7 +9,7 @@ We classify Solidity code issues as follows (based on~\cite{Henney2003}):
 \end{itemize}
 We differentiate between functional and security issues: the former pose problems even without an adversary (though an external malicious actor can aggravate the situation), while the latter do not. Our primary sources are~\cite{Consensys2016, Solidity2017, Atzei2017, Delmolino2016, Chen2017, OpenZeppelin2017a}.
 Table~\ref{AllPatternsTable} presents a summary of all issues.
-We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} -- \ref{sec:DevelopmentalIssues}.
+We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~\ref{sec:DevelopmentalIssues}.
 
 \definecolor{lightlightgray}{gray}{0.90}
 
@@ -23,7 +23,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} -- 
 		\textbf{Name} & \textbf{Severity} & \textbf{Description} \\
 		\hline
 		%% SOLIDITY_BALANCE_EQUALITY
-		\usevalue SolidityBalanceEquality:name ~(\ref{SolidityBalanceEquality})
+		\usevalue SolidityBalanceEquality:name ~(\ref{SolidityBalanceEquality}) % do not remove the space before ~
 		&
 		\usevalue SolidityBalanceEquality:severityWord 
 		&
@@ -523,7 +523,7 @@ The pattern detects state variable declarations with a \texttt{private} modifier
 %% SOLIDITY_REDUNDANT_FALLBACK_REJECT
 \subsubsection{\usevalue SolidityRedundantFallbackReject:name } \label{SolidityRedundantFallbackReject}
 
-Contracts should reject unexpected payments (see Sections~\ref{SolidityBalanceEquality}, \ref{SolidityLockedMoney}).
+Contracts should reject unexpected payments (see Sections~\ref{SolidityBalanceEquality} and~\ref{SolidityLockedMoney}).
 Before Solidity 0.4.0, it was done manually:
 \begin{lstlisting}[language=Solidity]
 function () payable { throw; }

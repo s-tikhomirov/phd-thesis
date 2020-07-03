@@ -15,7 +15,7 @@ This greatly reduces the requirements of the attack both in terms of time and ca
 We test our proof-of-concept implementation on Bitcoin testnet and successfully probe a significant portion of its channels.
 We also outline potential countermeasures, which include modification in error handling, sharing channel balances explicitly, and \textit{just-in-time} (JIT) routing.
 
-On a more general note, we raise a question of the \textit{privacy-efficiency trade-off} in the LN.
+On a more general note, we raise a question of the \textit{privacy-efficiency trade-off} in the LN\@.
 At the moment, LN nodes cannot use balance information for routing, which leads to failed payments, but balances are extractable by an attacker anyway.
 Can we strike a better balance between balance privacy and routing efficiency?
 Answering this question remains an exciting avenue for future work.
@@ -81,7 +81,7 @@ For clarity, we omit this implementation detail from the algorithm description.
 
 \paragraph{A note on applicability}
 Our experiments are meant to show the feasibility of the probing technique, but the results from testnet can not be directly applied to mainnet.
-In particular, the mainnet LN contains four times more channels than the testnet LN.
+In particular, the mainnet LN contains four times more channels than the testnet LN\@.
 Therefore, probing the whole LN on mainnet would take ore than two~days instead of $14$~hours.
 We note that the attacker can still target specific channels, for instance, those belonging to a particular service provider.
 Probing tens or hundreds of chosen channels is feasible in terms of time.
@@ -303,8 +303,8 @@ This means that in a successful probing we shrank the $[b_{min}, b_{max}]$~inter
 \paragraph{Entry nodes}
 We launched our own LN node\footnote{c-lightning version \texttt{v0.8.0-40-g899f5de}.} and funded it with testnet coins.
 Then, we established five~entry channels opened to handpicked nodes with high connectivity and liquidity.
-Four of our channels had the maximum standard capacity of $0.167$~BTC.\footnote{LN limits the channel capacity at $0.167$~BTC. Larger channels can be created with a special command line argument and are sometimes referred to as \textit{wumbo channels}.}
-One entry channel had the capacity of $0.043$~BTC.
+Four of our channels had the maximum standard capacity of $0.167$~BTC\@.\footnote{LN limits the channel capacity at $0.167$~BTC\@. Larger channels can be created with a special command line argument and are sometimes referred to as \textit{wumbo channels}.}
+One entry channel had the capacity of $0.043$~BTC\@.
 We choose nodes to connect to based on the following requirements (as reported by 1ML~\cite{1MLTopConnected}):
 \begin{itemize}
 	\item well-connected and well-capitalized;
@@ -396,7 +396,7 @@ We observe that $50\%$~of channels can be probed in less than $21.2$~seconds.
 \subsection{Probing coefficients}
 
 We used the channel information coefficient to measure how much information we obtained for each channel.
-At the time of the experiment, the LN specifications limited the value of a single payment to $0.043$~BTC.
+At the time of the experiment, the LN specifications limited the value of a single payment to $0.043$~BTC\@.
 We denote channels with the capacity more than two times that (i.e.,~$2 \times 0.043 = 0.086$~BTC) as \textit{large channels}.
 Other channels are referred to as \textit{small}.
 All small channels can in principle be fully probed.
@@ -412,9 +412,9 @@ A large channel can only be fully probed, if the local balance at one of its end
 Figure~\ref{fig:cdf-channel-coefficients} represents the distribution of channels by their information coefficients.
 We obtained full balance information on over $1\,000$~of $1\,628$~channels.
 Note that the jump at $0.5$~for the large channels is expected:the maximum standard channel capacity ($0.167$~BTC) is approximately four times higher than the maximum HTLC amount ($0.043$).
-Consider a channel with the total capacity of $0.167$~BTC and the local balance between $0.043$~BTC and $0.167 - 0.043 = 0.124$~BTC.
+Consider a channel with the total capacity of $0.167$~BTC and the local balance between $0.043$~BTC and $0.167 - 0.043 = 0.124$~BTC\@.
 We probe this channel from both sides and receive the "unknown hash" error in both cases.
-From that we conclude that the local balance is indeed between $0.043$~BTC and $0.124$~BTC.
+From that we conclude that the local balance is indeed between $0.043$~BTC and $0.124$~BTC\@.
 This estimate yields a channel information coefficient of $0.515$.
 However, with our current technique we cannot improve it.
 
@@ -467,7 +467,7 @@ The adversary only needs to maintain a few TCP connections during the main phase
 (We also open and immediately close connections to all nodes to check their liveness; this process can be parallelized.)
 Note that an LN node requires running a fully synchronized Bitcoin node, which requires hundreds of gigabytes of storage ($265$~GB at the time of our experiments in February~2020).
 
-With our current approach, the maximum probing amount is the protocol's HTLC limit of $0.167$~BTC.
+With our current approach, the maximum probing amount is the protocol's HTLC limit of $0.167$~BTC\@.
 This is the minimal amount the attacker has to commit to theoretically be able to fully probe all "small" channels.
 Our experience shows that it is beneficial to open multiple channels to decrease the negative effect of hanging HTLCs.
 In our experiments, we used five~entry channels.
@@ -512,9 +512,9 @@ In the initial version of our algorithm, we did not do it for simplicity.
 
 Recall that our method cannot fully probe large channels.
 The reason behind this are the limitation on the HTLC amount.
-Lightning implementations impose a limit on the maximal amount transferred in one HTLC.
+Lightning implementations impose a limit on the maximal amount transferred in one HTLC\@.
 This limit is approximately $0.043$~BTC\footnote{4294967295 millisatoshis.}.
-Therefore, we can only fully probe channels where the local balance of one of the channel parties is lower than $0.043$~BTC.
+Therefore, we can only fully probe channels where the local balance of one of the channel parties is lower than $0.043$~BTC\@.
 
 A possible way to overcome this limitation would be to probe large channels with multiple HTLCs concurrently.
 The goal of concurrent probing is to temporarily block the capacity of the attacked channel.

@@ -19,7 +19,7 @@ SmartCheck is a static analysis tool implemented in Java.
 It runs lexical and syntactical analysis on Solidity source code.
 SmartCheck is implemented in Java.
 It uses ANTLR~\cite{Parr} and a custom Solidity grammar to generate an XML parse tree~\cite{Aho1986} as an intermediate representation (IR).
-The tool detects vulnerabilities by using XPath~\cite{Liu2009} queries on the IR.
+The tool detects vulnerabilities by using XPath~\cite{Liu2009} queries on the IR\@.
 Thus, SmartCheck provides full coverage: the analyzed code is fully translated to the IR, and all its elements can be reached with XPath matching.
 Line numbers are stored as XML attributes and help localize findings in the source code.
 IR attributes can be enriched with additional information as new analysis methods are implemented.

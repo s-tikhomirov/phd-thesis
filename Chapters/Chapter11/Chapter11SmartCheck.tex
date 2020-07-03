@@ -4,11 +4,9 @@
 
 \input{Chapters/Chapter11/rules}
 
-In this Chapter, we study the security of smart contracts in Solidity.
-\footnote{This Chapter is based on~\cite{Tikhomirov2018}. The author of this thesis contributed to researching and formalizing the types of vulnerabilities and writing the paper. The author thanks Evgeny Marchenko for the help in adding "2020 updates" to reflect the changes in the applicability of the patterns since the original publication.}
+In this Chapter, we study the security of smart contracts in Solidity.\footnote{This Chapter is based on~\cite{Tikhomirov2018}. The author of this thesis contributed to researching and formalizing the types of vulnerabilities and writing the paper. The author thanks Evgeny Marchenko for the help in adding "2020 updates" to reflect the changes in the applicability of the patterns since the original publication.}
 
-We provide a comprehensive classification of code issues in Solidity and propose SmartCheck -- an extensible static analysis tool.
-\footnote{The source code is available at~\cite{SmartCheck}.}
+We provide a comprehensive classification of code issues in Solidity and propose SmartCheck -- an extensible static analysis tool.\footnote{The source code is available at~\cite{SmartCheck}.}
 SmartCheck translates Solidity source code into an XML-based intermediate representation and checks it against XPath patterns.
 We evaluate our tool on a big dataset of real-world contracts and compare the results with manual audit on three contracts.
 SmartCheck shows significant improvements over existing alternatives in terms of false discovery rate (FDR) and false negative rate (FNR).

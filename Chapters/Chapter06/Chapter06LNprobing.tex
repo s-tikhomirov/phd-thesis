@@ -4,8 +4,7 @@
 
 The LN protocol provides no way for a node to know how funds are split in remote channels.
 But how private is this information in practice?
-In this Chapter, we show that a low-resource attacker can infer balances of most of the channels.
-\footnote{This Chapter is based on~\cite{Tikhomirov2020}.}
+In this Chapter, we show that a low-resource attacker can infer balances of most of the channels.\footnote{This Chapter is based on~\cite{Tikhomirov2020}.}
 We describe an algorithm that reveals channel balances using \textit{probing} -- sending a fake payment (referred to as a \textit{probe}) and observing the resulting error.
 We substantially improve upon similar approaches described in the literature in terms of accuracy and cost.
 Our technique scales to the whole network and achieves high precision.
@@ -36,8 +35,7 @@ The current channel balances are not announced.
 Consider two LN nodes that share a channel.
 Let us denote the total capacity of the channel as $c$.
 LN channels are bidirectional.
-Without loss of generality, let us denote one of the nodes as \textit{source} (with balance $b_s$) and the other as \textit{destination} (with balance $b_d$).
-\footnote{As per BOLT specification, the source is defined as the node with an alphanumerically smaller node ID.}
+Without loss of generality, let us denote one of the nodes as \textit{source} (with balance $b_s$) and the other as \textit{destination} (with balance $b_d$).\footnote{As per BOLT specification, the source is defined as the node with an alphanumerically smaller node ID.}
 By definition, $c = b_s + b_d$.
 Our goal is to determine how $c$~is split between $b_s$~and $b_d$.
 For concreteness, for each channel, we estimate $b_s$, and refer to it simply as $b$.
@@ -118,8 +116,7 @@ To determine liveness, we use the heuristics presented in Algorithm~\ref{alg:sel
 
 \paragraph{Heuristic 1: Connecting to nodes}
 For a channel to be live, both its parties must be live.
-We extract a list of nodes from gossip data and establish a P2P connection to each of them.
-\footnote{Establishing a P2P connection is nearly instant and, unlike opening a channel, does not require capital commitment.}
+We extract a list of nodes from gossip data and establish a P2P connection to each of them.\footnote{Establishing a P2P connection is nearly instant and, unlike opening a channel, does not require capital commitment.}
 We consider a channel live, if both its parties are live.
 We close all the connections after this step, except for the connections to our entry nodes.
 
@@ -306,8 +303,7 @@ This means that in a successful probing we shrank the $[b_{min}, b_{max}]$~inter
 \paragraph{Entry nodes}
 We launched our own LN node\footnote{c-lightning version \texttt{v0.8.0-40-g899f5de}.} and funded it with testnet coins.
 Then, we established five~entry channels opened to handpicked nodes with high connectivity and liquidity.
-Four of our channels had the maximum standard capacity of $0.167$~BTC.
-\footnote{LN limits the channel capacity at $0.167$~BTC. Larger channels can be created with a special command line argument and are sometimes referred to as \textit{wumbo channels}.}
+Four of our channels had the maximum standard capacity of $0.167$~BTC.\footnote{LN limits the channel capacity at $0.167$~BTC. Larger channels can be created with a special command line argument and are sometimes referred to as \textit{wumbo channels}.}
 One entry channel had the capacity of $0.043$~BTC.
 We choose nodes to connect to based on the following requirements (as reported by 1ML~\cite{1MLTopConnected}):
 \begin{itemize}
@@ -610,8 +606,7 @@ The fee structure would also have to be more complex.
 Just In Time Routing (JIT-routing) algorithm was originally proposed to improve payment reliability~\cite{Pickhardt2019, Pickhardt2019a}.
 JIT routing works as follows.
 If a forwarding node lacks the balance to forward a payment, it sends a circular payment to itself to add more funds to the required channel.
-This process is referred to as \textit{channel rebalancing}.
-\footnote{Another research paper~\cite{Conoscenti2019} analyzed the influence of hubs on LN and proposed a channel rebalancing algorithm.}
+This process is referred to as \textit{channel rebalancing}.\footnote{Another research paper~\cite{Conoscenti2019} analyzed the influence of hubs on LN and proposed a channel rebalancing algorithm.}
 In the probing scenario, a JIT-supporting node does not send an error message back if it is lacking funds on the attacked (probed) channel.
 Rather, it interrupts the routing process, re-balances its channels, and continue forwarding the payment.
 The attacker would interpret this as a signal that the target channel has sufficient funds.

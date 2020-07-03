@@ -2,8 +2,7 @@
 
 \label{Chapter05IntroLightning}
 
-This Chapter provides the necessary background on the Lightning Network (LN) -- the main subject of this Part.
-\footnote{This Chapter is partially based on~\cite{Tikhomirov2020a}.}
+This Chapter provides the necessary background on the Lightning Network (LN) -- the main subject of this Part.\footnote{This Chapter is partially based on~\cite{Tikhomirov2020a}.}
 We review the history of payment channel protocols in Bitcoin and describe the architecture of the LN.
 
 
@@ -181,8 +180,7 @@ One user can potentially own several nodes.
 Nodes connect to each other in the P2P network identifying themselves by the IP address and the node ID.
 Revealing the IP address is optional, but it is required if the node owner wants other nodes to be able to connect.
 Nodes exchange information about the currently open channels and their fee policies.
-Nodes communicate with an underlying bitcoin node (such as Bitcoin~Core) to receive information on the confirmed transactions.
-\footnote{Some LN implementations partially support \textit{pruned} nodes~\cite{LNDInstall}.}
+Nodes communicate with an underlying bitcoin node (such as Bitcoin~Core) to receive information on the confirmed transactions.\footnote{Some LN implementations partially support \textit{pruned} nodes~\cite{LNDInstall}.}
 
 
 \subsection{Channels}
@@ -195,13 +193,11 @@ A channel operates in three stages: opening (two parties lock the coins), operat
 
 Opening a channel consists of several steps.
 To open a channel to Bob, Alice establishes a connection to Bob in the P2P network and issues a request to open a channel.
-If the parties agree on channel parameters, they co-sign a \textit{funding transaction} that establishes the initial distribution of funds.
-\footnote{While in the initial specifications~\cite{Poon2016} it was assumed that both parties could fund a channel, the current LN channels are single-funded: Alice provides all funds and may optionally "push" some funds to Bob as a gift.}.
+If the parties agree on channel parameters, they co-sign a \textit{funding transaction} that establishes the initial distribution of funds.\footnote{While in the initial specifications~\cite{Poon2016} it was assumed that both parties could fund a channel, the current LN channels are single-funded: Alice provides all funds and may optionally "push" some funds to Bob as a gift.}.
 The funding transaction creates a 2-of-2 multi-signature output that can be spent by Alice and Bob together if they agree to do so.
 
 After the funding transaction gets the sufficient number of confirmations (usually~$3$~to~$6$), the channel is open.
-The capacity of the channel is determined by the amount of coins deposited when created and stays constant during its lifetime.
-\footnote{Not accounting for LN fees.}
+The capacity of the channel is determined by the amount of coins deposited when created and stays constant during its lifetime.\footnote{Not accounting for LN fees.}
 
 \subsubsection*{Channel updates}
 
@@ -265,8 +261,7 @@ Here, the receiver reveals $r$~to $u_4$~to fulfill the contract (step 6), trigge
 Intermediaries may charge fees for their forwarding service.
 For instance, $u_2$~receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins.
 No fees are collected if a payment fails, as all pending balance updates roll back.
-In the actual LN protocol, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the value being transferred.
-\footnote{Note that LN fee structure is different from fees on L1, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the amount of value being transferred. This may result in the economics of LN fees being significantly different from that in Bitcoin. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
+In the actual LN protocol, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the value being transferred.\footnote{Note that LN fee structure is different from fees on L1, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the amount of value being transferred. This may result in the economics of LN fees being significantly different from that in Bitcoin. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
 
 Note that the time parameter of the HTLCs along the path is decreasing to ensure a safety margin between the timeouts.
 For example, the HTLC between $u_1$~and $u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and $u_3$~is only three days.
@@ -299,8 +294,7 @@ Implementing effective, economically incentivized, and privacy-preserving watcht
 
 LN's revocation technique has proved effective as a deterrence against malicious channel closures.
 As of July~2019, there has been only $241$~channel closures followed by a justice transaction.
-This constitutes only $0.7$\%~of channels at that time~\cite{BitMEXLN3}.
-\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
+This constitutes only $0.7$\%~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
 
 
 \subsection{P2P network and path-finding}

@@ -2,8 +2,7 @@
 
 \label{Chapter12KYC}
 
-In this Chapter, we present an Ethereum-based privacy-preserving KYC scheme for token white-listing.
-\footnote{This Chapter is based on~\cite{Biryukov2018}, which in turn described a hackathon project. A proof-of-concept implementation of the design described above was created in May~2017 during the Luxblock hackathon in Luxembourg, and was awarded a joint first prize. The team included Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad. Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for Section~\ref{sec:PrivacyPreservingKYC}).}
+In this Chapter, we present an Ethereum-based privacy-preserving KYC scheme for token white-listing.\footnote{This Chapter is based on~\cite{Biryukov2018}, which in turn described a hackathon project. A proof-of-concept implementation of the design described above was created in May~2017 during the Luxblock hackathon in Luxembourg, and was awarded a joint first prize. The team included Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad. Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for Section~\ref{sec:PrivacyPreservingKYC}).}
 We describe the current approach of identity management and propose KYCE -- a privacy-preserving KYC scheme on Ethereum.
 
 
@@ -214,10 +213,8 @@ The KYC contract verifies the rest against the current accumulator value.
 If the checks pass, the requested action is executed in KYCE.
 
 \paragraph{Details on the accumulator construction}
-We follow the approach by Camenisch et al.~\cite{Camenisch2009}, who construct an accumulator based on a pairing function $e(\cdot,\cdot)$ in some pairing setting.
-\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
-The accumulator contains just serial numbers, possibly consecutive integers.
-\footnote{It is possible to store public keys but it would be less efficient.}
+We follow the approach by Camenisch et al.~\cite{Camenisch2009}, who construct an accumulator based on a pairing function $e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
+The accumulator contains just serial numbers, possibly consecutive integers.\footnote{It is possible to store public keys but it would be less efficient.}
 
 The accumulator is constructed as follows.
 We assume a bilinear pairing $e:\,G\times G\rightarrow G_T$, where $G,G_T$ are groups of order $q$.
@@ -229,8 +226,7 @@ Let us denote $g_i = g^{\gamma^i}$.
 The provider publishes $\mathrm{A},\{g_i\}_{1\leq i\leq L, \,L+2\leq i \leq 2L}$, the set of registered KYC indices $V=\emptyset$, and the parameters $g,z$ needed for verification.
 
 Every User who passes the KYC check is issued a new serial number $i$, the witness $w_i = \prod_{j\in V,j\neq i} g_{L+1-j+i}$, where $V$ is the set of all issued serial numbers, and a signature $\sigma_i$ of $g_i||i$ on the provider's private signature key.
-The witness is used to generate a proof of accumulating.
-\footnote{We refer an interested reader to \cite{Camenisch2009} for the details.}
+The witness is used to generate a proof of accumulating.\footnote{We refer an interested reader to \cite{Camenisch2009} for the details.}
 The accumulator is updated by the KYC provider with $i$ by
 $$
 \mathrm{A_{V\cup\{i\}}} \leftarrow \mathrm{A_V} \cdot g_{L+1-i}
@@ -311,8 +307,7 @@ If the token is KYC-compliant, the exchange does not need to be aware of the KYC
 	\includegraphics[width=0.8\textwidth]{figure-kyc-token}
 \end{figure}
 
-Consider a government that issues its own tokens.
-\footnote{Bank of England~\cite{Danezis2016} and the Monetary Authority of Singapore~\cite{Singapore17} already did research in this direction.}
+Consider a government that issues its own tokens.\footnote{Bank of England~\cite{Danezis2016} and the Monetary Authority of Singapore~\cite{Singapore17} already did research in this direction.}
 Government tokens could be used by KYC-approved users for tax payments, fees, fines, etc.
 Such solution leverages the flexibility and auditability of smart contracts while only allowing approved entities to use the token.
 The KYC-enabled government token can be also traded on exchanges.
@@ -359,8 +354,7 @@ If it returns \texttt{true}, the corresponding function of the super class is in
 
 The implementation of the proposed scheme requires certain cryptographic primitives.
 Some of them are already partially available in Ethereum as pre-compiled contracts (namely, elliptic curve addition and scalar multiplication, as well as pairing checks).
-For the proposed scheme to be fully implemented, pairing evaluation is also required.
-\footnote{As of 2020, Ethereum does not support pairing evaluation.}
+For the proposed scheme to be fully implemented, pairing evaluation is also required.\footnote{As of 2020, Ethereum does not support pairing evaluation.}
 %We are looking into the possibilities to add this functionality.
 
 

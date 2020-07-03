@@ -5,8 +5,7 @@
 
 %Mobile devices have surpassed desktops by Internet traffic.
 Smartphones have become the primary computing device for many millions of people and play an increasingly important role in the cryptocurrency ecosystem.
-In this Chapter, we study the privacy of mobile cryptocurrency wallets for Android -- the most prevalent mobile operating system.
-\footnote{This Chapter is based on~\cite{Biryukov2019}.}
+In this Chapter, we study the privacy of mobile cryptocurrency wallets for Android -- the most prevalent mobile operating system.\footnote{This Chapter is based on~\cite{Biryukov2019}.}
 We systematize privacy-related characteristics of popular wallets.
 We study $23$~selected wallets in more detail.
 We compare their privacy-related properties and analyze their source code, both manually and using static analysis tools.
@@ -131,8 +130,7 @@ No multi-currency wallets and no Zcash wallets satisfy these criteria.
 
 The following wallets have passed the minimal privacy criteria: Bitcoin Wallet, Bither, BRD, Dash~Wallet, Electrum, Monerujo, and Simple~Bitcoin.
 % Samourai, despite English spelling being "Samurai"
-We add Samourai wallet to our list due to its heavy emphasis on privacy.
-\footnote{Strictly speaking, Samourai did not pass our initial test: it connects to a remote node via RPC, not P2P, and requires full control over it~\cite{SamouraiRPC}. We mark it with “+*” in Table~\ref{tab:all-wallets}.}
+We add Samourai wallet to our list due to its heavy emphasis on privacy.\footnote{Strictly speaking, Samourai did not pass our initial test: it connects to a remote node via RPC, not P2P, and requires full control over it~\cite{SamouraiRPC}. We mark it with “+*” in Table~\ref{tab:all-wallets}.}
 We not study these wallets in more detail.
 
 
@@ -287,8 +285,7 @@ Table~\ref{tab:privacy-policies} summarizes the finding regarding the privacy po
 All wallets with P2P transaction broadcasting except Monerujo use hard-coded DNS seeds to bootstrap.
 %BRD adds its own DNS seed.
 %\footnote{\texttt{seed.breadwallet.com.}; does not resolve at the time of writing.}
-Simple Bitcoin adds one random node from a hard-coded list to a list of peers obtained via bootstrapping.
-\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable as of 2018.}
+Simple Bitcoin adds one random node from a hard-coded list to a list of peers obtained via bootstrapping.\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable as of 2018.}
 Electrum connects to two random servers from a hard-coded list of $52$~servers.
 It requests the transaction history from a single server and checks it against block headers sent by other servers.
 Monerujo lets the user either choose from three hard-coded URLs which resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide the credentials for connecting to a custom node.

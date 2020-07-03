@@ -67,8 +67,7 @@ This allows to achieve faster throughput by utilizing the ISP's local infrastruc
 \label{sec:BitcoinP2PProtocol}
 
 We now describe the technical details of the P2P protocol in Bitcoin.
-Alternative cryptocurrencies based on a modified Bitcoin~Core codebase, such as Dash and Zcash, inherit the Bitcoin's protocol.
-\footnote{Others implement their own networking protocol. For instance, Ethereum uses a Kademlia-like DHT to locate peers~\cite{Henningsen2019}.}
+Alternative cryptocurrencies based on a modified Bitcoin~Core codebase, such as Dash and Zcash, inherit the Bitcoin's protocol.\footnote{Others implement their own networking protocol. For instance, Ethereum uses a Kademlia-like DHT to locate peers~\cite{Henningsen2019}.}
 
 \paragraph{Bootstrapping}
 
@@ -86,10 +85,8 @@ A new node connects to a subset of nodes at these IP addresses.
 
 \paragraph{Connections and peer discovery}
 
-Bitcoin peers establish unencrypted TCP connections.
-\footnote{Different networks use different default ports: 8333 for Bitcoin, 18333 for Bitcoin testnet, 8233 for Zcash, 18080 for Monero, 9999 for Dash.}
-A peer tries to maintain $10$~outgoing connections\footnote{Eight connections for relaying all types of messages plus two dedicated connections for block propagation~\cite{Daftuar2019}.} and may also allow up to $117$~incoming connections.
-\footnote{The parameters can be changed in the configuration file of using command line arguments.}
+Bitcoin peers establish unencrypted TCP connections.\footnote{Different networks use different default ports: 8333 for Bitcoin, 18333 for Bitcoin testnet, 8233 for Zcash, 18080 for Monero, 9999 for Dash.}
+A peer tries to maintain $10$~outgoing connections\footnote{Eight connections for relaying all types of messages plus two dedicated connections for block propagation~\cite{Daftuar2019}.} and may also allow up to $117$~incoming connections.\footnote{The parameters can be changed in the configuration file of using command line arguments.}
 
 Peers exchange information about other peers.
 A new peer advertises its IP address to its neighbors in an \texttt{addr} message.
@@ -231,8 +228,7 @@ It requires a \textit{trusted node} to report balances and broadcast transaction
 Many mobile wallets take this approach.
 They store the keys and sign transactions locally, but can only publish them through a trusted server maintained by the developers.
 This approach is based on an even weaker security model.
-The trusted node can lie about the state of the blockchain, deny service, and learn what addresses a user controls.
-\footnote{The wallet provider can even log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
+The trusted node can lie about the state of the blockchain, deny service, and learn what addresses a user controls.\footnote{The wallet provider can even log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
 On the other hand, from the viewpoint of the global attacker, it may be harder to distinguish users that broadcast transactions using the same trusted node.
 
 %There is an inherent trade-off between wallets with centralized and P2P broadcast.

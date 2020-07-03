@@ -138,8 +138,7 @@ This resilience serves as an important example for cryptocurrencies.
 Peer-to-peer file-sharing gained momentum in late 1990s.
 At that time, the Internet was gaining adoption in the developed world.
 Increased bandwidth allowed to distribute large files over the Internet.
-P2P file-sharing networks were first to satisfy the demand for fast and convenient content sharing.
-\footnote{Client-server file-sharing had been used long before: the File Transfer Protocol (FTP), introduced in 1971,  predates TCP/IP.}
+P2P file-sharing networks were first to satisfy the demand for fast and convenient content sharing.\footnote{Client-server file-sharing had been used long before: the File Transfer Protocol (FTP), introduced in 1971,  predates TCP/IP.}
 
 The first popular file-sharing network was Napster.
 It launched in 1999.
@@ -151,8 +150,7 @@ The Napster story showed how centralization harms resilience.
 Without central coordination, Napster users could not locate the files.
 The existence of the central server made it \textit{possible} to shut the network down.
 
-Gnutella, introduced in 2000, took another approach to content addressing.
-\footnote{See an overview and comparison of Napster and Gnutella in~\cite{Saroiu2003}.}
+Gnutella, introduced in 2000, took another approach to content addressing.\footnote{See an overview and comparison of Napster and Gnutella in~\cite{Saroiu2003}.}
 Users would forward queries to all their neighbors.
 Each neighbor would either reply with the requested content, or forward the query further.
 This "flooding" approach has no single point of failure, but is significantly less efficient.
@@ -177,8 +175,7 @@ The ecosystem attracted both altruistic~\cite{Rehn2004} and profit-driven~\cite{
 
 In 2010s, file-sharing declined in popularity.
 However, it provided a strong competitive pressure on the entertainment industry.
-Streaming services emerged, offering unlimited access to content for a fixed monthly price.
-\footnote{BitTorrent usage rose in the late 2010s because of the fragmentation of content between streaming services~\cite{Bode2018}.}
+Streaming services emerged, offering unlimited access to content for a fixed monthly price.\footnote{BitTorrent usage rose in the late 2010s because of the fragmentation of content between streaming services~\cite{Bode2018}.}
 
 File-sharing demonstrated the resiliency of Internet protocols.
 Despite copyright infringement lawsuits against torrent trackers and their users, file-sharing was not fully shut down.
@@ -250,8 +247,7 @@ Moreover, financial administrators can print money -- a privilege their informat
 This is enabled by the special property of money networks: the content they help exchange is valued by all its users.
 In contrast, a social network administrator cannot easily abuse their position to boost their personal wealth.
 A social network administrator has the power to push their writings into everyone's news feeds or inflate internal metrics such as the reported number of views.
-However, they cannot make people perceive their posts as universally valuable.
-\footnote{For example, as of 2020, "only" 116~million out of 2.5~billion users of Facebook follow its creator Mark Zuckerberg.}
+However, they cannot make people perceive their posts as universally valuable.\footnote{For example, as of 2020, "only" 116~million out of 2.5~billion users of Facebook follow its creator Mark Zuckerberg.}
 
 Switching monetary systems is hard.
 People can not easily "vote with their feet" if the administrators abuse their position.
@@ -294,8 +290,7 @@ If two computers report different balances for the same account, how to agree on
 
 A simple solution could be voting, but voting is problematic in this context.
 Without an \textit{identity management} system, an adversary can launch a \textit{Sybil attack} and vote multiple times.
-One way to combat Sybil attacks is maintaining a list of all voters and only allow each of them to vote once.
-\footnote{This class of problems is studied in \textit{Byzantine fault tolerant} consensus systems.
+One way to combat Sybil attacks is maintaining a list of all voters and only allow each of them to vote once.\footnote{This class of problems is studied in \textit{Byzantine fault tolerant} consensus systems.
 A prominent protocol of this class is \textit{Practical Byzantine fault tolerance} (PBFT)~\cite{Castro2002}.
 Cryptocurrencies such as Ripple~\cite{Schwartz2014} and Stellar~\cite{Mazieres2014} use BFT-like protocols.}
 However, contrary to the design goals, a party who controls the voter list becomes the central point of control.
@@ -339,8 +334,7 @@ While gaining some traction in mid-1990s\footnote{For instance, the authorities 
 In 1998, Wei Dai proposed \textit{b-money}~\cite{Dai1998}.
 B-money, predating Bitcoin by a decade, was in many ways similar to it.
 Users, identified by public keys, would independently maintain a list of everyone's current balances.
-Currency units would be generated by performing otherwise useless computations.
-\footnote{"Anyone can create money by broadcasting the solution to a previously unsolved computational problem. The only conditions are that it must be easy to determine how much computing effort it took to solve the problem and the solution must otherwise have no value, either practical or intellectual."}
+Currency units would be generated by performing otherwise useless computations.\footnote{"Anyone can create money by broadcasting the solution to a previously unsolved computational problem. The only conditions are that it must be easy to determine how much computing effort it took to solve the problem and the solution must otherwise have no value, either practical or intellectual."}
 
 A crucial piece of the Bitcoin's puzzle is \textit{proof-of-work} (PoW).
 Dwork and Naor proposed PoW in 1992 as an anti-spam mechanism~\cite{Dwork1992}.
@@ -365,8 +359,7 @@ The solutions to such puzzles would be linked in a chain using multiple timestam
 \section{Bitcoin}
 
 Bitcoin was the first decentralized digital currency to solve the problems described above.
-An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.
-\footnote{Nakamoto is speculated to have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in 1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
+An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto is speculated to have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in 1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
 Shortly after, he published the source code.
 Bitcoin launched on 3~January~2009 and started slowly gaining traction in the technology community.
 
@@ -399,8 +392,7 @@ Bitcoin users transfer value with \textit{transactions}.
 Internally, Bitcoin represents the state of the system as \textit{unspent transaction outputs} (UTXO).
 Each UTXO specifies the amount of coins and their spending conditions.
 A Bitcoin transaction \textit{consumes} UTXOs as \textit{inputs} and creates new UTXOs.
-To spend a UTXO, the sender must provide a valid signature.
-\footnote{To give more detail, spending conditions are defined in Bitcoin script -- a Forth-like stack-based non Turing-complete language.
+To spend a UTXO, the sender must provide a valid signature.\footnote{To give more detail, spending conditions are defined in Bitcoin script -- a Forth-like stack-based non Turing-complete language.
 Spending a UTXO requires submitting the arguments such that the script evaluates to \texttt{true}.
 This usually involves providing digital signatures.}
 The sum of the outputs must be lower than the sum of the inputs.
@@ -419,8 +411,7 @@ Miners achieve this by modifying the nonce in a trial-and-error process.
 Bitcoin produces a block every $10$~minutes on average.
 In the long run, the rate of block production does not depend on the total hash power.
 To achieve this, the required \textit{difficulty} of PoW is automatically adjusted every $2016$~blocks.
-If blocks were produced too quickly during the last $2016$~block period, the difficulty increases, otherwise it decreases.
-\footnote{Due to a bug, only $2015$~last blocks are accounted for difficulty re-adjustments.}
+If blocks were produced too quickly during the last $2016$~block period, the difficulty increases, otherwise it decreases.\footnote{Due to a bug, only $2015$~last blocks are accounted for difficulty re-adjustments.}
 
 A miner who generates a block gets rewarded.
 The block reward consists of the \textit{block subsidy} and the sum of the fees of all included transactions.
@@ -440,8 +431,7 @@ Otherwise, a colluding majority can perform a \textit{51\% attack}, re-writing b
 
 Bitcoin's PoW solves the double-spending problem in a Sybil-resistant way.
 Miners are not inclined to include conflicting transactions in the same blockchain branch.
-This would make the branch invalid and nullify miners' rewards.
-\footnote{In the words of Satoshi Nakamoto, "If a greedy attacker is able to assemble more CPU power than all the honest nodes, he would have to choose between using it to defraud people by stealing back his payments, or using it to generate new coins. He ought to find it more profitable to play by the rules, such rules that favour him with more new coins than everyone else combined, than to undermine the system and the validity of his own wealth."~\cite{nakamoto2008bitcoin}}
+This would make the branch invalid and nullify miners' rewards.\footnote{In the words of Satoshi Nakamoto, "If a greedy attacker is able to assemble more CPU power than all the honest nodes, he would have to choose between using it to defraud people by stealing back his payments, or using it to generate new coins. He ought to find it more profitable to play by the rules, such rules that favour him with more new coins than everyone else combined, than to undermine the system and the validity of his own wealth."~\cite{nakamoto2008bitcoin}}
 Including a conflicting transaction in another branch requires the attacker to control more hash power then the rest of the network combined.
 If this is not the case, the honest branch would accumulate more work and be deemed valid according to the fork choice rule.
 In any case, Sybil attacks on Bitcoin are expensive.
@@ -485,8 +475,7 @@ For instance, coal-based mining was reported to be gaining popularity in Central
 \subsubsection*{Useful proof-of-work}
 
 One may wonder whether it is possible to extract additional value from mining, if a given amount of energy is spent anyway.
-This line of research is known as \textit{useful proof-of-work}, or \textit{proof of useful work}.
-\footnote{See~\cite{Ball2017} for an overview of proofs of useful work.}
+This line of research is known as \textit{useful proof-of-work}, or \textit{proof of useful work}.\footnote{See~\cite{Ball2017} for an overview of proofs of useful work.}
 Primecoin is a primary example.
 Instead of hash collisions, Primecoin miners search for Cunningham and bi-twin chains of prime numbers.
 The additional value is advancing mathematical science.
@@ -507,8 +496,7 @@ The network can not measure energy expenditures directly.
 For PoW solutions act as a proxy, the committed amount of energy as estimated from the PoW solutions should predictably depend on the real committed energy.
 In the simplest form, a miner should get roughly $kx\%$ more solutions for $x\%$ more energy spent.
 
-SHA256 produces a uniformly distributed output in the range from $0$ to $H_{max} = 2^{256}-1$.
-\footnote{This is an \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
+SHA256 produces a uniformly distributed output in the range from $0$ to $H_{max} = 2^{256}-1$.\footnote{This is an \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
 A solution is valid if the hash is smaller than the target $t$.
 For every $t$ in the range from $0$ to $H_{max}$, and for a random value $r$, the probability $P(SHA-256(r) < t) = \frac{t}{H_{max}}$.
 Therefore, the probability of finding a solution is proportional to the number of guesses.
@@ -594,8 +582,7 @@ Indeed, ASICs were developed for memory-hard hash functions used in prominent cr
 
 Cryptocurrency developers can counteract ASIC development by regularly and unpredictably changing the hash function.
 This countermeasure is based on the assumption that specialized hardware takes at least a few months to develop, manufacture, and deploy.
-The developers of Monero, a privacy-focused cryptocurrency, used to modify its hash function every six~months~\cite{Kim2019}.
-\footnote{In 2019, Monero changed the strategy and switched to a new hash function without plans for further modifications~\cite{dEBRUYNE2019}.}
+The developers of Monero, a privacy-focused cryptocurrency, used to modify its hash function every six~months~\cite{Kim2019}.\footnote{In 2019, Monero changed the strategy and switched to a new hash function without plans for further modifications~\cite{dEBRUYNE2019}.}
 Ethereum developers consider a similar strategy known as ProgPoW~\cite{OLeary2019}.
 Changing the hash function for PoW is a breaking protocol modification.
 Such updates require coordination and a degree of trust in the cryptocurrency developers.
@@ -635,12 +622,10 @@ Bitcoin developers address this issue by introducing a more efficient transactio
 
 Ethereum~\cite{Buterin2014, Wood2014} is a cryptocurrency that supports more expressive programs.
 It incorporates a virtual machine that executes code in a Turing complete language.
-Such programs are referred to as \textit{smart contracts}.
-\footnote{The term "smart contract" dates back to 1997 and refers to digitally encoded and automatically executed agreements. This term is widely used to refer to Ethereum programs, but is also sometimes used to refer to Bitcoin scripts. We give a more elaborate introduction to smart contracts in Chapter~\ref{Chapter09Introcontracts}.}
+Such programs are referred to as \textit{smart contracts}.\footnote{The term "smart contract" dates back to 1997 and refers to digitally encoded and automatically executed agreements. This term is widely used to refer to Ethereum programs, but is also sometimes used to refer to Bitcoin scripts. We give a more elaborate introduction to smart contracts in Chapter~\ref{Chapter09Introcontracts}.}
 Each contract is stored at a unique address along with its \textit{state}.
 Users issue transactions to call contracts, which may in turn call other contracts.
-This allows for more flexibility, but introduces new security risks.
-\footnote{We refer the reader to~\cite{Bartoletti2017} for an overview of smart contract platforms.}
+This allows for more flexibility, but introduces new security risks.\footnote{We refer the reader to~\cite{Bartoletti2017} for an overview of smart contract platforms.}
 
 
 \subsection{Scalability}
@@ -654,8 +639,7 @@ The simplest way to address this issue is increasing the block size or decreasin
 Bitcoin~Cash~\cite{Kwon2019} takes this approach.
 However, scaling the network for widespread global adoption requires throughput increase by many orders of magnitude.
 This would definitely require resources unavailable to most users.
-We believe that tweaking constants for scalability is an interim solution at best.
-\footnote{Not to mention coordination issues: raising the block size is a non-compatible upgrade.}
+We believe that tweaking constants for scalability is an interim solution at best.\footnote{Not to mention coordination issues: raising the block size is a non-compatible upgrade.}
 
 Another approach is \textit{sharding}~\cite{Gencer2016, Luu2016a}.
 This term is borrowed from database design, where transactions are split between parts of a database (\textit{shards}).
@@ -701,8 +685,7 @@ This motivates the research towards stronger privacy.
 We can classify privacy attacks on cryptocurrencies into \textit{transaction graph analysis} and \textit{network analysis}.
 
 In transaction graph analysis, the attacker studies the graph built from the publicly available blockchain data~\cite{Meiklejohn2013, Ober2013, Ron2013}.
-The simplest countermeasure is to generate a new address for each transaction.
-\footnote{This complicates a common use case where a user publishes a static donation address on their website. A safer way would be to deterministically generate a new address for each donation from a master key.}
+The simplest countermeasure is to generate a new address for each transaction.\footnote{This complicates a common use case where a user publishes a static donation address on their website. A safer way would be to deterministically generate a new address for each donation from a master key.}
 However, this is insufficient to protect against modern blockchain analysis methods.
 \textit{Mixing} is a more involved technique.
 In a mixing protocol, a group of users collaboratively create a transaction with multiple inputs and multiple outputs.
@@ -723,8 +706,7 @@ Dash~\cite{Dash} coordinates mixing using a network of \textit{masternodes}.
 Monero~\cite{Monero} implements the CryptoNote protocol~\cite{Saberhagen2013}.
 It uses ring signatures to entangle the transaction graph, and Bulletproofs~\cite{Buenz2018} to hide transaction amounts.
 Zcash~\cite{Zcash} implements the Zerocash protocol~\cite{BenSasson2014, Hopwood2020} -- an improvement of an earlier Zerocoin protocol~\cite{Miers2013}.
-It uses zk-SNARKs~\cite{BenSasson2014a} to hide transaction data.
-\footnote{Zero-knowledge proofs are also used to improve blockchain scalability~\cite{Bonneau2020}.}
+It uses zk-SNARKs~\cite{BenSasson2014a} to hide transaction data.\footnote{Zero-knowledge proofs are also used to improve blockchain scalability~\cite{Bonneau2020}.}
 Grin~\cite{Grin} and BEAM~\cite{Beam} implement the MimbleWimble protocol~\cite{Jedusor2016}.
 They hide transaction amounts using Pedersen commitments.
 
@@ -739,8 +721,7 @@ Attacks on privacy-focused cryptocurrencies have also been described~\cite{Quesn
 
 In the meantime, the two most popular cryptocurrencies improve their privacy technologies.
 Zero-knowledge based privacy solutions are being developed on Ethereum.
-Bitcoin's privacy is also set to improve with better mixing.
-\footnote{Some argue that for these reasons privacy-focused cryptocurrencies are not a viable market niche~\cite{Gentry2019}.}
+Bitcoin's privacy is also set to improve with better mixing.\footnote{Some argue that for these reasons privacy-focused cryptocurrencies are not a viable market niche~\cite{Gentry2019}.}
 It remains to be seen which approach provides stronger privacy -- improving privacy of existing cryptocurrencies, or developing new privacy-focused ones.
 
 

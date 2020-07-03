@@ -2,8 +2,7 @@
 
 \label{Chapter09Introcontracts}
 
-In this Chapter, we provide an introduction to smart contracts and Ethereum.
-\footnote{This Chapter is partially based on~\cite{Tikhomirov2017}.}
+In this Chapter, we provide an introduction to smart contracts and Ethereum.\footnote{This Chapter is partially based on~\cite{Tikhomirov2017}.}
 We describe the history of the concept of smart contracts and its implementation in blockchain networks.
 We then provide the necessary technical background on Ethereum -- a blockchain-based smart contract platform -- and outline the security and privacy challenges it faces.
 
@@ -102,15 +101,13 @@ An \textit{externally owned account} is controlled by a private key.
 A \textit{contract account} is controlled by a \textit{smart contract}.
 Each account has a \textit{balance} and a \textit{nonce}.
 The balance is the amount of the native cryptocurrency \textit{ether} controlled by this account.
-Internally, balances are expressed in \textit{wei} -- the smallest denomination of ether.
-\footnote{$1$~ether = $10^{18}$~wei.}
+Internally, balances are expressed in \textit{wei} -- the smallest denomination of ether.\footnote{$1$~ether = $10^{18}$~wei.}
 The nonce is a counter that keeps track of the number of transactions issued from the account, preventing replay attacks.
 
 Apart from balance, contract accounts have \textit{code} and \textit{storage}.
 Contract code is a piece of bytecode for the Ethereum virtual machine (EVM).
 Contract storage is a mapping of arbitrary variable names to their values.
-The contract code controls the changes to the balance and storage of the account.
-\footnote{There are exceptions: the balance of any account can be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
+The contract code controls the changes to the balance and storage of the account.\footnote{There are exceptions: the balance of any account can be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
 Internally, account data is stored in Merkle Patricia trees -- radix trees with $256$-bit keys~\cite{MPTSpec, Buchman14}.
 % The storage of a contract account can be modified (if allowed by its code), but the code itself cannot.
 % "one can use create2 to deploy different bytecode to the same contract: deploy code1 - selfdestruct - deploy code2 - ..."
@@ -188,8 +185,7 @@ Miners of uncles whose headers get included in the main chain are also rewarded.
 
 \subsection{Contracts}
 
-Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.
-\footnote{An alternative language which is in earlier stage of development is Vyper~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
+Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.\footnote{An alternative language which is in earlier stage of development is Vyper~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
 It is a statically typed language with a Javascript-like syntax.
 Listing~\ref{lst:SolidityExample} provides an example of a program in Solidity.
 
@@ -232,8 +228,7 @@ In 2019, another category of Ethereum-based applications known as \textit{decent
 DeFi projects build financial services, such as loans, in a more trustless way, eliminating the ineffectiveness of traditional intermediaries.
 The basic building block for DeFi is a \textit{stablecoin} -- a token with the value linked to the US~dollar.
 MakerDAO is a prominent \textit{algorithmic} stablecoin project.
-Its price stability is maintained by providing economic incentives to market participants to restore the dollar parity if the exchange rate starts to diverge from it.
-\footnote{As of 2020, the most widely used stablecoin is Tether (also known as USDT). In contrast to MakerDAO, it is centrally managed. We refer the reader to~\cite{Clark2020,KlagesMundt2020} for an overview of stablecoins.}
+Its price stability is maintained by providing economic incentives to market participants to restore the dollar parity if the exchange rate starts to diverge from it.\footnote{As of 2020, the most widely used stablecoin is Tether (also known as USDT). In contrast to MakerDAO, it is centrally managed. We refer the reader to~\cite{Clark2020,KlagesMundt2020} for an overview of stablecoins.}
 Other popular DeFi projects include Uniswap (a decentralized exchange) and Compound (a lending platform).
 Applications of Ethereum also include decentralized file storage~\cite{Storj} and computation~\cite{Golem}, name systems~\cite{ENS}, and prediction markets~\cite{Augur, Gnosis}.
 
@@ -273,8 +268,7 @@ Ideally, after a contract is deployed, nobody should be able modify its code, ev
 This ensures that privileged parties cannot unexpectedly change the rules of the game in their favor.
 On the other hand, smart contracts are experimental software.
 Deployed contracts are likely to contain bugs.
-An adversary can then exploit contract vulnerabilities without restraint.
-\footnote{This introduces a new dimension into the debate on responsible disclosure~\cite{Schneier2007}. It is ethical to publicly disclose a smart contact vulnerability, if the developers have no technical means to fix it?}
+An adversary can then exploit contract vulnerabilities without restraint.\footnote{This introduces a new dimension into the debate on responsible disclosure~\cite{Schneier2007}. It is ethical to publicly disclose a smart contact vulnerability, if the developers have no technical means to fix it?}
 Real-world projects often address this issue by encoding an administrator key in their contracts.
 The owner of this key can perform a limited number of actions.
 For example, an administrator might be able to pause withdrawals without the ability to steal users' funds.
@@ -282,8 +276,7 @@ For example, an administrator might be able to pause withdrawals without the abi
 \paragraph{Anonymous attackers}.
 Exploiting smart contracts is attractive compared to other types of cybercrime.
 First, smart contracts store significant amounts of value.
-Second, unlike, for instance, compromised databases, digital assets are more liquid.
-\footnote{However, the know-your-customer procedure that most exchanges require, as well as blockchain analytics, has made cashing out more difficult.}
+Second, unlike, for instance, compromised databases, digital assets are more liquid.\footnote{However, the know-your-customer procedure that most exchanges require, as well as blockchain analytics, has made cashing out more difficult.}
 Third, the risk of punishment is relatively low.
 
 \paragraph{External data sources}

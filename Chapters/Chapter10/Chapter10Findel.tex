@@ -2,8 +2,7 @@
 
 \label{Chapter10Findel}
 
-In this Chapter, we introduce a declarative language for financial derivatives on top of Solidity.
-\footnote{This Chapter is based on~\cite{Biryukov2017}.}
+In this Chapter, we introduce a declarative language for financial derivatives on top of Solidity.\footnote{This Chapter is based on~\cite{Biryukov2017}.}
 
 The financial industry lacks a universal domain-specific language.
 Natural language is inherently ambiguous.
@@ -27,8 +26,7 @@ Findel allows unambiguously describing contract clauses.
 A user only defines what a contract \textit{is} ("I owe you \$$10$ tomorrow"), not \textit{how} it is executed ("if the timestamp is greater than $t_0$,~\dots").
 The entire execution logic is implemented inside a smart contract, which is executed on-chain.
 Thus, we take the best of both worlds: unambiguity and composability of a concise declarative DSL, and trustless execution of a blockchain network.
-We implement an Ethereum smart contract that acts as a marketplace for Findel contracts and measure the cost of its operation.
-\footnote{See the related source code at~\url{https://github.com/cryptolu/findel}.}
+We implement an Ethereum smart contract that acts as a marketplace for Findel contracts and measure the cost of its operation.\footnote{See the related source code at~\url{https://github.com/cryptolu/findel}.}
 We refer the reader to~\cite{Hvitved2010, Schiller2013} for a review financial DSLs and to~\cite{Seijas2016, Clack2016} for a review of approaches to smart contract programming languages.
 
 
@@ -262,8 +260,7 @@ Our current implementation does not enforce any constraints on users' balances a
 In addition to \texttt{issuer} and \texttt{owner} (see Definition~\ref{def:Ch10FindelFindelContract}), a \texttt{Fincontract} contains an auxiliary \texttt{proposedOwner} field.
 On contract creation, \texttt{issuer}, \texttt{owner}, and \texttt{proposedOwner} are initialized to \texttt{msg.sender}.
 To transfer ownership, the owner sets \texttt{proposedOwner} either to the address of the proposed new owner or to \texttt{0x0}.
-Only the proposed owner can (but does not have to) \texttt{join} the contract; \texttt{0x0} means anyone can do so.
-\footnote{Beware of front-runners: Bob can monitor the network and try to join a contract as soon as he sees Alice's attempt to do so. Depending on the network latency and miner's behavior, either transaction can be confirmed.}
+Only the proposed owner can (but does not have to) \texttt{join} the contract; \texttt{0x0} means anyone can do so.\footnote{Beware of front-runners: Bob can monitor the network and try to join a contract as soon as he sees Alice's attempt to do so. Depending on the network latency and miner's behavior, either transaction can be confirmed.}
 
 
 \subsection{Data sources and gateways} \label{def:Ch10FindelGateways}
@@ -273,8 +270,7 @@ The issue can be solved with asynchronous requests, which work as follows.
 A smart contract records an Ethereum event with the request parameters properly encoded.
 A daemon process at an Ethereum node listens for such events, parses the requests, and sends them to an external data source.
 The responses are then sent to the requesting smart contract on behalf of an Ethereum account affiliated with the daemon.
-The submitted data may be accompanied by a proof of authenticity (i.e.,~a digital signature on a previously approved public key).
-\footnote{BTCRelay is a prominent example: users submit Bitcoin block headers to a smart contract, which implies their authenticity from the validity of easily verifiable proof-of-work. After a header is stored on the Ethereum blockchain, users check with a Merkle proof that the Bitcoin block contains a given transaction.}
+The submitted data may be accompanied by a proof of authenticity (i.e.,~a digital signature on a previously approved public key).\footnote{BTCRelay is a prominent example: users submit Bitcoin block headers to a smart contract, which implies their authenticity from the validity of easily verifiable proof-of-work. After a header is stored on the Ethereum blockchain, users check with a Merkle proof that the Bitcoin block contains a given transaction.}
 
 Financial derivatives often use external data.
 To prevent a malicious or careless user from creating a Findel contract using untrusted sources, we need to guarantee data authenticity.
@@ -304,8 +300,7 @@ This would allow for more straightforward modeling of derivatives that depend on
 
 We assume that the original data sources (e.g.,~feeds of reputable financial media) are trustworthy.
 An extra safety catch would be to query multiple sources, exclude outliers and return an aggregated value.
-Authenticity of data sources is guaranteed by a secure connection (e.g.,~TLS) and the existing public key infrastructure (PKI) for authentication.
-\footnote{See~\cite{Fromknecht2014} and~\cite{Lewison2016} for a discussion on blockchain-based PKI architectures}.
+Authenticity of data sources is guaranteed by a secure connection (e.g.,~TLS) and the existing public key infrastructure (PKI) for authentication.\footnote{See~\cite{Fromknecht2014} and~\cite{Lewison2016} for a discussion on blockchain-based PKI architectures}.
 Gateways without publicly available source code should not be trusted.
 
 
@@ -318,8 +313,7 @@ Every step in the lifecycle of a Findel contract issues a system-wide notificati
 Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
 Ethereum contracts can not act on their own: the owner must issue a transaction to trigger the execution.
 The owner may be unable to do so due to either opportunistic behavior, or technical problems, such as loss of connectivity or lack of ether.
-Thus, we presume that Findel contracts are not guaranteed to execute.
-\footnote{Compare to~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We can not force a user to make this decision.}
+Thus, we presume that Findel contracts are not guaranteed to execute.\footnote{Compare to~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We can not force a user to make this decision.}
 
 We model unbounded Findel contracts (i.e.,~with $INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
 Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~ten~years).
@@ -341,8 +335,7 @@ Assume Alice issues and Bob joins the following contract:
 \[C=Before(t_0,\mathrm{Or}(\mathrm{Give}(\mathrm{One}(USD)),\mathrm{Give}(\mathrm{One}(EUR))))\]
 
 \(C\) obliges Bob to give Alice either $\$1$ or \EUR{1} before time~$t_0$.
-If Bob fails to make a choice on time, Alice does not get the money she was planning to receive.
-\footnote{In this particular case, an equivalent contract \(\mathrm{Give}(\mathrm{Or}(\mathrm{One}(USD),\mathrm{One}(EUR)))\) solves the issue. In more complex cases this is not necessarily the case.}
+If Bob fails to make a choice on time, Alice does not get the money she was planning to receive.\footnote{In this particular case, an equivalent contract \(\mathrm{Give}(\mathrm{Or}(\mathrm{One}(USD),\mathrm{One}(EUR)))\) solves the issue. In more complex cases this is not necessarily the case.}
 To prevent it, Alice attaches a "penalty" clause:
 
 \[P=After(t_0,\mathrm{If}(c_{executed},\mathrm{Zero},\mathrm{Scale}(2,\mathrm{One}(USD))))\]
@@ -437,8 +430,7 @@ Solidity contains keywords for time units, but block timestamps are ultimately c
 Functional programming paradigm is well suited for developing embedded DSLs~\cite{Gibbons2015}.
 The original papers by Peyton Jones~et~al. as well as all existing implementations of their DSL use functional languages (Haskell~\cite{PeytonJones2000, Jones2003, Straaten2007}, OCaml~\cite{LexiFi}, Scala~\cite{Walton2012, Chaudhary2015}).
 In contrast, Solidity is imperative.
-Functional languages for Ethereum~\cite{FpEthereum2017} are in a very early stage of development.
-\footnote{In 2020, Solidity is the dominant high-level language in Ethereum. Functional contract languages have seen virtually no progress.}
+Functional languages for Ethereum~\cite{FpEthereum2017} are in a very early stage of development.\footnote{In 2020, Solidity is the dominant high-level language in Ethereum. Functional contract languages have seen virtually no progress.}
 
 \paragraph{A limited type system}
 The type system in Solidity is limited.

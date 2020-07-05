@@ -16,7 +16,7 @@ Conflicts can be resolved on layer-one, hence preserving some if its security gu
 In the context of Bitcoin, layer-two protocols usually implement the concept of \textit{payment channels}.
 A payment channel is a protocol that allows two parties to subsequently update the distribution of the initially committed funds.
 Multiple ideas and implementations of Bitcoin payment channel have been proposed.
-To put our work in historical context, we now describe the evolution of Bitcoin-based payment channels, following the outline in~\cite{BitcoinWikiChannels}.
+To put our work in historical context, we now describe the evolution of Bitcoin-based payment channels.
 See~\cite{McCorry2016} for an overview of Bitcoin payment channel designs.
 
 
@@ -110,7 +110,7 @@ A follow-up paper~\cite{Burchert2017} describes a way to share the cost of openi
 
 \subsection{Poon-Dryja channels (Lightning)}
 
-The Lightning Network (LN), proposed in 2016 by Poon and Dryja in~\cite{Poon2016}, overcomes the limitations of previous channel designs.
+The Lightning Network (LN), proposed in 2016~\cite{Poon2016}, overcomes the limitations of previous channel designs.
 Lightning channels are \textit{bidirectional} and have an \textit{unlimited lifetime}.
 
 The key insight in Lightning is its \textit{revocation-based state replacement}.
@@ -236,8 +236,7 @@ A payment channel can keep track of multiple concurrent unresolved HTLCs, which 
 
 \begin{figure*}[h]
 	\includegraphics[width=\textwidth]{htlc-figure}
-	\caption{An HTLC-based payment in the LN\@. The node $u_1$~pays $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries. 
-		Here we assume that each node charges a fee of $0.1$~and time is measured in days.}
+	\caption{An HTLC-based payment in the Lightning Network.}
 	\label{fig:htlc}
 \end{figure*}
 

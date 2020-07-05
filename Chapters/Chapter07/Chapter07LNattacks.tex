@@ -17,11 +17,11 @@ Our results are concerned with the LN as described in the specification, and thu
 \section{Datasets}
 \label{sec:datasets}
 
-We obtained a snapshot of LN on 25~February~2020 from~\cite{fiatjaf2020} and parsed with the code in~\cite{Tikhomirov2019}.
+We obtained a snapshot of LN on 25~February~2020 from~\cite{fiatjaf2020}.
 This snapshot consists of $5929$~nodes and $35233$~channels.
 We model this data as an undirected multi-graph (i.e., may contain multiple edges between each pair of nodes), as several channels can be shared by two LN nodes.
 We only considered the largest connected component, which contains $5862$~nodes $(98.87\%)$~and $35196$~channels $(99.89\%)$.
-We refer to this dataset as \emph{LN20}.
+We refer to this dataset as \emph{LN20}.\footnote{Our code is available at~\cite{Tikhomirov2019}.}
 
 Based on \emph{LN20}, 
 LN nodes have an average degree of $12.01$~and a median degree of $3$~(see~\cref{fig:node-degree-histogram,fig:channel-capacity-histogram}).
@@ -34,13 +34,15 @@ These observations motivate the methodology in our experiments in~\cref{sec:sec-
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=\columnwidth]{node-degree-histogram}
-	\caption{Node degree distribution.\label{fig:node-degree-histogram}}
+	\caption{Node degree distribution.}
+	\label{fig:node-degree-histogram}
 \end{figure}
 
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=\columnwidth]{channel-capacity-histogram}
-	\caption{Channel capacity distribution.\label{fig:channel-capacity-histogram}}
+	\caption{Channel capacity distribution.}
+	\label{fig:channel-capacity-histogram}
 \end{figure}
 
 \paragraph{Ethical considerations} 
@@ -49,17 +51,14 @@ All our calculations are based on a local representation of the LN network graph
 We do not interfere with the LN activity, nor deanonymize any node.
 
 
-
-\section{Security and privacy: theory and practice}
+\section{Security and privacy attacks: background}
 \label{sec:sec-priv-attacks}
 
-As introduced in~\cref{sec:background}, the LN builds upon Hash Time-Lock Contracts aiming to achieve atomicity in multi-hop payments.
+The LN builds upon Hash Time-Lock Contracts aiming to achieve atomicity in multi-hop payments.
 However,~\cite{Malavolta2019} argues that due to the \emph{wormhole attack} atomicity does not hold in LN\@.
 Another LN study~\cite{Malavolta2017} shows that privacy of LN users and their transactions can be breached.
 While the aforementioned works demonstrate the feasibility of these attacks, their effectiveness in practice depends, among other factors, on the topology of the LN\@.
 In this experiment, we aim to identify the impact of these security and privacy issues in our snapshot of the LN\@.
-
-\subsection{Security and privacy attacks: background}
 
 \begin{figure*}[tb]
 	\includegraphics[width=\textwidth]{vp-figure.pdf}
@@ -71,20 +70,20 @@ In this experiment, we aim to identify the impact of these security and privacy 
 	\label{fig:wormhole-attack}
 \end{figure*}
 
-\subsubsection{Value privacy}
+\subsubsection*{Value privacy}
 Intuitively, value privacy ensures that for a transaction involving only honest users, corrupted users outside the path learn no information about the transaction value.
 This notion thus heavily relies on the existence of paths without adversarial nodes.
 Otherwise, an adversarial intermediary node can trivially learn the (upper bound of the) amount of a transaction that it forwards.
 For instance, in~\cref{fig:wormhole-attack} the adversary $u_3$ forwards $1.2$~coins to $u_4$, estimating the transaction amount at around $1$~coin plus forwarding fees.
 
-\subsubsection{Relationship anonymity}
+\subsubsection*{Relationship anonymity}
 Intuitively, relationship anonymity ensures that given two simultaneous transactions between two pairs of nodes $(u_1, u_2)$ and $(u'_1, u'_2)$ routed through the same path of intermediary users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than $1/2$.
 However, this is not achieved in the LN\@.
 An adversary controlling $i_1$ and $i_n$ can use the cryptographic challenge included in the HTLC to determine who pays to whom.
 For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$ and $u_4$ can determine that $u_1$ is transacting with $u_5$ as the same value $y$ is used along the whole path.
 Similarly, $u_2$ and $u_4$ can determine that $u'_1$ is transacting with $u'_5$ as the same $y'$ is being used along the path.
 
-\subsubsection{The wormhole attack}
+\subsubsection*{The wormhole attack}
 In the wormhole attack, two colluding nodes in a transaction path prevent honest intermediaries from participating in the successful completion of the payment, stealing the fees initially intended for honest intermediaries.
 One may argue that this is not an attack, as from the sender's point of view the payment is delivered.
 Yet, this attack takes the economic incentive that honest users have to forward payments in the first place.
@@ -95,7 +94,7 @@ Instead, $u_4$ sends the value $r$ to $u_2$ outside the LN protocol, which allow
 As a consequence, contracts with $u_3$ expire, simulating transaction failure and preventing $u_3$ from participating in the successful completion of the transaction.
 
 
-\subsection{Methodology}
+\section{Methodology}
 In this section, we describe how we study the proneness of the LN to attacks with respect to the value privacy, relationship anonymity, and wormhole attack scenarios.
 
 We first compute the paths between pairs of nodes.
@@ -161,14 +160,13 @@ Correspondingly, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x
 Finally, for each attack strategy, we consider $$\alpha_{\langle u_i, u_j \rangle} := \frac{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}|}{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}| + |\textit{paths-safe}_{\langle u_i, u_j \rangle, x, y}|}$$ the probability that a transaction between $u_i$ and $u_j$ is vulnerable to the attack.
 Averaging across all the pairs of nodes tested, we extract the final probabilities reported in~\cref{fig:fig-all-attacks}.
 
-
-\subsection{Results and discussion}
+\section{Results and discussion}
 
 In this section, we present the results shown in~\cref{fig:fig-all-attacks} and discuss their implications.
 \begin{figure*}
 	\centering
 	\includegraphics[width=\textwidth]{fig-all-attacks}
-	\caption{Share of vulnerable paths for each attack, considering that the highest degree nodes are compromised (top), the highest capacity nodes are compromised (middle), or random nodes are compromised (bottom).}
+	\caption{Share of vulnerable paths for each parameter combination.}
 	\label{fig:fig-all-attacks}
 \end{figure*}
 
@@ -205,7 +203,7 @@ We note that a noticeable share of highly connected LN nodes is controlled by an
 It controls $23$~out of top~$50$~highest connected nodes~\cite{1MLTopConnected} and $40\%$~of the network capacity~\cite{TheBlockLNBIG}.
 
 
-\subsection{Countermeasures}
+\section{Countermeasures}
 We assume in our study that every two nodes carry out their transactions along a subset of paths chosen uniformly at random from the set of all available paths between them.
 However, LN nodes might implement different routing strategies.
 For instance, while routing through well-connected nodes improves the chances to reach the receiver through a short, highly liquid path, the sender might connect to low degree nodes.

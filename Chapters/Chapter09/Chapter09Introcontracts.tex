@@ -1,4 +1,4 @@
-\chapter{Introduction to secure programming and smart contracts}
+\chapter{Introduction to smart contracts}
 
 \label{Chapter09Introcontracts}
 
@@ -8,8 +8,6 @@ We then provide the necessary technical background on Ethereum -- a blockchain-b
 
 
 \section{History of smart contracts}
-
-\subsection{Early ideas}
 
 A contract is a basic building block of market economy.
 The foundational mechanics of a contract has not changed in centuries.
@@ -21,6 +19,9 @@ It is hard for humans to keep up with the increased speed and complexity of inte
 Second, contracts must be enforced.
 Usually, the government assumes the responsibility for contract enforcement.
 However, this introduces challenges in the global Internet.
+
+
+\subsection{Early ideas}
 
 Nick Szabo coined the term \textit{smart contract} in a 1997 essay~\cite{Szabo1997}.
 He argued that "contractual clauses \textelp{} can be embedded in the hardware and software \textelp{} to make breach of contract expensive".
@@ -41,7 +42,7 @@ Not only do Bitcoin scripts execute as programmed, but every user can independen
 Therefore, after a contract is created, users no longer have to trust the administrator.
 
 This key property of Bitcoin lead to the first attempts at encoding complex contracts in Bitcoin outputs.
-Early Bitcoin-based protocols towards this goal include Colored Coins\cite{Rosenfeld2012}, Counterparty~\cite{Counterparty, Bartoletti2017a}, and Mastercoin~\cite{Willett2016}.
+Early Bitcoin-based protocols towards this goal include Colored Coins~\cite{Rosenfeld2012}, Counterparty~\cite{Counterparty, Bartoletti2017a}, and Mastercoin~\cite{Willett2016}.
 
 Bitcoin's programming capabilities are too restrictive to encode many types of contracts.
 First, Bitcoin script is not Turing-complete.
@@ -88,6 +89,8 @@ These unfortunate events have shown that secure programming practices are especi
 
 
 \section{Ethereum architecture}
+
+We now provide a short introduction to the architecture of Ethereum.
 
 \subsection{Accounts}
 
@@ -233,7 +236,7 @@ Other popular DeFi projects include Uniswap (a decentralized exchange) and Compo
 Applications of Ethereum also include decentralized file storage~\cite{Storj} and computation~\cite{Golem}, name systems~\cite{ENS}, and prediction markets~\cite{Augur, Gnosis}.
 
 
-\section{Challenges for smart contract security}
+\section{Challenges for smart contracts}
 
 In 2016, a high-profile Ethereum contract called \textit{The DAO} was compromised~\cite{Sirer2016}.
 An unknown hacker appropriated around $40$~million~USD worth of ether.
@@ -246,7 +249,7 @@ In 2017, an estimated $150$~million~USD were lost as a result of two attacks on 
 These and other attacks on smart contracts~\cite{Delmolino2016, Atzei2017} have shown the importance of tools to ensure correctness and security of smart contracts.
 Let us list some of the most pressing security challenges in this area.
 
-\paragraph{Smart contract security}
+\paragraph{Code security}
 First of all, smart contracts must precisely reflect the intent of the developers.
 This may not always be the case in practice.
 Smart contract programming languages, such as Solidity, are unfamiliar to developers.

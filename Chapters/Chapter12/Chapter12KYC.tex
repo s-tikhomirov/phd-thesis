@@ -71,7 +71,7 @@ This approach alleviates the password management problem but increases the impac
 Even though users can revoke the access at any time, the "login with" scheme is still privacy violating.
 Imagine a user that reveals their date of birth to prove to a website that they are 18 years of age or older.
 Even if they later revoke the access, their date of birth will never change.
-Thus, they grant the third-party website an effectively unlimited access to a piece of private information.
+Thus, they grant the third-party website effectively unlimited access to a piece of private information.
 
 Maintaining correspondence between "real world" identities and public keys has long been a challenge.
 Centralized solutions like PKI generally work, but suffer from risks associated with centralization: a fraudulent authority can issue rogue certificates~\cite{Amann2017}.
@@ -95,7 +95,7 @@ We propose a design that will simultaneously leverage the power of blockchain-ba
 
 The current EU legislation "on information accompanying transfers of funds" came into effect in 2015~\cite{EU847}.
 In the wake of the rapid growth of cryptocurrencies, the EU is tightening its anti-money laundering regulations, stating that "virtual currency exchange platforms and custodian wallet providers will have to apply customer due diligence controls, ending the anonymity associated with such exchanges"~\cite{EU16}.
-\cite{Vandezande2017} analyzes virtual currencies under the EU anti-money laundering law.
+See~\cite{Vandezande2017} for an analysis of virtual currencies under the EU anti-money laundering law.
 
 In 2018, two important regulations come into force in the EU.
 
@@ -113,11 +113,11 @@ In 2018, two important regulations come into force in the EU.
 
 \section{KYCE: a decentralized KYC-compliant exchange}
 
-\subsection{Definitions and security properties}
-
 KYC requirements differ depending on jurisdiction~\cite{PWC2015}.
 A typical KYC procedure links users' real-world identities to their accounts and checks users against a whitelist or a blacklist.
 The details of the KYC procedure do not affect our design.
+
+\subsection{Definitions and security properties}
 
 \begin{definition}
 	A \textbf{KYC procedure} is a process that determines if a given user is eligible for a given transaction.
@@ -213,7 +213,7 @@ The KYC contract verifies the rest against the current accumulator value.
 If the checks pass, the requested action is executed in KYCE.
 
 \paragraph{Details on the accumulator construction}
-We follow the approach by Camenisch et al.~\cite{Camenisch2009}, who construct an accumulator based on a pairing function $e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
+We construct an accumulator based on a pairing function $e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
 The accumulator contains just serial numbers, possibly consecutive integers.\footnote{It is possible to store public keys but it would be less efficient.}
 
 The accumulator is constructed as follows.
@@ -248,10 +248,10 @@ When issuing a transaction to use the exchange (e.g.,~create an order), the user
 	\item I know a signature $\sigma_i$ and a witness $w_i$ for some number $i$ that has been accumulated in the
 	accumulator $A$ in the KYC contract.
 \end{itemize}
-It is crucial that this compound statement is \textit{atomic}, i.e.~the sub-statements can not be extracted as separate valid proofs, as this would make the transaction malleable.
+It is crucial that this compound statement is \textit{atomic}, i.e.,~the sub-statements can not be extracted as separate valid proofs, as this would make the transaction malleable.
 
 The atomicity (and thus non-malleability) are ensured as follows.
-Let us denote the proof of knowledge for the witness and signature by $PK_w$, which is given in~\cite{Camenisch2009}, Section 4.2.
+Let us denote the proof of knowledge for the witness and signature by $PK_w$.
 Then Prover submits 
 $$
 P = \{PK_w \wedge PK_s\},
@@ -282,12 +282,13 @@ Either the exchange contract or the token contract must be KYC-compliant -- i.e.
 
 \paragraph{KYC-compliant exchange}
 
-If the exchange is KYC-compliant, the tokens do not need to be aware of the KYC.
+If the exchange is KYC-compliant, the tokens do not need to be aware of the KYC (Figure~\ref{fig:KYCCompliantExchange}).
 
 \begin{figure}[h]
-	\caption{KYC-compliant exchange}
 	\centering
 	\includegraphics[width=0.8\textwidth]{figure-kyc-exchange}
+	\caption{KYC-compliant exchange.}
+	\label{fig:KYCCompliantExchange}
 \end{figure}
 
 Consider an established exchange that trades dozens of tokens.
@@ -299,12 +300,13 @@ Users who do not want to apply for KYC can withdraw their tokens from the exchan
 
 \paragraph{KYC-compliant token}
 
-If the token is KYC-compliant, the exchange does not need to be aware of the KYC.
+If the token is KYC-compliant, the exchange does not need to be aware of the KYC (Figure~\ref{fig:KYCCompliantToken}).
 
 \begin{figure}[h]
-	\caption{KYC-compliant token}
 	\centering
 	\includegraphics[width=0.8\textwidth]{figure-kyc-token}
+	\caption{KYC-compliant token.}
+	\label{fig:KYCCompliantToken}
 \end{figure}
 
 Consider a government that issues its own tokens.\footnote{Bank of England~\cite{Danezis2016} and the Monetary Authority of Singapore~\cite{Singapore17} already did research in this direction.}
@@ -330,11 +332,9 @@ Either the exchange contract or the token contract can perform such checks by st
 
 \section{Implementation details}
 
-We created a proof-of-concept implementation of the proposed design.
+We created an initial (not privacy-preserving) implementation of the proposed design.
 Our project consists of two smart contracts written in Solidity: KycProvider and KyceToken.
-
-\subsection{Non privacy-preserving implementation}
-In the initial (not privacy-preserving) implementation, KycProvider maintains a 2-dimensional boolean array that stores the eligibility status across users and tokens.
+KycProvider maintains a 2-dimensional boolean array that stores the eligibility status across users and tokens.
 On initialization, the address that deploys the contract to the blockchain is made the \textit{owner}, allowing it to add and remove users from the array.
 The ownership may be transferred (using the functionality inherited from the standard \texttt{Ownable} contract).
 
@@ -381,8 +381,7 @@ Estonian e-residency disconnects a digital identity from citizenship or physical
 Within the e-residency program, Estonia collaborates with a blockchain project Bitnation~\cite{Bitnation15, Estonia15}.
 Provable (previously known as Oraclize) implemented a connector that lets Ethereum contracts handle e-residency identities~\cite{Provable}.
 
-\cite{Ohtamaa2016} implements a KYC scheme in an Ethereum smart contract, but stores the KYC status on the blockchain in plaintext.
-
+A project~\cite{Ohtamaa2016} similar to ours implements a KYC scheme in an Ethereum smart contract, but stores the KYC status on the blockchain in plaintext.
 There are multiple projects aimed at easing customer onboarding for banks~\cite{CambridgeBlockchain, KycChain, SnapSwap, Tradle}.
 Blockchain consortium R3 developed a proof-of-concept implementation of a shared KYC between ten banks based on its blockchain platform Corda~\cite{Allison2016}.
 Multiple Ethereum-based identity projects have been proposed~\cite{Mesropyan2017, Sovrin, Uport}.

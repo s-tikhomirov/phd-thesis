@@ -34,8 +34,6 @@ We refer the reader to~\cite{Hvitved2010, Schiller2013} for a review financial D
 
 \section{Findel contracts} \label{sec:Ch10FindelSyntax}
 
-\subsection{Syntax} \label{sec:Ch10FindelDefinitions}
-
 \begin{definition} \label{def:Ch10FindelFindelContract}
 	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and $O$ is the \textbf{owner} (collectively called parties). 
 \end{definition}
@@ -111,7 +109,7 @@ Table~\ref{tab:Ch10FindelSemantics} informally defines the primitives' execution
 		\(\mathrm{Timebound} (t_0, t_1, c)\) & Execute \(c\), if the current timestamp is within \([t_0, t_1]\). \\
 		\hline
 	\end{tabular}
-	\caption{Findel contract primitives}
+	\caption{Findel contract primitives.}
 	\label{tab:Ch10FindelSemantics}
 \end{table}
 
@@ -134,7 +132,7 @@ $\delta$ is an implementation dependent constant intended for handling imperfect
 		\(\mathrm{Sell}(n, CURR, c)\) & \(\mathrm{And}(\mathrm{Give}(\mathrm{Scale}(n,\mathrm{One}(CURR))),c)\) \\
 		\hline
 	\end{tabular}
-	\caption{Examples of custom Findel contracts}
+	\caption{Examples of custom Findel contracts.}
 	\label{tab:Ch10FindelComposability}
 \end{table}
 
@@ -240,7 +238,7 @@ The Findel DSL is network-agnostic and can be implemented on top of any blockcha
 
 \subsection{Users and balances}
 
-We implement the objects defined in Section~\ref{sec:Ch10FindelDefinitions} with \texttt{struct} data types \texttt{Description} and \texttt{Fincontract}.
+We implement the objects introduced in~\ref{sec:Ch10FindelSyntax} with \texttt{struct} data types \texttt{Description} and \texttt{Fincontract}.
 We also introduce the \texttt{User} type that contains the user's Ethereum address and balances in all supported currencies.
 Users, descriptions, and contracts are stored in their respective mappings (a generic key-value storage type in Solidity) in the marketplace's storage.
 
@@ -355,7 +353,7 @@ It is up to a marketplace to solve this problem.
 Requiring a~$100\%$ guarantee deposit seems safe, but is questionable from an economical standpoint.
 People and organizations borrow money to invest it.
 The no-arbitrage principle states that there is no guaranteed way to make a profit.
-The investor reward, e.g.~interest, is the premium for taking the inevitable risk of business failure.
+The investor reward, e.g.,~interest, is the premium for taking the inevitable risk of business failure.
 
 A marketplace can also mimic the fractional reserve banking model by requiring users to always be able to pay at least $n\%$ of their debt and punishing violators (e.g.,~by withholding their guarantee deposit).
 It does not solve the problem of defaults completely though.
@@ -474,7 +472,7 @@ For testing purposes, we implement a gateway that uses the current timestamp as 
 		Update a gateway & $36\,922$ & $15\,650$ \\
 		\hline
 	\end{tabular}
-	\caption{Cost of setup and helper functions (in gas units)}
+	\caption{Cost of setup and helper functions (in gas units).}
 	\label{tab:Ch10FindelCost}
 \end{table}
 
@@ -510,7 +508,7 @@ We also do not account for gateway update costs.
 		Binary option & $402\,359$ & $396\,087$ & $59\,826$ & $96\,204$ \\
 		\hline
 	\end{tabular}
-	\caption{Cost of handling Findel contracts for common derivatives (in gas units)}
+	\caption{Cost of handling Findel contracts for common derivatives (in gas units).}
 	\label{tab:Ch10FindelCost2}
 \end{table}
 

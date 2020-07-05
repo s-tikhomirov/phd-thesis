@@ -1,6 +1,4 @@
-\section{Automated analysis of smart contracts}
-
-\subsection{Approaches to code analysis}
+\section{SmartCheck architecture}
 
 The two major approaches to code analysis are \textit{dynamic} analysis and \textit{static} analysis~\cite{Liu2012}.
 Dynamic analysis runs the program, while static analysis considers the program code without running it.
@@ -11,9 +9,6 @@ Static analysis usually includes three stages:
 	\item vulnerability detection w.r.t.~a database of patterns, which define vulnerability criteria in IR terms.
 \end{enumerate}
 In this paper, we do not consider formal verification methods, as they require a rarely available formal specification of the contract's intended functionality.
-
-	
-\subsection{SmartCheck}
 
 SmartCheck is a static analysis tool implemented in Java.
 It runs lexical and syntactical analysis on Solidity source code.
@@ -38,7 +33,7 @@ if (this.balance == 42 ether){...}.
 The parse tree of this construction is shown in Figure~\ref{ParseTree}, and the corresponding XPath pattern is shown in Listing~\ref{XPathListing}.
 
 \begin{figure}
-	\caption{Parse tree for the Balance equality code example}
+	\caption{Parse tree for the Balance equality code example.}
 	\Tree [.ifStatement 
 		{\texttt{if}}
 		[.ifCondition
@@ -54,7 +49,7 @@ The parse tree of this construction is shown in Figure~\ref{ParseTree}, and the 
  \end{figure}
 
 \begin{minipage}{\linewidth} % https://tex.stackexchange.com/a/73305/142924
-\begin{lstlisting}[caption={XPath pattern for the Balance equality issue},label={XPathListing},language=XML]
+\begin{lstlisting}[caption={XPath pattern for the Balance equality issue.},label={XPathListing},language=XML]
 //expression[expression//envVarDef
 [matches(text()[1],"^this.balance$")]]
 [matches(text()[1],"^==|!=$")]
@@ -66,7 +61,7 @@ More complex rules can not be precisely described with XPath, which leads to fal
 Consider the Re-entrancy issue~(\ref{SolidityReentrancyExternalCall}).
 SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which does not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
 
-\begin{lstlisting}[caption={Violation of CEI not leading to re-entrancy},label={ReentrancyListing},language=Solidity]
+\begin{lstlisting}[caption={Violation of CEI not leading to re-entrancy.},label={ReentrancyListing},language=Solidity]
 pragma solidity 0.4.19;
 contract Foo {
 	bool inBar = false;

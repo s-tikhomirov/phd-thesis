@@ -45,30 +45,6 @@
 \end{center}
 \end{titlepage}
 
-%----------------------------------------------------------------------------------------
-%	DECLARATION PAGE
-%----------------------------------------------------------------------------------------
-\iffalse % not seen in other theses in our group
-\begin{declaration}
-\addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
-\noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
-
-\begin{itemize} 
-\item This work was done wholly or mainly while in candidature for a research degree at this University.
-\item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
-\item Where I have consulted the published work of others, this is always clearly attributed.
-\item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
-\item I have acknowledged all main sources of help.
-\item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
-\end{itemize}
- 
-\noindent Signed:\\
-\rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
- 
-\noindent Date:\\
-\rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
-\end{declaration}
-\fi
 
 \cleardoublepage
 
@@ -80,19 +56,16 @@
 
 \noindent\enquote{\itshape 
 	Imagine there was a base metal as scarce as gold but with the following properties:
+	\begin{itemize}
+	\item boring grey in colour
 	
-	- boring grey in colour
+	\item not a good conductor of electricity
 	
-	- not a good conductor of electricity
+	\item not particularly strong, but not ductile or easily malleable either
 	
-	- not particularly strong, but not ductile or easily malleable either
-	
-	- not useful for any practical or ornamental purpose 
-	
-	and one special, magical property:
-	
-	- can be transported over a communications channel.}\bigbreak
-
+	\item not useful for any practical or ornamental purpose 
+	\end{itemize}
+	and one special, magical property: can be transported over a communications channel.}\bigbreak
 \hfill Satoshi Nakamoto
 % https://bitcointalk.org/index.php?topic=583.msg11405#msg11405
 
@@ -122,13 +95,13 @@ Off-chain protocols address this issue.
 Part~\ref{Part2Lightning} is dedicated to the Lightning Network (LN) -- a prominent Bitcoin-based off-chain protocol.
 Lightning performs transactions off-chain, but allows for on-chain dispute resolution.
 This ensures low latency while inheriting most of Bitcoin's security guarantees.
-We introduce a probing attack that allows to quickly discover user balances in the LN.
+We introduce a probing attack that allows to quickly discover user balances in the LN\@.
 We analyze the likelihood of various privacy attacks on the LN depending on a number of parameters.
 We describe a limitation on the number of concurrent LN payments and quantify its effects on the transaction throughput.
 
 Bitcoin allows only a limited means to define how coins can be spent.
 Ethereum is a blockchain network with a focus on programmability.
-It allows to write programs in a Turing-complete language and permanently store them on-chain.
+It allows writing programs in a Turing-complete language and permanently store them on-chain.
 Such programs are called smart contracts and are usually written in a high-level language Solidity.
 Part~\ref{Part3Ethereum} explores the security and privacy of smart contracts in Ethereum.
 We propose Findel -- a Solidity-based declarative domain-specific language for financial contracts.
@@ -194,6 +167,14 @@ It is an honor to be a part of the movement you started.
 \textbf{FPGA} & Field-programmable gate array \\
 \textbf{ASIC} & Application-specific integrated circuit \\
 \textbf{P2P} & Peer-to-peer \\
+\textbf{BIP} & Bitcoin improvement proposal \\
+%\textbf{EIP} & Ethereum improvement proposal \\
+\textbf{ECDSA} & Elliptic curve digital signature algorithm \\
+\textbf{BTC} & Bitcoin (when used as a currency unit) \\
+%\textbf{ETH} & Ether (when used as a currency unit) \\
+\textbf{TCP} & Transmission Control Protocol \\
+\textbf{EVM} & Ethereum virtual machine \\
+\textbf{DSL} & Domain-specific language \\
 
 \end{abbreviations}
 

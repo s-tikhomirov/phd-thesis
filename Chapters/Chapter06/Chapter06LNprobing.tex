@@ -110,7 +110,7 @@ To determine liveness, we use the heuristics presented in Algorithm~\ref{alg:sel
 		send a 1000~sat probe\;
 		\If{error returned}{add channel to channels to probe\;}
 	}
-	\caption{SelectChannelsForProbing}
+	\caption{Selecting channels for probing.}
 	\label{alg:select-channels}
 \end{algorithm}
 
@@ -193,7 +193,7 @@ The probing algorithm for a single route is presented in Algorithm~\ref{alg:prob
 			$b_{min} = a$\;
 		}
 	}
-	\caption{ProbeRoute}
+	\caption{Probing a route.}
 	\label{alg:probe-route}
 \end{algorithm}
 
@@ -229,7 +229,7 @@ The algorithm for all channels selected for probing is presented in Algorithm~\r
 			}
 		}
 	}
-	\caption{Probe all channels}
+	\caption{Probing all channels.}
 	\label{alg:probe-channels}
 \end{algorithm}
 
@@ -267,7 +267,7 @@ The route generation algorithm is presented in Algorithm~\ref{alg:find-route}.
 		route is good\;
 	}
 	\Return route\;
-	\caption{GetRouteToTargetChannel}
+	\caption{Getting a route to the target channel.}
 	\label{alg:find-route}
 \end{algorithm}
 
@@ -368,7 +368,7 @@ Figure~\ref{fig:route-length-timings} shows the distribution of probing times fo
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{route-length-timings.png}
-	\caption{The distribution of probes (onions) by the time it took to receive a response. Colors represent different route lengths}
+	\caption{The distribution of probes (onions) by response time.}
 	\label{fig:route-length-timings}
 \end{figure}
 
@@ -388,7 +388,7 @@ We observe that $50\%$~of channels can be probed in less than $21.2$~seconds.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{channel-timings-CDF.png}
-	\caption{Distribution of channels by total probing time}
+	\caption{Distribution of channels by total probing time.}
 	\label{fig:channel-timings-CDF}
 \end{figure}
 
@@ -405,7 +405,7 @@ A large channel can only be fully probed, if the local balance at one of its end
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.8\textwidth]{cdf-channel-coefficients.png}
-	\caption{Distribution of channels by the obtained information coefficient}
+	\caption{Distribution of channels by the obtained information coefficient.}
 	\label{fig:cdf-channel-coefficients}
 \end{figure}
 
@@ -428,7 +428,7 @@ It is partially explained by the fact that all routes pass through one of our ow
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{channel-frequency-distribution.png}
-	\caption{Distribution of relative frequencies of channels in routes}
+	\caption{Distribution of relative frequencies of channels in routes.}
 	\label{fig:channel-frequency-distribution}
 \end{figure}
 
@@ -447,12 +447,12 @@ $c_{bal} = 1$~means the channel is perfectly balanced: the two sides have equal 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{balance-coeff-histogram.pdf}
-	\caption{Distribution of balance coefficients. Many small channels are unbalanced (coefficient close to zero)}
+	\caption{Distribution of balance coefficients.}
 	\label{fig:balance-coeff-histogram}
 \end{figure}
 
 Figure~\ref{fig:balance-coeff-histogram} depicts the distribution of balance coefficients among "small" channels that we were able to probe with high accuracy (information coefficient higher than $0.9$).
-We conclude that many channels are unbalanced.
+We conclude that many small channels are unbalanced (coefficient close to zero).
 $15$\%~have the balance coefficient lower than $0.001$, $45\%$~lower than $0.01$, and $62\%$~lower than $0.1$.
 Note, however, that the picture may change if we consider large channels, and that channel management practices on mainnet may differ significantly.
 
@@ -550,9 +550,7 @@ Note also that while the LN specification allows non-strict forwarding, the c-li
 The other two popular implementations, LND and Eclair, allow parallel channels.
 
 
-
-
-\subsection{Countermeasures}
+\section{Countermeasures}
 %\label{sec:discussion}
 
 The simplest countermeasure that does not require protocol modification can be implemented as part of a node routing policy.
@@ -586,8 +584,6 @@ We propose a modification to LN error handling to prevent the sender from knowin
 In particular, each node in a route modifies the error it sends back as if it has originated from its own channel.
 We also suggest merging the two error types ("incorrect or unknown payment details" and "temporary channel failure").
 A similar countermeasure has already been implemented (see note about error types $16$~and $17$~in BOLT4~\cite{Bolt4OnionRouting}).
-% this is not true:
-%as a response to the privacy attack described in~\cite{herrera2019difficulty}.
 The drawback of this method is a decrease in payment reliability.
 The failing channel can no longer be excluded from the subsequent route search.
 However, the payment reliability problem may become less pressing with \textit{multi-part payments} (MPP).

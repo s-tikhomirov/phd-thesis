@@ -48,6 +48,7 @@ Finally, we outline and contextualize our original contributions.
 
 \section{Historical overview}
 
+We now provide a historical overview of the two key areas relevant for the development of cryptocurrencies: the Internet and money.
 
 \subsection{Evolution of the Internet}
 
@@ -365,20 +366,26 @@ Bitcoin launched on 3~January~2009 and started slowly gaining traction in the te
 
 Nakamoto's insight was in the way he combined Bitcoin's components.
 All the necessary ingredients had already been proposed, but never connected in the right way.
-Let us now briefly describe the architecture of Bitcoin.
-We refer the reader to~\cite{Narayanan2017} for a historic review of Bitcoin's building blocks, to~\cite{Bonneau2015} and~\cite{Tschorsch2016} for the overview of the field, and to~\cite{Narayanan2016} and~\cite{Antonopoulos2014} for a comprehensive technical introduction.
+
 
 \subsection{Bitcoin architecture}
 
+Let us now briefly describe the architecture of Bitcoin.
+We refer the reader to~\cite{Narayanan2017} for a historic review of Bitcoin's building blocks, to~\cite{Bonneau2015} and~\cite{Tschorsch2016} for the overview of the field, and to~\cite{Narayanan2016} and~\cite{Antonopoulos2014} for a comprehensive technical introduction.
+
 \paragraph{Nodes and P2P network}
 
-The Bitcoin network consists of \textit{nodes}.
+The Bitcoin network consists of \textit{nodes}, or \textit{peers}.
+Each node maintains a few connections to other nodes, which are called \textit{neighbors}, or \textit{entry nodes}.
 Nodes exchange messages via unencrypted TCP connections.
+Nodes are supposed to forward transactions and other protocol data to other nodes.
+As a result of this \textit{gossip} process, every node is eventually aware of all transactions.
+
 Each node maintains a database of all transactions that have ever taken place.
 Transactions are grouped into blocks.
 Each block contains a hash of the previous block.
 Hence, the blocks form a chain (the \textit{blockchain}).
-A node that validates and stores all blocks is referred to as a full node.
+A node that validates and stores all blocks is referred to as a \textit{full node}.
 
 \paragraph{Keys and transactions}
 
@@ -397,7 +404,6 @@ Spending a UTXO requires submitting the arguments such that the script evaluates
 This usually involves providing digital signatures.}
 The sum of the outputs must be lower than the sum of the inputs.
 The difference is the fee (paid to \textit{miners} -- see below).
-
 
 \paragraph{Mining}
 
@@ -567,7 +573,7 @@ This allows to mine these cryptocurrencies using off-the-shelf equipment, mostly
 		Monero & RandomX, CryptoNight (before~2019) & Yes \\ \hline
 		Zcash & Equihash & Yes \\ \hline
 	\end{tabular}
-	\caption{Hash functions used for PoW in selected cryptocurrencies}
+	\caption{Hash functions used for PoW in selected cryptocurrencies.}
 	\label{tab:pow-coins-hash-functions}
 \end{table}
 
@@ -652,7 +658,7 @@ The parties exchange signed messages without submitting them to the blockchain.
 They can resolve disputes on the base protocol (referred to in this context as \textit{layer one}, or \textit{L1}).
 Bitcoin's Lightning Network~\cite{Poon2016} takes this approach.
 L2 protocols are also being developed on top of Ethereum.
-These include state channels (Raiden~\cite{RaidenWebsite}), refereed computation protocols (Arbitrum~\cite{Kalodner2018}, Truebit~\cite{Teutsch2017}), state channels (Sprites~\cite{Miller2019}, Perun~\cite{Dziembowski2017}), Plasma~\cite{Poon2017}, and rollups (optimistic~\cite{Floersch2019}, zk-rollups~\cite{Gluchowski2019}).
+These include state channels~\cite{Dziembowski2017, RaidenWebsite, Miller2019, }, refereed computation protocols~\cite{Teutsch2017, Kalodner2018}, Plasma~\cite{Poon2017}, and rollups~\cite{Floersch2019, Gluchowski2019}.
 A comprehensive overview of off-chain protocols is provided in~\cite{Gudgeon2019}.
 
 

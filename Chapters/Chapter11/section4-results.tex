@@ -1,8 +1,9 @@
 \section{Experimental results} \label{SectionResults}
 
-\subsection{Goals and definitions}
-
 We compare SmartCheck with the results of manual audit (Section~\ref{ManualAudit}) and the three freely available vulnerability detection tools -- Oyente, Remix, and Securify (Section~\ref{MassiveTesting}).\footnote{For Securify, we only consider partial results from the publicly available version of the tool.}
+
+
+\subsection{Definitions}
 
 We define a true finding as an issue (detected by a tool with manual verification or manually) that is a bad practice and should be fixed from our viewpoint.
 It may or may not be an exploitable vulnerability.
@@ -25,7 +26,7 @@ The FDR and FNR for each tool (in \% and in absolute numbers) are presented in T
 
 \begin{table*}[t]
 	\centering
-	\caption{Tools results on the three projects and overall}
+	\caption{Testing results on three selected projects.}
 	\begin{tabular}{|l|l|r|r|r|r|}
 		\hline
 		\textbf{Project} &  & \textbf{Oyente} & \textbf{Remix} & \textbf{Securify} & \textbf{SmartCheck} \\
@@ -82,7 +83,7 @@ Several critical functions then iterated through this array (e.g.,~Listing~\ref{
 An attacker could make those functions permanently fail, as the function call would require more gas than the block gas limit.
 
 \begin{minipage}{\linewidth} 
-\begin{lstlisting}[caption={Adding an element to the internal array},label={AddingGroup},language=Solidity]
+\begin{lstlisting}[caption={Adding an element to an internal array.},label={AddingGroup},language=Solidity]
 function createGroup(string _name, uint _goal)
     onlyOpenAuction
     returns (uint8 err, uint groupIndex)
@@ -104,7 +105,7 @@ function createGroup(string _name, uint _goal)
 \end{minipage}
 
 \begin{minipage}{\linewidth}
-\begin{lstlisting}[caption={Iterating through the internal array},label={Iterating},language=Solidity]
+\begin{lstlisting}[caption={Iterating through an internal array.},label={Iterating},language=Solidity]
 function findBidder(bytes32 bidderId) constant returns (uint8 err, uint groupIndex, uint bidderIndex) {
 	for(groupIndex = 0; groupIndex < groups.length; groupIndex++) {
 		for(bidderIndex = 0; bidderIndex < groups[groupIndex].bidders.length; bidderIndex++) {
@@ -130,7 +131,7 @@ We then ran SmartCheck on this dataset.
 % https://tex.stackexchange.com/a/99834/142924
 % $X$ causes errors
 \begin{figure}
-	\caption{Distribution of non-zero contract balances (ether)}
+	\caption{Distribution of non-zero contract balances (ether).}
 	\centering
 	\begin{tikzpicture}
 	\pgfplotstableread{
@@ -164,7 +165,7 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of $334$~line
 
 \let\letcs\texapiletcs
 \begin{figure}
-	\caption{Findings on the big dataset \\ (excluding {\usevalue SolidityVisibility:name })}
+	\caption{Findings on the big dataset \\ (excluding {\usevalue SolidityVisibility:name }).}
 	\centering
 	\resizebox{0.8\textwidth}{!}{
 	\begin{tikzpicture}[x={(.001,0)}, font=\large]
@@ -212,7 +213,7 @@ The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisib
 \let\letcs\texapiletcs
 \begin{table}[t]
 	\centering
-	\caption{Code issues detected on a big dataset}
+	\caption{Code issues detected on the big dataset.}
 	\begin{tabular}{|c|l|r|r|}
 		\hline
 		\textbf{Severity} & \textbf{Pattern} & \textbf{Findings} & \textbf{\% of all} \\

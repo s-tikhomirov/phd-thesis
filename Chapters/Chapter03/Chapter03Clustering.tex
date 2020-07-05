@@ -1,4 +1,4 @@
-\chapter{Deanonymization of cryptocurrency transactions with network analysis} % Main chapter title
+\chapter{Deanonymization of transactions with network analysis} % Main chapter title
 
 \label{Chapter03Clustering}
 
@@ -24,6 +24,8 @@ In particular, we demonstrate that we can cluster Zcash transactions that involv
 
 
 \section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
+
+We now describe our transaction clustering technique.
 
 \subsection{Intuition}
 
@@ -99,7 +101,8 @@ This choice of $k$ distributes the weights for any $t^{tx}$: they neither stay c
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{weight-function-example.png}
-	\caption{Weight functions for three timestamp vectors}\label{fig:weight}
+	\caption{Weight functions for three timestamp vectors.}
+	\label{fig:weight}
 \end{figure}
 For each transaction, we evaluate the vector of weights:
 
@@ -145,7 +148,7 @@ The rows of $Z$ are clustered using the k-means algorithm.
 
 \subsection{Measuring clustering quality}
 
-We use the Rand score as an external metric of clustering quality, as described in~\cite{Amigo2009} (Section~4.2).
+We use the Rand score as an external metric of clustering quality (see~\cite{Amigo2009} (Section~4.2).
 The Rand score operates on \textit{pairs} of elements and reflects the proportion of "right decisions" regarding whether to put a pair of transactions into the same cluster or different clusters.
 
 $SS$, $SD$, $DS$, and $DD$ are numbers of transaction pairs defined as follows:
@@ -168,7 +171,7 @@ With no such threshold, large clusters with one of our transactions disproportio
 
 \subsection{Measuring the degree of deanonymization}
 
-To estimate the success rate of the attack, we use a quality score based on the \textit{anonymity degree} proposed in~\cite{Diaz2002}.
+To estimate the success rate of the attack, we use a quality score based on the \textit{anonymity degree}~\cite{Diaz2002}.
 The anonymity degree is designed to measure the amount of information an attacker gains compared to perfect anonymity.
 Consider a transaction the attacker has captured.
 The goal is to assign a probability that is originates from $S_{control}$.
@@ -252,8 +255,6 @@ We use Python scripts to extract the data from the log, save it in a more compac
 
 \section{Experimental evaluation}
 
-\subsection{Experiment overview}
-
 The outline of our experiment is as follows:
 
 \begin{enumerate}
@@ -305,7 +306,7 @@ Following the terminology of~\cite{Biryukov2014}, we refer to peers that accept 
 % 3-experiment: experiment-1541516997
 \begin{table*}[!t]
 	\normalsize
-	\caption{Experimental results on Bitcoin testnet and Zcash}
+	\caption{Summary of the experimental results on Bitcoin testnet and Zcash.}
 	\centering
 	\begin{tabular}{|l|l|c|c|c|c|c|}
 		\hline
@@ -337,8 +338,8 @@ All test transactions were issued from computers located in Luxembourg.
 We issued two sets of test transactions (the learning and the control sets) containing $30$~transactions each.
 We denote $10$~transactions out of the control set as "known" to estimate the anonymity degree.
 
-The results are presented in Table~\ref{tab:results} and Figures~\ref{fig:bitcoin-testnet-1} and~\ref{fig:bitcoin-testnet-2}.
-The * sign in the table indicates the experiments where we only connected to a subset of available nodes.
+The results are presented in Table~\ref{tab:results} and Figures~\ref{fig:bitcoin-testnet-california},~\ref{fig:bitcoin-testnet-tokyo},~\ref{fig:bitcoin-testnet-frankfurt}, and~\ref{fig:bitcoin-testnet-combined}.
+The "*"~sign in the table indicates the experiments where we only connected to a subset of available nodes.
 
 The number of live peers collected by each of the listeners is very close.
 This indicates that we do obtain a complete view of the network.
@@ -357,14 +358,15 @@ This may be explained by the fact that the test transactions were issued from a 
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541509693-California.png}
-		\caption{Bitcoin testnet (California)}
+		\caption{Transaction clustering for Bitcoin testnet (listener in California).}
+		\label{fig:bitcoin-testnet-california}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541511845-Tokyo.png}
-		\caption{Bitcoin testnet (Tokyo)}
+		\caption{Transaction clustering for Bitcoin testnet (listener in Tokyo).}
+		\label{fig:bitcoin-testnet-tokyo}
 	\end{minipage}\hfill
-	\label{fig:bitcoin-testnet-1}
 \end{figure*}
 
 \begin{figure*}
@@ -372,14 +374,15 @@ This may be explained by the fact that the test transactions were issued from a 
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541513977-Frankfurt.png}
-		\caption{Bitcoin testnet (Frankfurt)}
+		\caption{Transaction clustering for Bitcoin testnet (listener in Frankfurt).}
+		\label{fig:bitcoin-testnet-frankfurt}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541516997-combined.png}
-		\caption{Bitcoin testnet (combined)}
+		\caption{Transaction clustering for Bitcoin testnet (combined listeners).}
+		\label{fig:bitcoin-testnet-combined}
 	\end{minipage}\hfill
-	\label{fig:bitcoin-testnet-2}
 \end{figure*}
 
 
@@ -414,7 +417,7 @@ For Bitcoin mainnet, we performed one experiment with a listener located in Fran
 We used learning and control transaction sets of $20$~transactions each.
 Five transactions from the control set were assumed "known" for anonymity degree calculation.
 
-The results are presented in Table~\ref{tab:results} and Figures~\ref{fig:bitcoin-zcash}.
+The results are presented in Table~\ref{tab:results} and Figures~\ref{fig:bitcoin-mainnet} and~\ref{fig:zcash}.
 The transactions also exhibit the "clustering" behavior, though the anonymity decrease is weaker.
 This may be caused by multiple factors.
 First, Bitcoin mainnet is substantially larger than other networks we considered.
@@ -428,14 +431,15 @@ Third, we only established up to $50$~connections to $1000$~peers to avoid disru
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1542054034-fig-correlations-202-txcl-006-N-Rand-best.png}
-		\caption{Bitcoin mainnet}
+		\caption{Transaction clustering for Bitcoin mainnet.}
+		\label{fig:bitcoin-mainnet}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-Frankfurt.png}
-		\caption{Zcash}
+		\caption{Transaction clustering for Zcash.}
+		\label{fig:zcash}
 	\end{minipage}\hfill
-	\label{fig:bitcoin-zcash}
 \end{figure*}
 
 \subsubsection{Zcash}
@@ -452,13 +456,13 @@ The learning and control sets consisted of $20$ and $18$~transactions respective
 Eight~out of $18$~control transactions were shielded (from a t-address to a z-address).
 We used $6$~control transactions as "known" for anonymity degree estimation.
 
-The results are presented in Figure~\ref{fig:bitcoin-zcash}.
+The results are presented in Figures~\ref{fig:bitcoin-mainnet} and~\ref{fig:zcash}.
 Note that our attack does does not take into account transaction content or type.
 Consequently, our method applied for Zcash allows clustering transactions involving both transparent and shielded addresses.
 Transactions from the control set that involve shielded addresses are marked with longer ticks in the figure.
 
 %The Zcash network is much smaller than the Bitcoin testnet.
-We notice that Zcash peers offer far fewer free connection slots on average: $36$~compared to $64$~on Bitcoin testnet (see Figure~\ref{fig:free-slots}).
+We notice that Zcash peers offer far fewer free connection slots on average: $36$~compared to $64$~on Bitcoin testnet (see Figures~\ref{fig:free-slots-bitcoin} and~\ref{fig:free-slots-zcash}).
 A relatively high number of servers only provided our listener with up to ten connection slots.
 This may indicate a larger share of "protected" nodes, i.e.,~nodes which are configured (using firewalls or other network-level mechanisms) to only provide a limited number of connections to each IP\@.
 Note than a resourceful adversary may overcome this limitation by purchasing IP addresses from a cloud provider.
@@ -468,14 +472,15 @@ Note than a resourceful adversary may overcome this limitation by purchasing IP 
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1541513977-conn-max-histogram.png}
-		\caption{Free slots: Bitcoin testnet}
+		\caption{Free connection slots: Bitcoin testnet.}
+		\label{fig:free-slots-bitcoin}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{zcash-mainnet-1541938472-conn-max-histogram.png}
-		\caption{Free slots: Zcash mainnet}
+		\caption{Free connection slots: Zcash mainnet.}
+		\label{fig:free-slots-zcash}
 	\end{minipage}\hfill
-	\label{fig:free-slots}
 \end{figure*}
 
 
@@ -499,14 +504,15 @@ During $15$-minutes, we received $12$~transaction inventory messages and $396$~D
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{dash-mainnet-1531510768-all.png}
-		\caption{Dash (Dash-specific messages and usual transactions)}
+		\caption{Transaction clustering for Dash (messages and transactions).}
+		\label{fig:dash-all}
 	\end{minipage}\hfill
 	\begin{minipage}{0.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{dash-mainnet-1531510768.png}
-		\caption{Dash (usual transactions)}
+		\caption{Transaction clustering for Dash (transactions only).}
+		\label{fig:dash-tx}
 	\end{minipage}\hfill
-	\label{fig:dash-all}
 \end{figure*}
 
 We ran our clustering algorithm two times: accounting for the Dash-specific messages (Figure~\ref{fig:dash-all}), and considering only standard transaction inventory messages (Figure~\ref{fig:dash-tx}).
@@ -541,11 +547,11 @@ We connected to $200$~nodes and received $124$~transactions in a $38$~minute win
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.5\columnwidth]{monero-mainnet-005-fig-correlations-012-txcl-003-N-Rand-best.png}
-	\caption{Monero}
+	\caption{Transaction clustering for Monero.}
 	\label{fig:monero}
 \end{figure}
 
-The less clear picture compared to e.g.~Bitcoin testnet may be explained as follows.
+The less clear picture compared to Bitcoin testnet may be explained as follows.
 First, we connected to a subset of all nodes (the total number of nodes at the time of the experiment was estimated at $1700$--$1800$~\cite{MoneroHash}).
 Second, Monero does not employ the three-step transaction propagation as Bitcoin does.
 There is no \texttt{inv} -- \texttt{getdata} -- \texttt{tx} exchange.
@@ -576,7 +582,7 @@ The BitcoinJ developers acknowledge that the three-step \texttt{inv} -- \texttt{
 
 We chose a diverse selection of wallets for our experiments: Bitcoin-only and multi-coin, with centralized as well as P2P networking.
 We performed experiments on Bitcoin testnet (Bitcoin wallet), Bitcoin mainnet (Bitcoin wallet, BRD, Coinomi, Mycelium), and Zcash (Coinomi).
-Bitcoin wallet and BRD\footnote{Bitcoin wallet and BRD are the two most popular Bitcoin clients, as estimated in~\cite{Wang2017}.} use P2P broadcast; Coinomi and Mycelium use centralized broadcast.
+Bitcoin wallet and BRD\footnote{Bitcoin wallet and BRD are the two most popular Bitcoin clients~\cite{Wang2017}.} use P2P broadcast; Coinomi and Mycelium use centralized broadcast.
 %Experiments on testnet allow us to establish the upper bound on the effectiveness of our approach.
 %A lower transaction rate and fewer nodes allowed us to occupy all available connection slots.
 %We considered the number of first announcements in the range from $3$~to $7$, $k = 5$.
@@ -591,34 +597,34 @@ This allows us to later associate transactions in the network with popular walle
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1542895555-fig-corr-032-txcl-005-N-Rand.png}
-		\caption{Mycelium (testnet)}
+		\caption{Bitcoin testnet, Mycelium.}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-testnet-1537202356-fig-corr-008-txcl-003-N-Rand.png}
-		\caption{Bitcoin wallet (testnet)}
+		\caption{Bitcoin testnet, Bitcoin wallet.}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537365306-fig-corr-202-txcl-007-N-Rand.png}
-		\caption{Bitcoin wallet}
+		\caption{Bitcoin mainnet, Bitcoin wallet.}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537377559-fig-corr-102-txcl-004-N-Rand.png}
-		\caption{BRD}
+		\caption{Bitcoin mainnet, BRD.}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{bitcoin-mainnet-1537951300-fig-corr-100-txcl-004-N-Rand.png}
-		\caption{Coinomi}
+		\caption{Bitcoin mainnet, Coinomi.}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=\columnwidth]{zcash-mainnet-1543922496-fig-corr-005-txcl-003-N-Rand.png}
-		\caption{Coinomi (Zcash)}
+		\caption{Zcash, Coinomi.}
 	\end{subfigure}
-	\caption[short]{Experimental results (Bitcoin unless specified)}
+	\caption{Transaction clustering for mobile wallets.}
 	\label{fig:clustering-all}
 \end{figure}
 
@@ -746,8 +752,7 @@ Transactions are propagated to a random subset picked from all connections.
 This allow a well-connected listener to receive more information by initiating more connections.
 For instance, by saturating $50$\%~of a node's connection slots, a listener has a $50$\%~chance to be the first to receive a new transaction from it.
 
-In Dandelion, transaction propagation occurs in two stages: the stem phase and the fluff phase.
-Nodes choose neighbors for the stem phase only from their outgoing connections.
+In Dandelion, nodes choose neighbors for the stem phase only from their outgoing connections.
 An attacker has no easy way to force a remote peer to initiate a connection.
 Therefore, a malicious node with many outgoing connections does not have any advantage in the stem phase.
 It can only aggregate incoming information while acting as a regular relay, which may gain some but not much insight into possible transaction clusters.

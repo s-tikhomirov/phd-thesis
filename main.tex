@@ -89,6 +89,7 @@ headsepline, % Uncomment to get a line under the header
 %\usepackage{underscore}
 \usepackage{hyperref} % as per its manual, must be added last
 
+\MakeOuterQuote{"}
 
 % for Findel, KYC
 % https://tex.stackexchange.com/a/61266/142924
@@ -96,7 +97,7 @@ headsepline, % Uncomment to get a line under the header
 \newcommand{\missing}[1]{\textcolor{red}{#1}}
 \newcommand*\rot{\rotatebox{90}}
 
-\graphicspath{{Chapters/Chapter03/figures/}{Chapters/Chapter04/figures/}{Chapters/Chapter06/figures/}{Chapters/Chapter07/figures/}{Chapters/Chapter12/figures/}}
+\graphicspath{{Chapters/Chapter03/figures/}{Chapters/Chapter05/figures/}{Chapters/Chapter06/figures/}{Chapters/Chapter07/figures/}{Chapters/Chapter08/figures/}{Chapters/Chapter12/figures/}}
 
 \setcounter{secnumdepth}{3} % for references to subsubsections in SmartCheck
 % use \subsubsection* to avoid 4-digit numbering elsewhere
@@ -160,7 +161,7 @@ headsepline, % Uncomment to get a line under the header
 
 \include{Chapters/Chapter01/Chapter01Introduction}
 
-\part{Network-level privacy in Bitcoin and privacy-focused cryptocurrencies}
+\part{Network privacy in Bitcoin and privacy-focused cryptocurrencies}
 \label{Part1Privacy}
 \include{Chapters/Chapter02/Chapter02IntroP2P}
 \include{Chapters/Chapter03/Chapter03Clustering}
@@ -181,9 +182,6 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter11/Chapter11SmartCheck}
 \include{Chapters/Chapter12/Chapter12KYC}
 
-%\bookmarksetupnext{level=chapter}
-%\include{Chapters/Chapter13/Chapter13Conclusion}
-
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES
 %----------------------------------------------------------------------------------------
@@ -200,10 +198,11 @@ headsepline, % Uncomment to get a line under the header
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
-
+%\iffalse
 \printbibliography[heading=bibintoc]
 \setcounter{secnumdepth}{-1}
 \input{ListOfPublications}
+%\fi
 %----------------------------------------------------------------------------------------
 
 \end{document}  

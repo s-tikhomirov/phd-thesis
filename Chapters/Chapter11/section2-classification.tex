@@ -15,7 +15,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 
 \begin{table}[]
 	\centering
-	\caption{Code issues detected by SmartCheck. \\ Gray background -- false positives possible }
+	\caption{Code issues detected by SmartCheck. \\ Gray background -- false positives possible. }
 %	\resizebox{0.5\textwidth}{!}{
 	\begin{tabular}{|p{0.25\linewidth}|p{0.1\linewidth}|p{0.65\linewidth}|}
 	%\begin{tabular}{|c|c|c|}
@@ -408,7 +408,7 @@ It is still possible to write a contract that receives money but cannot send it 
 
 Solidity is prone to integer over- and underflow\footnote{Referred to as simply overflow for brevity.}.
 Overflow leads to unexpected effects and can lead to loss of funds if exploited by a malicious account.
-Use the SafeMath library\footnote{See Section~\ref{SolidityMaliciousLibraries} for advice on library usage.} that checks for overflows (multiple implementations exist, e.g.~\cite{OpenZeppelin2017}).
+Use the SafeMath library\footnote{See Section~\ref{SolidityMaliciousLibraries} for advice on library usage.} that checks for overflows~\cite{OpenZeppelin2017}.
 The pattern detects arithmetic operations \texttt{+}, \texttt{-}, \texttt{*}, which are not inside a conditional statement.
 This rule was temporarily muted for testing (Section~\ref{SectionResults}) due to a high false positive rate.
 

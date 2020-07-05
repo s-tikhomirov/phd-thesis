@@ -60,8 +60,9 @@ File-sharing protocols, on the contrary, often prioritize local connections for 
 This allows to achieve faster throughput by utilizing the ISP's local infrastructure instead of the global Internet.
 
 
-
 \section{P2P protocols in cryptocurrencies}
+
+Let us now describe the P2P protocol that is used in Bitcoin, as well as an alternative P2P protocol for cryptocurrencies -- Dandelion.
 
 \subsection{Bitcoin P2P protocol}
 \label{sec:BitcoinP2PProtocol}
@@ -176,13 +177,14 @@ Replacing trickling with diffusion provided only a marginal privacy improvement~
 \label{sec:Dandelion}
 
 Dandelion~\cite{Venkatakrishnan2017, Fanti2018} is an alternative P2P protocols for cryptocurrencies designed for stronger privacy.
+The protocol addresses the key issue with gossip protocols, namely, the symmetry of message propagation.
+In Dandelion, message propagation occurs in two stages: the \textit{stem phase} and the \textit{fluff phase}.
+On the stem phase, instead of relaying a message to multiple neighbors, a node only relays it to one randomly selected neighbor.
+The node that received the message randomly chooses whether to continue the stem phase (pass the message further to one randomly selected node), or start the fluff phase (relay the message to multiple neighbors).
+Therefore, for a network adversary, the original message sender the the originator of the fluff phase are separated.
 
-The key idea behind Dandelion is breaking the symmetry of gossip message propagation.
-Message propagation proceeds in two stages.
-A message is first sent along a random linear path (the \textit{stem phase}), and only then broadcast in a gossip style (the \textit{fluff phase}).
 The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism.
-The drawbacks of Dandelion are additional propagation delays and sensitivity to DoS attacks at stem phase. 
-
+The drawbacks of Dandelion are additional propagation delays and sensitivity to DoS attacks at stem phase.
 As of 2020, Dandelion is used in privacy-focused cryptocurrencies Monero, Grin, and Beam.
 
 
@@ -265,7 +267,7 @@ The adversary can estimate the topology from traffic patterns and use this infor
 Multiple topology estimation attacks have been described.
 
 % 2015 - Miller - Discovering bitcoin's public topology and influential nodes
-In~\cite{Miller2015}, the authors show how to exploit some peculiarities in the update mechanism for the address database (\texttt{addrMan}) in Bitcoin~Core.
+One attack~\cite{Miller2015} exploits some peculiarities in the update mechanism for the address database (\texttt{addrMan}) in Bitcoin~Core.
 Each Bitcoin node maintains a database of IP addresses of peers it knows, along with corresponding timestamps intended to reflect the peer's "freshness".
 Counterintuitively\footnote{As of the time of writing. After an update of Bitcoin Core in March~2015, the attack is no longer feasible.}, Bitcoin nodes only update timestamps for nodes that they maintain outgoing connections with.
 For incoming connections, the peer preserves the first timestamp relayed along with the address.
@@ -292,7 +294,7 @@ IP addresses are often linked to geographical locations and real-world identitie
 A related task is transaction clustering, whereby an attacker reveals the hidden relationships between transactions.
 
 % 2014 - Koshy - An Analysis of Anonymity in Bitcoin Using P2P Network Traffic 
-The first network-based deanonymization attack is introduced in~\cite{Koshy2014}.
+The first network-based deanonymization attack was introduced in 2014~\cite{Koshy2014}.
 The authors analyze Bitcoin's anonymity through the lens of P2P network properties.
 They propose a technique for a global passive adversary to deanonymize users based on transaction propagation times.
 The adversary aggregates network traffic into tuples containing the Bitcoin address, the first IP address to relay this transaction, and the transaction identifier.
@@ -301,8 +303,7 @@ Each tuple is counted as a "vote" in favor of a hypothesis that a certain IP "ow
 While this paper provided valuable insights, it does not account for broadcast randomization, which must have decreased the efficiency of the deanonymization algorithm.
 
 % 2014 - Biryukov - Deanonymisation of clients in Bitcoin P2P network
-A similar attack is described in~\cite{Biryukov2014}.
-The authors describe the networking properties of Bitcoin and propose a multi-step attack for correlating Bitcoin clients' transactions with their IP addresses.
+A similar attack~\cite{Biryukov2014} correlates Bitcoin transactions with IP addresses.
 First, the attacker  prevents the victim from using Tor -- an anonymization overlay network -- by abusing the Bitcoin's anti-DoS mechanism.
 (This technique is described separately in~\cite{Biryukov2015}.)
 In particular, the attacker sends invalid blocks or transactions through Tor, which causes Bitcoin peers to temporarily ban all Tor exit nodes.
@@ -313,7 +314,7 @@ The attacker compiles maps the victims' IP addresses to sets of their entry node
 The attacker then listens to new transactions and correlates them with peers if they are broadcast from that peer's entry nodes.
 
 % 2017 - Neudecker, Hartenstein - Could Network Information Facilitate Address Clustering in Bitcoin?
-An attack described in \cite{Neudecker2017} combines transaction graph analysis and network analysis to cluster Bitcoin addresses and associate them with IP addresses.
+Another attack~\cite{Neudecker2017} combines transaction graph analysis and network analysis to cluster Bitcoin addresses and associate them with IP addresses.
 The attacker determines the transaction originator using the first originator heuristic.
 This heuristic assumes that the IP of the original transaction sender is the IP that first announces a transaction to the attacker.
 Clearly, this is not always the case because of both naturally occurring network delays and broadcast randomization.

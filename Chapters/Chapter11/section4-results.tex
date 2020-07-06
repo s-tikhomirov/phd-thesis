@@ -131,7 +131,6 @@ We then ran SmartCheck on this dataset.
 % https://tex.stackexchange.com/a/99834/142924
 % $X$ causes errors
 \begin{figure}
-	\caption{Distribution of non-zero contract balances (ether).}
 	\centering
 	\begin{tikzpicture}
 	\pgfplotstableread{
@@ -155,6 +154,7 @@ We then ran SmartCheck on this dataset.
 	\addplot [fill=black] table [x=Contracts, y expr=\coordindex] {\datatable};
 	\end{axis}
 	\end{tikzpicture}
+	\caption{Distribution of non-zero contract balances (ether).}
 	\label{BalancesFigure}
 \end{figure}
 
@@ -165,7 +165,6 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of~$334$~line
 
 \let\letcs\texapiletcs
 \begin{figure}
-	\caption{Findings on the big dataset \\ (excluding {\usevalue SolidityVisibility:name }).}
 	\centering
 	\resizebox{0.8\textwidth}{!}{
 	\begin{tikzpicture}[x={(.001,0)}, font=\large]
@@ -201,6 +200,7 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of~$334$~line
 	{\draw (\x,.3) -- (\x,0) node[below] {\x};}
 	\draw (0,0) -- (0,19.4);
 	\end{tikzpicture}}	
+	\caption{Findings on the big dataset \\ (excluding {\usevalue SolidityVisibility:name }).}
 	\label{MassiveTestingFigure}
 \end{figure}
 \let\letcs\etoolboxletcs

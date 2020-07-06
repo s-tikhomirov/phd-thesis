@@ -82,6 +82,7 @@ Table~\ref{tab:Ch10FindelSemantics} informally defines the primitives' execution
 
 \begin{table}[ht]
 	\centering
+	\caption{Findel contract primitives.}
 	\begin{tabular}{|p{0.25\linewidth}|p{0.70\linewidth}|}
 		\hline
 		\textbf{Primitive} & \textbf{Informal semantics} \\
@@ -109,7 +110,6 @@ Table~\ref{tab:Ch10FindelSemantics} informally defines the primitives' execution
 		\(\mathrm{Timebound} (t_0, t_1, c)\) & Execute \(c\), if the current timestamp is within \([t_0, t_1]\). \\
 		\hline
 	\end{tabular}
-	\caption{Findel contract primitives.}
 	\label{tab:Ch10FindelSemantics}
 \end{table}
 
@@ -119,6 +119,7 @@ $\delta$ is an implementation dependent constant intended for handling imperfect
 
 \begin{table}%[h!]
 	\centering
+	\caption{Examples of custom Findel contracts.}
 	\begin{tabular}{|p{0.25\linewidth}|p{0.70\linewidth}|}
 		\hline
 		\textbf{Contract} & \textbf{Definition} \\
@@ -132,7 +133,6 @@ $\delta$ is an implementation dependent constant intended for handling imperfect
 		\(\mathrm{Sell}(n, CURR, c)\) & \(\mathrm{And}(\mathrm{Give}(\mathrm{Scale}(n,\mathrm{One}(CURR))),c)\) \\
 		\hline
 	\end{tabular}
-	\caption{Examples of custom Findel contracts.}
 	\label{tab:Ch10FindelComposability}
 \end{table}
 
@@ -455,6 +455,7 @@ For testing purposes, we implement a gateway that uses the current timestamp as 
 
 \begin{table}
 	\centering
+	\caption{Cost of setup and helper functions (gas units).}
 	\begin{tabular}{| p{0.45\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} |}
 		\hline
 		\textbf{Operation} & \textbf{Transaction cost} & \textbf{Execution cost} \\
@@ -472,7 +473,6 @@ For testing purposes, we implement a gateway that uses the current timestamp as 
 		Update a gateway & $36\,922$ & $15\,650$ \\
 		\hline
 	\end{tabular}
-	\caption{Cost of setup and helper functions (in gas units).}
 	\label{tab:Ch10FindelCost}
 \end{table}
 
@@ -487,6 +487,7 @@ We also do not account for gateway update costs.
 
 \begin{table}
 	\centering
+	\caption{Cost of handling derivatives in Findel (gas units).}
 	\begin{tabular}{|p{0.4\linewidth}|p{0.12\linewidth}|p{0.12\linewidth}|p{0.12\linewidth}|p{0.12\linewidth}|}
 		\hline
 		\textbf{Operation} & \multicolumn{2}{|c|}{\textbf{Create and issue}} & \multicolumn{2}{|c|}{\textbf{Join and execute}}\\
@@ -508,7 +509,6 @@ We also do not account for gateway update costs.
 		Binary option & $402\,359$ & $396\,087$ & $59\,826$ & $96\,204$ \\
 		\hline
 	\end{tabular}
-	\caption{Cost of handling Findel contracts for common derivatives (in gas units).}
 	\label{tab:Ch10FindelCost2}
 \end{table}
 

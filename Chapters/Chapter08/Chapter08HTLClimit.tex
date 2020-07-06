@@ -32,7 +32,7 @@ Despite the perceived focus on micropayments, LN does not fully support transact
 Every HTLC makes the potential closing transaction larger, and the on-chain fees higher.
 Redeeming very small outputs on-chain can be more expensive than their value.
 Therefore, BOLT specifications prescribe that nodes negotiate the \textit{dust limit} before opening a channel, and for payments below this limit, no HTLCs are created (see \textit{trimmed HTLCs}~\cite{BOLT3Trimmed}).
-Out of the three most popular LN implementations, c-lightning and Eclair use the default dust limit of $546$~satoshis.
+Out of the three most popular LN implementations, c-lightning and Eclair use the default dust limit of~$546$~satoshis.
 LND estimates the dust limit dynamically.
 We thus hereby assume $546$~satoshis as the dust limit.
 
@@ -59,11 +59,11 @@ Given those two values, we define the \textit{effective update rate} $ur_\textit
 Note that the effective update rate $ur_\textit{eff}$ depends on the average transaction amount, as shown in Figure~\ref{fig:effective-channel-updates}.
 Starting from $D$, there is a gap between the effective number of concurrent updates and what could be theoretically possible in the absence of the HTLC limit.
 We observe that $2677$~satoshis ($0.24$~USD) is the \textit{borderline amount}: for higher average transaction amounts, the limiting factor for the number of concurrent channel updates is channel capacity.
-For amounts between $D$~and $2677$~satoshis, the limiting factor is the HTLC limit.
+For amounts between $D$~and~$2677$~satoshis, the limiting factor is the HTLC limit.
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{effective-channel-updates}
+	\includegraphics[width=0.8\columnwidth]{effective-channel-updates}
 	\caption{Ratio between the current limit on concurrent channel updates and the theoretically possible capacity-based limit.}
 	\label{fig:effective-channel-updates}
 \end{figure}
@@ -72,13 +72,13 @@ For amounts between $D$~and $2677$~satoshis, the limiting factor is the HTLC lim
 The $ur_\textit{eff}$ is an aggregated measurement that does not shed light on how the issue affects individual channels. 
 Given that, we now study how many channels are affected by the HTLC limit.
 The number of affected channels depends on the average transaction amount $a_\textit{avg}$.
-For high values of $a_\textit{avg}$, it is more likely that the effective update rate of a channel is limited by its capacity, whereas the HTLC limit would determine the update rate cap for small values of $a_\textit{avg}$.
+For high values of~$a_\textit{avg}$, it is more likely that the effective update rate of a channel is limited by its capacity, whereas the HTLC limit would determine the update rate cap for small values of~$a_\textit{avg}$.
 We quantify this as follows.
 Given a fixed average transaction amount $a_\textit{avg}$, we consider a channel \textit{affected} by the HTLC limit if $u_{\textit{HTLC},a_\textit{avg}} < u_{\textit{cap},a_\textit{avg}}$, i.e, $u_{\textit{eff},a_\textit{avg}} < 100\%$~(\cref{fig:affected-channels}).
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{affected-channels}
+	\includegraphics[width=0.8\columnwidth]{affected-channels}
 	\caption{Share of affected channels for different transaction amounts.}
 	\label{fig:affected-channels}
 \end{figure}
@@ -96,14 +96,14 @@ As~\cref{fig:historic-borderline-amount} shows, the HTLC limit finds its inflexi
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{historic-htlc-limited-share}
+	\includegraphics[width=0.8\columnwidth]{historic-htlc-limited-share}
 	\caption{Historic share of HTLC-limited channels.}
 	\label{fig:historic-htlc-limited-share}
 \end{figure}
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{historic-borderline-amount}
+	\includegraphics[width=0.8\columnwidth]{historic-borderline-amount}
 	\caption{Historic borderline amounts.}
 	\label{fig:historic-borderline-amount}
 \end{figure}
@@ -117,15 +117,15 @@ After $966$~HTLCs are added, the channel loses its ability to forward payments, 
 The attacker can thereby deplete a channel, making it unusable.
 
 The cost for this attack depends on the minimum transaction amount.
-We assume it equal to the dust limit of $546$~satoshis (the default value in 2 out of 3 major implementations).
+We assume it equal to the dust limit of~$546$~satoshis (the default value in 2 out of 3 major implementations).
 
 We calculate the total capital requirements for an attacker to block the complete LN\@.
-To block all $31084$~channels, the attacker would send, in the worst case, $966$~transactions of $546$~satoshi to each channel.
+To block all $31084$~channels, the attacker would send, in the worst case, $966$~transactions of~$546$~satoshi to each channel.
 This brings the total capital requirements to approximately $163.9482$~BTC ($1.64M$~USD).
 
 Each HTLC defines a timeout, after which the funds are returned to the sender, if the receiver provides no preimage.
 From our dataset, we see that HTLC timeouts are long: $75.44$~blocks on average.
-At a block creation rate of $10$~minutes per block, this implies that an average HTLC can block the capacity for around $12$~hours.
+At a block creation rate of~$10$~minutes per block, this implies that an average HTLC can block the capacity for around $12$~hours.
 This implies that the attacker can render channels useless for around $12$~hours using the same HTLC parameters as regular LN users.
 
 While this rough upper bound estimate suggests a rather high attack cost, the following optimizations make it more affordable.
@@ -133,11 +133,11 @@ While this rough upper bound estimate suggests a rather high attack cost, the fo
 
 \paragraph{Targeting highest-capacity channels}
 The attack impact can be maximized by targeting highest-capacity channels.
-For example, it requires $0.05$~BTC to block 10~top channels with combined capacity of $17.91$~BTC (\cref{fig:block-top-channels}).
+For example, it requires $0.05$~BTC to block 10~top channels with combined capacity of~$17.91$~BTC (\cref{fig:block-top-channels}).
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{block-top-channels}
+	\includegraphics[width=0.8\columnwidth]{block-top-channels}
 	\caption{Effectiveness of targeting highest-capacity channels.}
 	\label{fig:block-top-channels}
 \end{figure}
@@ -164,7 +164,7 @@ We observe, e.g.,~that the attacker needs to block $4670$~channels ($13\%$~of al
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[width=\columnwidth]{isolate-communities}
+	\includegraphics[width=0.8\columnwidth]{isolate-communities}
 	\caption{Number of channels to cut to isolate the largest communities.}
 	\label{fig:isolate-communities}
 \end{figure}
@@ -178,7 +178,7 @@ Yet, our approach allows us to calculate the effect of the HTLC limit, as both e
 Our estimation shows that the HTLC limit reduces the number of concurrent channel updates for payments under certain average transaction amount.
 
 The fact that the HTLC limit manifests itself at low transaction amounts negatively affects scalability and some potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
-Our calculations show that for payments of $1000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
+Our calculations show that for payments of~$1000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
 
 The low value for the default minimum transaction amount and the reduced number of in-flight transactions open a DoS attack vector with a moderate cost for the adversary.
 Note that the capital in the attacker's channels will be recouped after the HTLCs time out.

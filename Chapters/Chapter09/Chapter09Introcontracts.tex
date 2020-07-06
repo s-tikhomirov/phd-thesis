@@ -84,7 +84,7 @@ Members of the Ethereum community emphasize a faster evolution of Ethereum and a
 Simple systems are usually more secure than complex ones.
 The more interactions parts of the system engage in, the more things can potentially go wrong or be purposefully exploited.
 The rich programming environment of Ethereum leaves more possibilities for programmers to make mistakes.
-Indeed, multiple high-profile smart contracts have been hacked, losing tens of millions of US~dollars.
+Indeed, multiple high-profile smart contracts have been hacked, losing tens of millions of~US~dollars.
 These unfortunate events have shown that secure programming practices are especially important for smart contracts.
 
 
@@ -111,7 +111,7 @@ Apart from balance, contract accounts have \textit{code} and \textit{storage}.
 Contract code is a piece of bytecode for the Ethereum virtual machine (EVM).
 Contract storage is a mapping of arbitrary variable names to their values.
 The contract code controls the changes to the balance and storage of the account.\footnote{There are exceptions: the balance of any account can be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
-Internally, account data is stored in Merkle Patricia trees -- radix trees with $256$-bit keys~\cite{MPTSpec, Buchman14}.
+Internally, account data is stored in Merkle Patricia trees -- radix trees with~$256$-bit keys~\cite{MPTSpec, Buchman14}.
 % The storage of a contract account can be modified (if allowed by its code), but the code itself cannot.
 % "one can use create2 to deploy different bytecode to the same contract: deploy code1 - selfdestruct - deploy code2 - ..."
 

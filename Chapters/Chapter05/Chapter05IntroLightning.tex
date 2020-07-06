@@ -251,20 +251,20 @@ This aims to achieve atomicity.
 None of the intermediate channels can be updated before the receiver reveals $r$, and all of them can be updated after that.
 
 An illustrative example of an HTLC-based transaction is depicted in~\cref{fig:htlc}.
-Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$~and $u_4$~as intermediaries.
+Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$~and~$u_4$~as intermediaries.
 For that, $u_5$~locally chooses a value $r$~uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$~to the sender in an \textit{invoice} (step 1).
 Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, starting from the sender, establishes an HTLC using $y$.
 After the commit phase is finished, the transaction enters the release phase.
 Here, the receiver reveals $r$~to $u_4$~to fulfill the contract (step 6), triggering the release phase where every pair of nodes fulfills their contract from the receiver to the sender (steps 6-9).
 
 Intermediaries may charge fees for their forwarding service.
-For instance, $u_2$~receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of $0.1$~coins.
+For instance, $u_2$~receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of~$0.1$~coins.
 No fees are collected if a payment fails, as all pending balance updates roll back.
 In the actual LN protocol, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the value being transferred.\footnote{Note that LN fee structure is different from fees on L1, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the amount of value being transferred. This may result in the economics of LN fees being significantly different from that in Bitcoin. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
 
 Note that the time parameter of the HTLCs along the path is decreasing to ensure a safety margin between the timeouts.
-For example, the HTLC between $u_1$~and $u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and $u_3$~is only three days.
-This ensures that $u_2$~has enough time to settle the contract with $u_1$~after receiving $r$~from $u_3$, even if $u_3$~reveals the preimage just before the corresponding timeout expires.
+For example, the HTLC between $u_1$~and~$u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and~$u_3$~is only three days.
+This ensures that $u_2$~has enough time to settle the contract with~$u_1$~after receiving $r$~from $u_3$, even if $u_3$~reveals the preimage just before the corresponding timeout expires.
 There is an inherent trade-off regarding timeout lengths.
 Short timeouts open the risk of not being able to dispute a fraudulent transaction in case of blockchain congestion.
 Long timeouts open up a DoS vector, where an attacker can route many unsettled payments through a channel and effectively block it until the timelock expires.
@@ -293,7 +293,7 @@ Implementing effective, economically incentivized, and privacy-preserving watcht
 
 LN's revocation technique has proved effective as a deterrence against malicious channel closures.
 As of July~2019, there has been only $241$~channel closures followed by a justice transaction.
-This constitutes only $0.7$\%~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
+This constitutes only $0.7\%$~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
 
 
 \subsection{P2P network and path-finding}

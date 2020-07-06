@@ -31,7 +31,7 @@ Digital information is easy to copy.
 Whatever string of bits represents a unit of value, what prevents a user from spending its multiple copies?
 The only feasible solution was to trust a third party (a bank) to correctly update everyone's balances.
 
-Bitcoin, announced in 2008, provided an alternative.
+Bitcoin, announced in~2008, provided an alternative.
 It is the first system of its kind.
 Based on ideas from decades of research in cryptography and distributed systems, Bitcoin is the first digital system to model value without a trusted third party.
 Its security relies on both cryptographic algorithms and economic incentives.
@@ -54,9 +54,9 @@ We now provide a historical overview of the two key areas relevant for the devel
 
 Information networks developed rapidly in the second half of the XX~century.
 
-Scientists created the first computer networks in 1960s.
+Scientists created the first computer networks in~1960s.
 ARPANET, the precursor of the Internet, launched in late 1960s.
-In 1981, it connected more than $200$~computers in US-based research centers.
+In~1981, it connected more than $200$~computers in US-based research centers.
 
 Early communication networks were based on circuit switching.
 Circuit switching allocates a dedicated connection for the duration of the session.
@@ -94,7 +94,7 @@ For instance, a company would have to share the signing key with all readers to 
 It immediately follows that all subsequent messages signed by this key cannot be trusted.
 
 Diffie and Hellman solved both problems.
-In their breakthrough 1976 paper "New directions in cryptography"~\cite{Diffie1976}, they proposed two novel algorithms.
+In their breakthrough 1976~paper "New directions in cryptography"~\cite{Diffie1976}, they proposed two novel algorithms.
 First, they introduced a \textit{key establishment} protocol over an insecure channel.
 This allowed two parties to securely generate a common secret key even if all their messages are intercepted.
 Second, they described the first \textit{digital signature} algorithm.
@@ -120,8 +120,8 @@ Internet giants gather huge amounts of user data across all their services.
 This helps fine-tune the services to attract and retain users more efficiently.
 This self-reinforcing loop favors the incumbents and concentrates market power.
 
-As a result, the Internet in 2020 is highly concentrated.
-The five US-based Internet giants -- Google, Apple, Facebook, Amazon, and Microsoft (abbreviated as \textit{GAFAM})-- account for $17.5$\% of S\&P market index~\cite{Levy2020}.
+As a result, the Internet in~2020 is highly concentrated.
+The five US-based Internet giants -- Google, Apple, Facebook, Amazon, and Microsoft (abbreviated as \textit{GAFAM}) -- account for $17.5\%$~of the~S\&P market index~\cite{Levy2020}.
 GAFAM plus the China-based Alibaba and Tencent are the most valuable companies in the world by market capitalization.
 As digital communication now influences most areas of life, Internet giants play an even larger economical and political role.
 
@@ -139,19 +139,19 @@ This resilience serves as an important example for cryptocurrencies.
 Peer-to-peer file-sharing gained momentum in late 1990s.
 At that time, the Internet was gaining adoption in the developed world.
 Increased bandwidth allowed to distribute large files over the Internet.
-P2P file-sharing networks were first to satisfy the demand for fast and convenient content sharing.\footnote{Client-server file-sharing had been used long before: the File Transfer Protocol (FTP), introduced in 1971,  predates TCP/IP.}
+P2P file-sharing networks were first to satisfy the demand for fast and convenient content sharing.\footnote{Client-server file-sharing had been used long before: the File Transfer Protocol (FTP), introduced in~1971,  predates TCP/IP.}
 
 The first popular file-sharing network was Napster.
-It launched in 1999.
+It launched in~1999.
 The protocol was only partially decentralized: the files were hosted on users' computers, but a dedicated server coordinated the exchange.
 Napster quickly attracted millions of users.
 Wide-spread sharing of copyrighted content in Napster drew attention of law enforcement.
-The service was shut down in 2001.
+The service was shut down in~2001.
 The Napster story showed how centralization harms resilience.
 Without central coordination, Napster users could not locate the files.
 The existence of the central server made it \textit{possible} to shut the network down.
 
-Gnutella, introduced in 2000, took another approach to content addressing.\footnote{See an overview and comparison of Napster and Gnutella in~\cite{Saroiu2003}.}
+Gnutella, introduced in~2000, took another approach to content addressing.\footnote{See an overview and comparison of Napster and Gnutella in~\cite{Saroiu2003}.}
 Users would forward queries to all their neighbors.
 Each neighbor would either reply with the requested content, or forward the query further.
 This "flooding" approach has no single point of failure, but is significantly less efficient.
@@ -163,7 +163,7 @@ A querying node forwards the query to the node that is "closest" to the content 
 This allows for efficient querying and minimal network restructuring when nodes leave or join.
 A popular implementation DHT is Kademlia~\cite{Maymounkov2002}.
 
-BitTorrent~\cite{Pouwelse2005}, launched in 2001, is arguably the most successful file-sharing protocol.
+BitTorrent~\cite{Pouwelse2005}, launched in~2001, is arguably the most successful file-sharing protocol.
 It stroke a balance between efficiency and resilience by allowing users to locate files via either specialized websites (\textit{torrent trackers}) or a Kademlia-like DHT.
 
 A decentralized protocol without an identity system cannot force users to upload content.
@@ -174,7 +174,7 @@ Additionally, some torrent trackers accounted for how much their users uploaded 
 The combination of these measures made BitTorrent sufficiently reliable but not too difficult to use.
 The ecosystem attracted both altruistic~\cite{Rehn2004} and profit-driven~\cite{Rumin2010} content distributors.
 
-In 2010s, file-sharing declined in popularity.
+In~2010s, file-sharing declined in popularity.
 However, it provided a strong competitive pressure on the entertainment industry.
 Streaming services emerged, offering unlimited access to content for a fixed monthly price.\footnote{BitTorrent usage rose in the late 2010s because of the fragmentation of content between streaming services~\cite{Bode2018}.}
 
@@ -211,7 +211,7 @@ Gradually, money was disconnected from the physical world.
 \textit{Fiat money} is not linked to any physical commodity.
 
 The modern financial system is based on fiat money.
-In 1971, the US stopped converting dollars to gold.
+In~1971, the US stopped converting dollars to gold.
 Other major currencies followed.
 The exchange rates between currencies are now set by the market.
 Governments and central banks influence the supply and demand.
@@ -240,7 +240,7 @@ The issue is even more concerning in the world without physical cash.
 In many developed countries, such as Sweden and the Netherlands, banks phase out cash to combat money laundering.
 Without cash, a person banned from the banking system cannot buy basic necessities.
 Money administrators can also change the rules on a short notice.
-A recent example is India's demonetization in 2016.
+A recent example is India's demonetization in~2016.
 High-denomination banknotes were suddenly declared invalid in an attempt to fight black markets.
 This caused severe economic disruption throughout the world's second most populous country.
 
@@ -248,7 +248,7 @@ Moreover, financial administrators can print money -- a privilege their informat
 This is enabled by the special property of money networks: the content they help exchange is valued by all its users.
 In contrast, a social network administrator cannot easily abuse their position to boost their personal wealth.
 A social network administrator has the power to push their writings into everyone's news feeds or inflate internal metrics such as the reported number of views.
-However, they cannot make people perceive their posts as universally valuable.\footnote{For example, as of 2020, "only" 116~million out of 2.5~billion users of Facebook follow its creator Mark Zuckerberg.}
+However, they cannot make people perceive their posts as universally valuable.\footnote{For example, as of 2020, "only" $116$~million out of $2.5$~billion users of Facebook follow its creator Mark Zuckerberg.}
 
 Switching monetary systems is hard.
 People can not easily "vote with their feet" if the administrators abuse their position.
@@ -324,21 +324,21 @@ How can a protocol automatically reward anonymous participants proportionally to
 
 Let us mention notable pre-Bitcoin proposals of digital currency systems.
 
-In 1982, David Chaum introduced \textit{ecash}~\cite{Chaum1982}.
-This anonymous digital cash protocol was further enhanced in 1988~\cite{Chaum1988}.
+In~1982, David Chaum introduced \textit{ecash}~\cite{Chaum1982}.
+This anonymous digital cash protocol was further enhanced in~1988~\cite{Chaum1988}.
 Ecash users would exchange digital coins issued by a bank.
 A receiver would consult the bank to verify an incoming transaction.
 However, the participants' identities remained hidden from the bank due to \textit{blind signatures}.
-In 1989, Chaum founded a company called Digicash to commercialize his invention.
-While gaining some traction in mid-1990s\footnote{For instance, the authorities in the Netherlands considered using Digicash for road toll payments~\cite{Chaum2019}.}, the company declared bankruptcy in 1998.
+In~1989, Chaum founded a company called Digicash to commercialize his invention.
+While gaining some traction in mid-1990s\footnote{For instance, the authorities in the Netherlands considered using Digicash for road toll payments~\cite{Chaum2019}.}, the company declared bankruptcy in~1998.
 
-In 1998, Wei Dai proposed \textit{b-money}~\cite{Dai1998}.
+In~1998, Wei Dai proposed \textit{b-money}~\cite{Dai1998}.
 B-money, predating Bitcoin by a decade, was in many ways similar to it.
 Users, identified by public keys, would independently maintain a list of everyone's current balances.
 Currency units would be generated by performing otherwise useless computations.\footnote{"Anyone can create money by broadcasting the solution to a previously unsolved computational problem. The only conditions are that it must be easy to determine how much computing effort it took to solve the problem and the solution must otherwise have no value, either practical or intellectual."}
 
 A crucial piece of the Bitcoin's puzzle is \textit{proof-of-work} (PoW).
-Dwork and Naor proposed PoW in 1992 as an anti-spam mechanism~\cite{Dwork1992}.
+Dwork and Naor proposed PoW in~1992 as an anti-spam mechanism~\cite{Dwork1992}.
 A sender of an electronic message would be required to perform computational work.
 A \textit{proof} allows anyone to verify the amount of computations performed.
 The puzzle depends on the message to prevent re-using one solution for different messages or recipients.
@@ -352,7 +352,7 @@ One can not predict whether a function output satisfies a given property without
 This means that hash-based PoW solutions can only be found by trial and error.
 This property can be used as a puzzle with an adjustable level or hardness.
 
-In 2005, Nick Szabo proposed Bitgold~\cite{Szabo2005}.
+In~2005, Nick Szabo proposed Bitgold~\cite{Szabo2005}.
 His idea was to represent digital coins as "a string of bits [computed] from a string of challenge bits".
 The solutions to such puzzles would be linked in a chain using multiple timestamping servers to preserve integrity.
 
@@ -360,7 +360,7 @@ The solutions to such puzzles would be linked in a chain using multiple timestam
 \section{Bitcoin}
 
 Bitcoin was the first decentralized digital currency to solve the problems described above.
-An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto is speculated to have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in 1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
+An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto is speculated to have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in~1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
 Shortly after, he published the source code.
 Bitcoin launched on 3~January~2009 and started slowly gaining traction in the technology community.
 
@@ -422,7 +422,7 @@ If blocks were produced too quickly during the last $2016$~block period, the dif
 A miner who generates a block gets rewarded.
 The block reward consists of the \textit{block subsidy} and the sum of the fees of all included transactions.
 Block subsidy is cut in half every $210$~thousand blocks.
-It decreased from $50$~bitcoins to $25$~in 2012, to $12.5$~in 2016, and to $6.25$~in 2020.
+It decreased from $50$~bitcoins to $25$~in~2012, to $12.5$~in~2016, and to $6.25$~in~2020.
 The total number of bitcoins will never exceed $21$~million.
 
 Different miners may produce two valid but conflicting blocks that link to the same parent block.
@@ -475,7 +475,7 @@ For instance, the output of hydroelectric power plants depends on the season.
 In high season, it may be uneconomical to transfer the excess energy to population centers.
 Bitcoin allows to utilize this otherwise wasted power.
 We should note that Bitcoin is not always mined with renewable energy.
-For instance, coal-based mining was reported to be gaining popularity in Central Asia in 2020~\cite{8BTCStaff2020}.
+For instance, coal-based mining was reported to be gaining popularity in Central Asia in~2020~\cite{8BTCStaff2020}.
 
 
 \subsubsection*{Useful proof-of-work}
@@ -500,11 +500,11 @@ Second, real-world problems are rarely perfectly tunable.
 Recall that PoW rewards miners in proportion to the committed energy.
 The network can not measure energy expenditures directly.
 For PoW solutions act as a proxy, the committed amount of energy as estimated from the PoW solutions should predictably depend on the real committed energy.
-In the simplest form, a miner should get roughly $kx\%$ more solutions for $x\%$ more energy spent.
+In the simplest form, a miner should get roughly $kx\%$~more solutions for $x\%$~more energy spent.
 
-SHA256 produces a uniformly distributed output in the range from $0$ to $H_{max} = 2^{256}-1$.\footnote{This is an \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
+SHA256 produces a uniformly distributed output in the range from $0$~to $H_{max} = 2^{256}-1$.\footnote{This is an \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
 A solution is valid if the hash is smaller than the target $t$.
-For every $t$ in the range from $0$ to $H_{max}$, and for a random value $r$, the probability $P(SHA-256(r) < t) = \frac{t}{H_{max}}$.
+For every $t$~in the range from $0$~to $H_{max}$, and for a random value $r$, the probability $P(SHA-256(r) < t) = \frac{t}{H_{max}}$.
 Therefore, the probability of finding a solution is proportional to the number of guesses.
 This allows to fine-tune the difficulty of hash-based PoW.
 
@@ -514,7 +514,7 @@ On the first glance, it is a good candidate for a useful PoW.
 Similarly to hash-based PoW, it involves searching for solutions in a large space by trial and error.
 It was also used in volunteer distributed computation projects such as Folding@Home~\cite{Beberg2009}.
 However, we do not know how a unit increase in committed resources affects the probability of finding a solution per unit time.
-Therefore, we can not parameterize the folding-based puzzle to make it $X$ times harder, for an arbitrary coefficient $X$.
+Therefore, we can not parameterize the folding-based puzzle to make it $X$~times harder, for an arbitrary coefficient $X$.
 
 
 \subsection{Professionalization of mining}
@@ -528,8 +528,8 @@ This makes mining a perfectly parallelizable task.
 Satoshi Nakamoto initially envisioned a network where every node could generate coins.
 Early versions of the software allowed users to generate coins using regular processors (CPUs).
 It quickly turned out that graphical processing units (GPUs) are more efficient for mining because of more efficient parallelization.
-In 2011-2012, GPUs and configurable integrated circuits (field-programmable gate arrays, FPGA) became the primary mining equipment.
-In 2013, the first specialized devices for Bitcoin mining (application-specific integrated circuits, ASIC) were introduced~\cite{Kim2020}.
+In~2011-2012, GPUs and configurable integrated circuits (field-programmable gate arrays, FPGA) became the primary mining equipment.
+In~2013, the first specialized devices for Bitcoin mining (application-specific integrated circuits, ASIC) were introduced~\cite{Kim2020}.
 Fueled by competition and the rising price of bitcoin, ASICs improved rapidly.
 All non-specialized mining hardware quickly became unprofitable.
 As of 2020, mining is a highly competitive business that requires large capital investment~\cite{Kroll2013}.
@@ -587,7 +587,7 @@ Indeed, ASICs were developed for memory-hard hash functions used in prominent cr
 
 Cryptocurrency developers can counteract ASIC development by regularly and unpredictably changing the hash function.
 This countermeasure is based on the assumption that specialized hardware takes at least a few months to develop, manufacture, and deploy.
-The developers of Monero, a privacy-focused cryptocurrency, used to modify its hash function every six~months~\cite{Kim2019}.\footnote{In 2019, Monero changed the strategy and switched to a new hash function without plans for further modifications~\cite{dEBRUYNE2019}.}
+The developers of Monero, a privacy-focused cryptocurrency, used to modify its hash function every six~months~\cite{Kim2019}.\footnote{In~2019, Monero changed the strategy and switched to a new hash function without plans for further modifications~\cite{dEBRUYNE2019}.}
 Ethereum developers consider a similar strategy known as ProgPoW~\cite{OLeary2019}.
 Changing the hash function for PoW is a breaking protocol modification.
 Such updates require coordination and a degree of trust in the cryptocurrency developers.

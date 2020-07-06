@@ -65,7 +65,7 @@ The FDR and FNR for each tool (in \% and in absolute numbers) are presented in T
 
 Oyente and Securify did not show any TPs on these three contracts.
 Remix detected TPs only in the Populous contract.
-Remix and SmartCheck showed an overall FDR of $97\%$~and $69\%$~respectively, and an overall FNR of $92\%$~and $47\%$~respectively.
+Remix and SmartCheck showed an overall FDR of~$97\%$~and~$69\%$~respectively, and an overall FNR of~$92\%$~and~$47\%$~respectively.
 This means that SmartCheck showed better FDR and FNR compared to its closest competitor.
 Overall, SmartCheck reported $87$~issues in the three contracts.
 
@@ -73,7 +73,7 @@ Requirements for code analysis tools differ across platforms and domains.
 Due to a special security requirements in smart contract programming, low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
 Most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
 
-Though SmartCheck's FDR of $69\%$~may seem pretty high, it is not a serious issue in this domain.
+Though SmartCheck's FDR of~$69\%$~may seem pretty high, it is not a serious issue in this domain.
 $47\%$~is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
 Most of SmartCheck's FNs were found manually (not by other tools).
 
@@ -125,7 +125,7 @@ A \textit{blockchain explorer} is a website that displays information about bloc
 Etherscan~\cite{EtherscanVerified} is a popular Ethereum blockchain explorer.
 Among other information, it offers \textit{contract verification} as a service.
 A contract developer would upload the source code to Etherscan, which would then confirm that the deployed bytecode was indeed obtained from the provided source code.
-We downloaded the source code of $4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
+We downloaded the source code of~$4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
 We then ran SmartCheck on this dataset.
 
 % https://tex.stackexchange.com/a/99834/142924
@@ -160,8 +160,8 @@ We then ran SmartCheck on this dataset.
 
 The contract balances differ significantly (see Figure~\ref{BalancesFigure}).
 The vast majority ($3\,984$,~or $86.6\%$)~of contracts have a zero balance.
-One contract holds over one~million ether ($1\,500\,000$, or \$$440$~million at the time of testing), which accounts for~$38.4\%$~of the total balance of all contracts.
-Contracts have from $1$~to $2\,525$~lines of code, with an average of $334$~lines and a median of $221$~lines.
+One contract holds over one~million ether ($1\,500\,000$, or~$440$~million~USD at the time of testing), which accounts for~$38.4\%$~of the total balance of all contracts.
+Contracts have from $1$~to $2\,525$~lines of code, with an average of~$334$~lines and a median of~$221$~lines.
 
 \let\letcs\texapiletcs
 \begin{figure}
@@ -205,7 +205,7 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of $334$~line
 \end{figure}
 \let\letcs\etoolboxletcs
 
-SmartCheck analyzed the dataset in $7\,644$~seconds (approximately $2$~hours and $7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
+SmartCheck analyzed the dataset in $7\,644$~seconds (approximately $2$~hours and~$7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
 As per SmartCheck, $99.9\%$~of contracts have issues, $63.2\%$~of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
 The findings are presented in Table~\ref{MassiveTestingTable} and Figure~\ref{MassiveTestingFigure} (colors denote severity levels: black -- high, dark gray -- medium, light gray -- low).
 The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for $67.30\%$~of all findings), is excluded from the figure for clarity.

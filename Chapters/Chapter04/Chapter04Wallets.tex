@@ -286,7 +286,7 @@ All wallets with P2P transaction broadcasting except Monerujo use hard-coded DNS
 %BRD adds its own DNS seed.
 %\footnote{\texttt{seed.breadwallet.com.}; does not resolve at the time of writing.}
 Simple Bitcoin adds one random node from a hard-coded list to a list of peers obtained via bootstrapping.\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable as of 2018.}
-Electrum connects to two random servers from a hard-coded list of $52$~servers.
+Electrum connects to two random servers from a hard-coded list of~$52$~servers.
 It requests the transaction history from a single server and checks it against block headers sent by other servers.
 Monerujo lets the user either choose from three hard-coded URLs which resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide the credentials for connecting to a custom node.
 
@@ -365,7 +365,7 @@ We scanned the wallets with FlowDroid~\cite{Arzt2014} -- an open source static a
 It uses data flow analysis to detect execution paths which transfer data from \textit{sources} (functions that may return sensitive data) into \textit{sinks} (functions that send data elsewhere).
 The analyses of Bitcoin wallet, Bither, and Monerujo were stopped after a 2~hour timeout.
 Samourai was not scanned due to a technical limitation: the application is labeled as unreleased, which prevented us from downloading the APK\@.
-FlowDroid detected potential data leaks in $8$~out of $14$~applications (see Table~\ref{tab:static-analysis}).
+FlowDroid detected potential data leaks in $8$~out of~$14$~applications (see Table~\ref{tab:static-analysis}).
 
 \subsubsection*{SmartDec Scanner}
 We scanned the wallets with a proprietary static analysis tool SmartDec~Scanner~\cite{SmartDec2018}.

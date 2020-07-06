@@ -50,10 +50,10 @@ We then discuss possible use cases, implementation challenges, and outline the d
 \subsection{Centralized identity}
 
 We can re-formulate the notion of identity in terms of asymmetric cryptography.
-Identity $I$ of user $U$ is a public-private key pair $(pub_U, priv_U)$.
-The public key $pub_U$ authenticates the user (or, equivalently, links the current action to some past actions).
-Public identifiers like username or address are derived from $pub_U$.
-The private key $priv_U$ allows $U$ to sign messages on behalf of $I$.
+Identity~$I$ of user~$U$ is a public-private key pair~$(pub_U, priv_U)$.
+The public key~$pub_U$ authenticates the user (or, equivalently, links the current action to some past actions).
+Public identifiers like username or address are derived from~$pub_U$.
+The private key~$priv_U$ allows $U$ to sign messages on behalf of~$I$.
 From the point of view of the system, $U$ is whoever possesses $priv_U$.
 
 In the centralized model of identity, which is prevalent on the Internet today, users delegate managing their private keys to a trusted party and use a password to access them when necessary.
@@ -103,8 +103,7 @@ In 2018, two important regulations come into force in the EU.
 	\item The \textbf{Revised Payment Service Directive} (PSD2) obligates banks to provide access to their customers' accounts through open APIs~\cite{Hellstroem2017}.
 	This measure is meant to foster competition and give rise to third-party financial service providers.
 	For instance, unified banking API will likely simplify connecting banking infrastructure to open blockchains~\cite{Elison2016}.
-	\item The \textbf{General Data Protection Regulation} (GDPR), coming into force on 25~May~2018, harmonizes data privacy laws across the EU~\cite{GDPR16} and introduces stricter rules for handling data of EU residents even for companies from outside the EU.
-	\cite{Berberich2016} describes possible implications of blockchain adoption from the point of view of the EU data protection regulation.
+	\item The \textbf{General Data Protection Regulation} (GDPR), coming into force on 25~May~2018, harmonizes data privacy laws across the EU~\cite{GDPR16} and introduces stricter rules for handling data of EU residents even for companies from outside the EU. We refer the reader to~\cite{Berberich2016} describes possible implications of blockchain adoption from the point of view of the EU data protection regulation.
 \end{itemize}
 
 
@@ -169,7 +168,7 @@ An exchange without KYC support may be used as follows.
 \begin{enumerate}
 	\item Alice creates an order to sell $X$~A-tokens for $Y$~B-tokens.
 	\item Bob creates an order to sell $Y$~B-tokens for $X$~A-tokens.
-	\item The exchange matches the two orders and transfers (by calling \texttt{transferFrom}) $X$~A-tokens from Alice to Bob and $Y$~B-tokens from Bob to Alice.
+	\item The exchange matches the two orders and transfers (by calling \texttt{transferFrom}) $X$~A-tokens from Alice to Bob and~$Y$~B-tokens from Bob to Alice.
 \end{enumerate}
 
 The transaction succeeds if Alice and Bob \texttt{approve}d the exchange with sufficient amount of A- and B-tokens respectively before \texttt{transferFrom} is called.
@@ -196,16 +195,16 @@ This also threatens privacy: an adversary can link the user's transactions using
 We use cryptographic techniques to design a privacy preserving KYC solution.
 In KYCE, the KYC contract stores a \textbf{cryptographic accumulator} of the whitelisted addresses. 
 
-A cryptographic accumulator $A$ absorbs certain algebraic objects and provides an interface to generate and verify zero-knowledge proofs that a given value was accumulated.
-In our construction, to generate a proof for value $x\in A$, one needs a \textit{witness} that depends on $A$ and $x$.
+A cryptographic accumulator~$A$ absorbs certain algebraic objects and provides an interface to generate and verify zero-knowledge proofs that a given value was accumulated.
+In our construction, to generate a proof for value~$x\in A$, one needs a \textit{witness} that depends on~$A$ and~$x$.
 The accumulator owner provides the witness to the user who submitted $x$.
 We suggest an accumulator based on bilinear maps~\cite{Camenisch2009}.
 
 The KYC setup and workflow is as follows.
 The KYC provider publishes a smart contract and initializes it with an empty accumulator.
 The User interacts with the KYC provider physically or online and provides the credentials needed to pass the verification.
-The User also generates their own master secret $m$ and during the authenticated session gives the provider a Pedersen commitment $g_1^m\cdot g_2^r$ to it.
-$g_1$ and $g_2$ are certain group generators\footnote{Here and in the further text all multiplications take place in the pre-selected group of prime order $q$, typically an elliptic-curve group.}, and $r$ is random.
+The User also generates their own master secret~$m$ and during the authenticated session gives the provider a Pedersen commitment~$g_1^m\cdot g_2^r$ to it.
+$g_1$ and~$g_2$ are certain group generators\footnote{Here and in the further text all multiplications take place in the pre-selected group of prime order~$q$, typically an elliptic-curve group.}, and~$r$ is random.
 If the checks are passed, the provider updates the accumulator with user-dependent data and provides the User with a witness.
 In every subsequent Ethereum transaction to KYCE, the User provides a proof that they have been registered in the accumulator, that this right has not been revoked, and that the proof owner and the transaction sender are the same person.
 KYCE verifies the latter statement.
@@ -213,65 +212,65 @@ The KYC contract verifies the rest against the current accumulator value.
 If the checks pass, the requested action is executed in KYCE.
 
 \paragraph{Details on the accumulator construction}
-We construct an accumulator based on a pairing function $e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
+We construct an accumulator based on a pairing function~$e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
 The accumulator contains just serial numbers, possibly consecutive integers.\footnote{It is possible to store public keys but it would be less efficient.}
 
 The accumulator is constructed as follows.
-We assume a bilinear pairing $e:\,G\times G\rightarrow G_T$, where $G,G_T$ are groups of order $q$.
-The KYC provider selects a generator $g$ and a secret value $\gamma\overset{\$}{\leftarrow} \mathbb{Z}_q$.
+We assume a bilinear pairing~$e:\,G\times G\rightarrow G_T$, where $G,G_T$ are groups of order~$q$.
+The KYC provider selects a generator~$g$ and a secret value $\gamma\overset{\$}{\leftarrow} \mathbb{Z}_q$.
 It also selects $L$ as an upper bound of users enabled for KYC and computes $z = e(g,g)^{\gamma^{L+1}}$.
-It initialized the accumulator value $\mathrm{A}$ by $1$. 
+It initialized the accumulator value~$\mathrm{A}$ by $1$. 
 
 Let us denote $g_i = g^{\gamma^i}$.
 The provider publishes $\mathrm{A},\{g_i\}_{1\leq i\leq L, \,L+2\leq i \leq 2L}$, the set of registered KYC indices $V=\emptyset$, and the parameters $g,z$ needed for verification.
 
-Every User who passes the KYC check is issued a new serial number $i$, the witness $w_i = \prod_{j\in V,j\neq i} g_{L+1-j+i}$, where $V$ is the set of all issued serial numbers, and a signature $\sigma_i$ of $g_i||i$ on the provider's private signature key.
-The witness is used to generate a proof of accumulating.\footnote{We refer an interested reader to \cite{Camenisch2009} for the details.}
-The accumulator is updated by the KYC provider with $i$ by
+Every User who passes the KYC check is issued a new serial number~$i$, the witness~$w_i = \prod_{j\in V,j\neq i} g_{L+1-j+i}$, where $V$ is the set of all issued serial numbers, and a signature~$\sigma_i$ of~$g_i||i$ on the provider's private signature key.
+The witness is used to generate a proof of accumulating.\footnote{We refer an interested reader to~\cite{Camenisch2009} for the details.}
+The accumulator is updated by the KYC provider with~$i$ by
 $$
 \mathrm{A_{V\cup\{i\}}} \leftarrow \mathrm{A_V} \cdot g_{L+1-i}
 $$
-multiplying it by $g_{L+1-i} = g^{\gamma^{L+1-i}}$, and $i$ is published as a new valid serial number.
-To prove that $i$ has been committed to $A$ and has not been revoked without disclosing it, the holder of $w_i$ updates it\footnote{We omit the details, but the update can be performed just before the presentation, not necessarily after every accumulator update.} so that the following equation holds:
+multiplying it by $g_{L+1-i} = g^{\gamma^{L+1-i}}$, and~$i$ is published as a new valid serial number.
+To prove that $i$ has been committed to $A$ and has not been revoked without disclosing it, the holder of~$w_i$ updates it\footnote{We omit the details, but the update can be performed just before the presentation, not necessarily after every accumulator update.} so that the following equation holds:
 $$
 \frac{e(g_i, A)}{e(g,w_i)} = z.
 $$
 
 Note that revocation is also efficient.
-The KYC contract owner simply multiplies the accumulator value by the inverse of $g_{L+1-i}$.
+The KYC contract owner simply multiplies the accumulator value by the inverse of~$g_{L+1-i}$.
 The witness value can not be updated anymore.
 
 \paragraph{Presentation} 
 When issuing a transaction to use the exchange (e.g.,~create an order), the user submits a \textbf{zero-knowledge proof} of the following statement:
 \begin{itemize}
 	\item I know the private key of the current user address (\texttt{msg.sender}), and
-	\item I know a signature $\sigma_i$ and a witness $w_i$ for some number $i$ that has been accumulated in the
-	accumulator $A$ in the KYC contract.
+	\item I know a signature~$\sigma_i$ and a witness~$w_i$ for some number~$i$ that has been accumulated in the
+	accumulator~$A$ in the KYC contract.
 \end{itemize}
 It is crucial that this compound statement is \textit{atomic}, i.e.,~the sub-statements can not be extracted as separate valid proofs, as this would make the transaction malleable.
 
 The atomicity (and thus non-malleability) are ensured as follows.
-Let us denote the proof of knowledge for the witness and signature by $PK_w$.
-Then Prover submits 
+Let us denote the proof of knowledge for the witness and signature by~$PK_w$.
+Then the Prover submits 
 $$
 P = \{PK_w \wedge PK_s\},
 $$
 where $PK_s$ is the proof of knowledge of the private key of the \texttt{msg.sender}'s ECDSA public key, which can be taken from~\cite{Chase2016}.
 The technique to make a composite proof of knowledge (PoK) is straightforward, as both PoKs are non-interactive, and is standard in complex PoK protocols:
 \begin{enumerate}
-	\item The Prover collects a set $\mathcal{C}$ of commitments asserted in sub-proofs $PK_w$ and $PK_s$.
-	\item The Prover makes necessary randomization of $\mathcal{C}$ to create $t$-values $\mathcal{T}$.
+	\item The Prover collects a set $\mathcal{C}$ of commitments asserted in sub-proofs $PK_w$ and~$PK_s$.
+	\item The Prover makes necessary randomization of~$\mathcal{C}$ to create $t$-values $\mathcal{T}$.
 	\item The Prover computes $c \leftarrow H(\mathcal{C},\mathcal{T})$.
 	\item The Prover computes $s$-values $\mathcal{S}$ using
-	$\mathcal{C}$, $\mathcal{T}$, and $c$.
-	\item The proof $P$ is $(\mathcal{C}, \mathcal{S},c)$.
+	$\mathcal{C}$, $\mathcal{T}$, and~$c$.
+	\item The proof~$P$ is $(\mathcal{C}, \mathcal{S},c)$.
 	To verify it one computes asserted $t$-values $\widehat{\mathcal{T}}$ and verifies
 	$$
 	c\overset{?}{=}H(\mathcal{C},\widehat{\mathcal{T}}).
 	$$
 \end{enumerate}
 
-The resulting proof $P$ is submitted as an Ethereum transaction argument.
+The resulting proof~$P$ is submitted as an Ethereum transaction argument.
 KYCE retrieves the most recent accumulator value and verifies $P$ against it and the public key of the message sender, which is available in the transaction metadata.
 If the proof is correct, the order is executed.
 
@@ -406,10 +405,10 @@ We proposed a modular design of an Ethereum-based financial service with an exte
 Our design is agnostic to the nature of the entity behind the KYC contract.
 It does not have to be a government body.
 The proposed solution can be used in any setting where a smart contract based service wants to limit the set of its users.
-For instance, many jurisdictions (e.g.,~the US~\cite{SEC}) only allow certain type of investment to be offered to "accredited investors".
+For instance, many jurisdictions (e.g.,~the~US~\cite{SEC}) only allow certain type of investment to be offered to "accredited investors".
 These are typically high-net-worth individuals and financial institutions.
 This logic can be replicated in a blockchain setting.
-Consider a blockchain-based financial service that only accepts cryptocurrency users who possess more than \$10\,000 and did their first transaction before 2017.
+Consider a blockchain-based financial service that only accepts cryptocurrency users who possess more than $10\,000$~USD and did their first transaction before~2017.
 The "accrediting" functionality is delegated to a third party KYC provider.
 Proving net worth and previous activity on the blockchain is straightforward.
 Additional checks can also be added.

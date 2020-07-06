@@ -35,7 +35,7 @@ We refer the reader to~\cite{Hvitved2010, Schiller2013} for a review financial D
 \section{Findel contracts} \label{sec:Ch10FindelSyntax}
 
 \begin{definition} \label{def:Ch10FindelFindelContract}
-	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and $O$ is the \textbf{owner} (collectively called parties). 
+	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and~$O$ is the \textbf{owner} (collectively called parties). 
 \end{definition}
 
 \begin{definition} \label{def:Ch10FindelDescription}
@@ -68,7 +68,7 @@ We refer the reader to~\cite{Hvitved2010, Schiller2013} for a review financial D
 We distinguish between composite and basic primitives.
 Composite primitives contain other primitives as sub-nodes, basic primitives do not.
 \(Currency\), \(number\), \(address\), and \(timestamp\) are implementation dependent data types.
-$D$ and $I$ can not be modified after a contract is created.
+$D$ and~$I$ can not be modified after a contract is created.
 
 A financial company typically has templates for common contracts.
 Parties who wish to sign an agreement write their names on a copy of a template and sign it, making it unique and legally binding.
@@ -148,7 +148,7 @@ Findel contracts have the following lifecycle:
 	\item The contract is \textbf{executed} immediately as follows:
 	\begin{enumerate}
 		\item Let the root node of the contract's description be the current node.
-		\item If the current node is either \texttt{Or} or \texttt{Timebound} with $t_0 > now$, postpone the execution: issue a new Findel contract with the same parties and the current node as root. The owner can later demand its execution.
+		\item If the current node is either \texttt{Or} or \texttt{Timebound} with~$t_0 > now$, postpone the execution: issue a new Findel contract with the same parties and the current node as root. The owner can later demand its execution.
 		\item Otherwise, execute all sub-nodes recursively\footnote{In case of \texttt{Or}, execute exactly one of the sub-nodes, according to the owner-submitted value indicating the choice; delete the other one. It is the only primitive that requires an additional user-supplied argument for execution.}.
 		\item Delete the contract.
 	\end{enumerate}
@@ -313,7 +313,7 @@ Ethereum contracts can not act on their own: the owner must issue a transaction 
 The owner may be unable to do so due to either opportunistic behavior, or technical problems, such as loss of connectivity or lack of ether.
 Thus, we presume that Findel contracts are not guaranteed to execute.\footnote{Compare to~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We can not force a user to make this decision.}
 
-We model unbounded Findel contracts (i.e.,~with $INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
+We model unbounded Findel contracts (i.e.,~with~$INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
 Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~ten~years).
 
 
@@ -355,7 +355,7 @@ People and organizations borrow money to invest it.
 The no-arbitrage principle states that there is no guaranteed way to make a profit.
 The investor reward, e.g.,~interest, is the premium for taking the inevitable risk of business failure.
 
-A marketplace can also mimic the fractional reserve banking model by requiring users to always be able to pay at least $n\%$ of their debt and punishing violators (e.g.,~by withholding their guarantee deposit).
+A marketplace can also mimic the fractional reserve banking model by requiring users to always be able to pay at least $n\%$~of their debt and punishing violators (e.g.,~by withholding their guarantee deposit).
 It does not solve the problem of defaults completely though.
 In legacy finance, users have a fixed government-issued identity, allowing banks to maintain a common database of their credit history.
 In a decentralized setting, users can create a practically indefinite number of identities.
@@ -365,7 +365,7 @@ A production-ready marketplace should therefore take measures to combat Sybil at
 In the three years since the publication of the original paper, the market has shown that fully collateralized (and \textit{over}collateralized) loans do have useful applications.
 Ethereum-based stablecoin projects allow users to take loans in cryptocurrencies that are promised to hold parity with US~dollar~\cite{Mita2019}.
 A prominent example is a stablecoin called \textit{DAI}.
-To take out a loan of $X$~DAI, users deposit at least $1.5X$~worth of cryptocurrency, usually ether, into a smart contract.
+To take out a loan of~$X$~DAI, users deposit at least $1.5X$~worth of cryptocurrency, usually ether, into a smart contract.
 If the \textit{collaterization ratio} falls below the threshold, the position is \textit{liquidated}: the collateral is forcibly sold.
 This system is useful for hedging against price volatility of cryptocurrencies and for leveraged betting on its future price increase.
 
@@ -405,7 +405,7 @@ In order to communicate with a Findel marketplace, users need client-side softwa
 Besides communicating with the Ethereum network, it might also implement other functions:
 \begin{itemize}
 	\item Create and store Findel contracts locally.
-	\item Calculate the current value and other properties of Findel contracts based on assumptions about external data (e.g.,~the~\euro~/~\$ exchange rate is between 1.0 and 1.2) or valuation techniques such as the lattice binomial model~\cite{Cox1979}.
+	\item Calculate the current value and other properties of Findel contracts based on assumptions about external data (e.g.,~the~\euro~/~\$~exchange rate is between 1.0 and 1.2) or valuation techniques such as the lattice binomial model~\cite{Cox1979}.
 	\item Keep track of relevant Findel contracts and perform actions depending on their state (e.g.,~if \(c_1\) gets executed, join \(c_2\)).
 	\item Store a predefined list of addresses of trusted gateways, similar to a list of trusted certificate authorities in web browsers.
 \end{itemize}
@@ -517,9 +517,9 @@ That brings the cost of a typical Findel contract operation ($10^5$ -- $10^6$~ga
 
 \paragraph{2020 update}
 As of July~2020, the cost of execution in Ethereum increased significantly.
-The average gas price is $41$~Gwei ($41 \times 10^{-9}$~ether) per unit of gas.
-The price of ether is around $\$220$.
-Assuming the same gas costs, an operation with a Findel contract would now cost between $0.89$ and $8.7$~USD.
+The average gas price is~$41$~Gwei ($41 \times 10^{-9}$~ether) per unit of gas.
+The price of ether is around~$\$220$.
+Assuming the same gas costs, an operation with a Findel contract would now cost between $0.89$ and~$8.7$~USD.
 
 
 \section{Conclusion}

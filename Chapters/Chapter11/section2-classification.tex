@@ -373,7 +373,7 @@ The pattern detects functions whose name is \texttt{call.value} and whose argume
 \paragraph{2020 update}
 In 2019, Ethereum underwent the Istanbul upgrade.
 Among other modifications, gas prices for some operations were increased~\cite{EIP1884}.
-As a result, the call subsidy of $2\,300$ gas is often not sufficient to handle the call.
+As a result, the call subsidy of~$2\,300$ gas is often not sufficient to handle the call.
 Therefore, it is recommended to forward more than $2\,300$ gas (probably all available gas) when calling external contracts.
 In the light of this pattern, \texttt{transfer} is no longer preferred over \texttt{send}.
 Both these commands are considered undesirable.

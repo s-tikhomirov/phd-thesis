@@ -94,7 +94,7 @@ A new peer advertises its IP address to its neighbors in an \texttt{addr} messag
 Upon receiving an \texttt{addr} message, a peer may decide to relay it to some of its neighbors.
 
 A peer can ask its neighbor which peers it is aware of using a \texttt{getaddr} message.
-The neighbor responds with an \texttt{addr} message containing up to $1000$~addresses of recently seen peers.
+The neighbor responds with an \texttt{addr} message containing up to $1\,000$~addresses of recently seen peers.
 
 After establishing the initial connections, a new peer asks the bootstrapping peers about other peers and connects to those.
 It then disconnects from the bootstrapping peers to keep them available for new joining peers.

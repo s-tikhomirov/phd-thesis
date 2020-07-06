@@ -58,8 +58,8 @@ Given those two values, we define the \textit{effective update rate} $ur_\textit
 
 Note that the effective update rate $ur_\textit{eff}$ depends on the average transaction amount, as shown in Figure~\ref{fig:effective-channel-updates}.
 Starting from $D$, there is a gap between the effective number of concurrent updates and what could be theoretically possible in the absence of the HTLC limit.
-We observe that $2677$~satoshis ($0.24$~USD) is the \textit{borderline amount}: for higher average transaction amounts, the limiting factor for the number of concurrent channel updates is channel capacity.
-For amounts between $D$~and~$2677$~satoshis, the limiting factor is the HTLC limit.
+We observe that $2\,677$~satoshis ($0.24$~USD) is the \textit{borderline amount}: for higher average transaction amounts, the limiting factor for the number of concurrent channel updates is channel capacity.
+For amounts between $D$~and~$2\,677$~satoshis, the limiting factor is the HTLC limit.
 
 \begin{figure}[tb]
 	\centering
@@ -92,7 +92,7 @@ As expected, the HTLC limit becomes a more pressing issue with smaller transacti
 We also observe that the share of affected channels has been increasing in the early months of LN and has remained stable since mid-2019.
 
 We finally study how the \textit{borderline amount} has changed over time.
-As~\cref{fig:historic-borderline-amount} shows, the HTLC limit finds its inflexion point in transaction amount at approximately $2500$~satoshis, with the borderline amount stabilizing in mid-2019, after the initial growth.
+As~\cref{fig:historic-borderline-amount} shows, the HTLC limit finds its inflexion point in transaction amount at approximately $2\,500$~satoshis, with the borderline amount stabilizing in mid-2019, after the initial growth.
 
 \begin{figure}[tb]
 	\centering
@@ -120,7 +120,7 @@ The cost for this attack depends on the minimum transaction amount.
 We assume it equal to the dust limit of~$546$~satoshis (the default value in 2 out of 3 major implementations).
 
 We calculate the total capital requirements for an attacker to block the complete LN\@.
-To block all $31084$~channels, the attacker would send, in the worst case, $966$~transactions of~$546$~satoshi to each channel.
+To block all $31\,084$~channels, the attacker would send, in the worst case, $966$~transactions of~$546$~satoshi to each channel.
 This brings the total capital requirements to approximately $163.9482$~BTC ($1.64M$~USD).
 
 Each HTLC defines a timeout, after which the funds are returned to the sender, if the receiver provides no preimage.
@@ -160,7 +160,7 @@ The attacker may wish to prevent different parts of the network from transacting
 To evaluate this possibility, we first divide the network into \textit{communities} using the Clauset-Newman-Moore greedy modularity maximization algorithm~\cite{Clauset2004}.
 Then we consider a scenario where the attacker tries to block the channels that connect communities rather than channels within communities.
 For a chosen number $N$~of the largest communities, we calculate how many channels the attacker has to block to split the network into at least $N+1$~parts: the $N$~largest communities and the rest of the network (\cref{fig:isolate-communities}).
-We observe, e.g.,~that the attacker needs to block $4670$~channels ($13\%$~of all channels) to isolate the largest community from the rest of the network, locking up $25$~BTC ($225k$~USD) -- or just around $2.8\%$~of the total LN capacity.
+We observe, e.g.,~that the attacker needs to block $4\,670$~channels ($13\%$~of all channels) to isolate the largest community from the rest of the network, locking up $25$~BTC ($225k$~USD) -- or just around $2.8\%$~of the total LN capacity.
 
 \begin{figure}[tb]
 	\centering
@@ -178,7 +178,7 @@ Yet, our approach allows us to calculate the effect of the HTLC limit, as both e
 Our estimation shows that the HTLC limit reduces the number of concurrent channel updates for payments under certain average transaction amount.
 
 The fact that the HTLC limit manifests itself at low transaction amounts negatively affects scalability and some potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
-Our calculations show that for payments of~$1000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
+Our calculations show that for payments of~$1\,000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
 
 The low value for the default minimum transaction amount and the reduced number of in-flight transactions open a DoS attack vector with a moderate cost for the adversary.
 Note that the capital in the attacker's channels will be recouped after the HTLCs time out.

@@ -18,16 +18,16 @@ Our results are concerned with the LN as described in the specification, and thu
 \label{sec:datasets}
 
 We obtained a snapshot of LN on 25~February~2020 from~\cite{fiatjaf2020}.
-This snapshot consists of~$5929$~nodes and~$35233$~channels.
+This snapshot consists of~$5\,929$~nodes and~$35\,233$~channels.
 We model this data as an undirected multi-graph (i.e., may contain multiple edges between each pair of nodes), as several channels can be shared by two LN nodes.
-We only considered the largest connected component, which contains $5862$~nodes $(98.87\%)$~and~$35196$~channels $(99.89\%)$.
+We only considered the largest connected component, which contains $5\,862$~nodes $(98.87\%)$~and~$35\,196$~channels $(99.89\%)$.
 We refer to this dataset as \emph{LN20}.\footnote{Our code is available at~\cite{Tikhomirov2019}.}
 
 Based on \emph{LN20}, 
 LN nodes have an average degree of~$12.01$~and a median degree of~$3$~(see~\cref{fig:node-degree-histogram,fig:channel-capacity-histogram}).
 The majority of nodes have very few channels, 
 whereas there is a small number of nodes with many channels.
-In particular, there are more than $1744$~nodes with degree 1, and the most connected node has $1198$~channels.
+In particular, there are more than $1\,744$~nodes with degree 1, and the most connected node has $1\,198$~channels.
 The capacity is also unequally distributed.
 These observations motivate the methodology in our experiments in~\cref{sec:sec-priv-attacks}.
 

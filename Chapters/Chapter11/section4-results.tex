@@ -208,7 +208,7 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of~$334$~line
 SmartCheck analyzed the dataset in $7\,644$~seconds (approximately $2$~hours and~$7$~minutes, or $437$~lines per second\footnote{Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit}).
 As per SmartCheck, $99.9\%$~of contracts have issues, $63.2\%$~of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
 The findings are presented in Table~\ref{MassiveTestingTable} and Figure~\ref{MassiveTestingFigure} (colors denote severity levels: black -- high, dark gray -- medium, light gray -- low).
-The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occur \let\letcs\etoolboxletcs} times, which accounts for $67.30\%$~of all findings), is excluded from the figure for clarity.
+The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occurWord \let\letcs\etoolboxletcs} times, which accounts for $67.30\%$~of all findings), is excluded from the figure for clarity.
 
 \let\letcs\texapiletcs
 \begin{table}[t]
@@ -218,27 +218,27 @@ The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisib
 		\hline
 		\textbf{Severity} & \textbf{Pattern} & \textbf{Findings} & \textbf{\% of all} \\
 		\hline
-		\multirow{3}{*}{high} & {\usevalue SolidityReentrancyExternalCall:name } & {\usevalue SolidityReentrancyExternalCall:occur } & $3.329$ \\
-		 & {\usevalue SolidityUncheckedCall:name } & {\usevalue SolidityUncheckedCall:occur } & $0.818$ \\
-		 & {\usevalue SolidityCallValue:name } & {\usevalue SolidityCallValue:occur } & $0.228$ \\
+		\multirow{3}{*}{high} & {\usevalue SolidityReentrancyExternalCall:name } & {\usevalue SolidityReentrancyExternalCall:occurWord } & $3.329$ \\
+		 & {\usevalue SolidityUncheckedCall:name } & {\usevalue SolidityUncheckedCall:occurWord } & $0.818$ \\
+		 & {\usevalue SolidityCallValue:name } & {\usevalue SolidityCallValue:occurWord } & $0.228$ \\
 		\hline
-		\multirow{8}{*}{medium} & {\usevalue SolidityDosWithThrow:name } & {\usevalue SolidityDosWithThrow:occur } & $6.521$ \\
-		& {\usevalue SolidityTimestampDependence:name } & {\usevalue SolidityTimestampDependence:occur } & $6.378$ \\
-		& {\usevalue SoliditySend:name } & {\usevalue SoliditySend:occur } & $2.794$ \\
-		& {\usevalue SolidityGasLimitAndLoops:name } & {\usevalue SolidityGasLimitAndLoops:occur } & $2.164$ \\
-		& {\usevalue SolidityVar:name } & {\usevalue SolidityVar:occur } & $0.529$ \\
-		& {\usevalue SolidityTxOrigin:name } & {\usevalue SolidityTxOrigin:occur } & $0.163$ \\
-		& {\usevalue SolidityBalanceEquality:name } & {\usevalue SolidityBalanceEquality:occur } & $0.094$ \\
+		\multirow{8}{*}{medium} & {\usevalue SolidityDosWithThrow:name } & {\usevalue SolidityDosWithThrow:occurWord } & $6.521$ \\
+		& {\usevalue SolidityTimestampDependence:name } & {\usevalue SolidityTimestampDependence:occurWord } & $6.378$ \\
+		& {\usevalue SoliditySend:name } & {\usevalue SoliditySend:occurWord } & $2.794$ \\
+		& {\usevalue SolidityGasLimitAndLoops:name } & {\usevalue SolidityGasLimitAndLoops:occurWord } & $2.164$ \\
+		& {\usevalue SolidityVar:name } & {\usevalue SolidityVar:occurWord } & $0.529$ \\
+		& {\usevalue SolidityTxOrigin:name } & {\usevalue SolidityTxOrigin:occurWord } & $0.163$ \\
+		& {\usevalue SolidityBalanceEquality:name } & {\usevalue SolidityBalanceEquality:occurWord } & $0.094$ \\
 		\hline
-		\multirow{10}{*}{low} & {\usevalue SolidityVisibility:name } & {\usevalue SolidityVisibility:occur } & $67.296$ \\& {\usevalue SolidityPragmasVersion:name } & {\usevalue SolidityPragmasVersion:occur } & $3.067$ \\
-		& {\usevalue SolidityIntegerDivision:name } & {\usevalue SolidityIntegerDivision:occur } & $1.432$ \\
-		& {\usevalue SolidityStyleGuideViolation:name } & {\usevalue SolidityStyleGuideViolation:occur } & $1.348$ \\
-		& {\usevalue SolidityPrivateModifier:name } & {\usevalue SolidityPrivateModifier:occur } & $1.014$ \\
-		& {\usevalue SolidityErc20ApiViolation:name } & {\usevalue SolidityErc20ApiViolation:occur } & $1.169$ \\
-		& {\usevalue SolidityMaliciousLibraries:name } & {\usevalue SolidityMaliciousLibraries:occur } & $1.157$ \\
-		& {\usevalue SolidityLockedMoney:name } & {\usevalue SolidityLockedMoney:occur } & $0.439$ \\
-		& {\usevalue SolidityRedundantFallbackReject:name } & {\usevalue SolidityRedundantFallbackReject:occur } & $0.053$ \\
-		& {\usevalue SolidityBytesByte:name } & {\usevalue SolidityBytesByte:occur } & $0.006$ \\
+		\multirow{10}{*}{low} & {\usevalue SolidityVisibility:name } & {\usevalue SolidityVisibility:occurWord } & $67.296$ \\& {\usevalue SolidityPragmasVersion:name } & {\usevalue SolidityPragmasVersion:occurWord } & $3.067$ \\
+		& {\usevalue SolidityIntegerDivision:name } & {\usevalue SolidityIntegerDivision:occurWord } & $1.432$ \\
+		& {\usevalue SolidityStyleGuideViolation:name } & {\usevalue SolidityStyleGuideViolation:occurWord } & $1.348$ \\
+		& {\usevalue SolidityPrivateModifier:name } & {\usevalue SolidityPrivateModifier:occurWord } & $1.014$ \\
+		& {\usevalue SolidityErc20ApiViolation:name } & {\usevalue SolidityErc20ApiViolation:occurWord } & $1.169$ \\
+		& {\usevalue SolidityMaliciousLibraries:name } & {\usevalue SolidityMaliciousLibraries:occurWord } & $1.157$ \\
+		& {\usevalue SolidityLockedMoney:name } & {\usevalue SolidityLockedMoney:occurWord } & $0.439$ \\
+		& {\usevalue SolidityRedundantFallbackReject:name } & {\usevalue SolidityRedundantFallbackReject:occurWord } & $0.053$ \\
+		& {\usevalue SolidityBytesByte:name } & {\usevalue SolidityBytesByte:occurWord } & $0.006$ \\
 		\hline
 	\end{tabular}
 	\label{MassiveTestingTable}

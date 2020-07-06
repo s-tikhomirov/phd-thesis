@@ -295,7 +295,7 @@ For Dash and Monero, we ran the clustering algorithm without calculating the ano
 We obtained clearly visible clusters, which indicated that our approach is applicable for these cryptocurrencies as well.
 
 All linkage experiments were done on our own transactions and when possible on the testnets.
-The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of~$1000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
+The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots, and operated only on a subset of~$1\,000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
 
 In this section, we refer to the node that logs the incoming messages as the \textit{listener}.
 Following the terminology of~\cite{Biryukov2014}, we refer to peers that accept incoming connections as \textit{servers}.
@@ -312,12 +312,12 @@ Following the terminology of~\cite{Biryukov2014}, we refer to peers that accept 
 		\hline
 		Network & Listener & Anon\@. deg. & Servers & Avg free slots & Tx \texttt{inv}s & \texttt{addr}s \\
 		\hline
-		Bitcoin test & California & $0.83$ & $1141$ & $64$ & $139$ & $402$ \\
-		Bitcoin test & Tokyo & $0.80$ & $1128$ & $64$ & $193$ & $414$ \\
-		Bitcoin test & Frankfurt & $0.72$ & $1137$ & $64$ & $172$ & $403$ \\
-		Bitcoin test & combined & $0.63$ & $1154$ & $63$ & $250$ & $1321$ \\
-		Bitcoin main & Frankfurt & $0.88$ & $1000$* & $25$* & $3238$ & $11\,300$ \\
-		Zcash & Frankfurt & $0.86$ & $206$ & $36$ & $62$ & $1086$ \\
+		Bitcoin test & California & $0.83$ & $1\,141$ & $64$ & $139$ & $402$ \\
+		Bitcoin test & Tokyo & $0.80$ & $1\,128$ & $64$ & $193$ & $414$ \\
+		Bitcoin test & Frankfurt & $0.72$ & $1\,137$ & $64$ & $172$ & $403$ \\
+		Bitcoin test & combined & $0.63$ & $1\,154$ & $63$ & $250$ & $1\,321$ \\
+		Bitcoin main & Frankfurt & $0.88$ & $1\,000$* & $25$* & $3\,238$ & $11\,300$ \\
+		Zcash & Frankfurt & $0.86$ & $206$ & $36$ & $62$ & $1\,086$ \\
 		\hline
 	\end{tabular}
 	\label{tab:results}
@@ -424,7 +424,7 @@ First, Bitcoin mainnet is substantially larger than other networks we considered
 A higher number of transactions in Bitcoin constitutes a larger anonymity set.
 Second, Bitcoin nodes have fewer free slots, and often limit the number of slots one IP can occupy.
 This decreases the probability that our listener would be among the first nodes to receive a new transaction.
-Third, we only established up to $50$~connections to $1000$~peers to avoid disrupting the network, and due to resource constraints.
+Third, we only established up to $50$~connections to $1\,000$~peers to avoid disrupting the network, and due to resource constraints.
 
 \begin{figure*}
 	\centering
@@ -493,7 +493,7 @@ In addition to the message types present in Bitcoin, Dash contains $22$~new ones
 Masternode-related tasks include periodic pings to check whether masternodes are online, managing transaction mixing, voting for governance proposals, etc.
 Our tool is not yet adapted for handling Dash-specific messages.
 
-In our experiment, we connected to $500$~out of~$3065$~Dash nodes chosen at random, asking for $30$~connection slots.
+In our experiment, we connected to $500$~out of~$3\,065$~Dash nodes chosen at random, asking for $30$~connection slots.
 During $15$-minutes, we received $12$~transaction inventory messages and~$396$~Dash-specific messages.
 
 \begin{figure*}
@@ -547,7 +547,7 @@ We connected to $200$~nodes and received $124$~transactions in a $38$~minute win
 \end{figure}
 
 The less clear picture compared to Bitcoin testnet may be explained as follows.
-First, we connected to a subset of all nodes (the total number of nodes at the time of the experiment was estimated at $1700$--$1800$~\cite{MoneroHash}).
+First, we connected to a subset of all nodes (the total number of nodes at the time of the experiment was estimated at $1\,700$--$1\,800$~\cite{MoneroHash}).
 Second, Monero does not employ the three-step transaction propagation as Bitcoin does.
 There is no \texttt{inv} -- \texttt{getdata} -- \texttt{tx} exchange.
 This may have had opposite effects on clustering quality.
@@ -656,7 +656,7 @@ We now estimate the resources required for a full-scale attack on the Bitcoin ma
 The Bitcoin mainnet consists of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}.
 % 9887 90-day avg as of 2018-11-11
 % https://bitnodes.earn.com/dashboard/?days=90
-We estimate Bitcoin nodes to provide $43$~connections slots on average (measured on $1000$~random nodes).
+We estimate Bitcoin nodes to provide $43$~connections slots on average (measured on $1\,000$~random nodes).
 According to~\cite{BitcoinWiki}, the size of an \texttt{inv} message is "36x + const for message with x objects".
 We assume that an \texttt{inv} for a single transaction requires $40$~bytes.
 As on November~2018, Bitcoin processes around $250\,000$~transactions per day, or $2.89$~transactions per second.

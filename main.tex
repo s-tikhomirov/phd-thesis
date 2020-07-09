@@ -88,6 +88,8 @@ headsepline, % Uncomment to get a line under the header
 
 %\usepackage{underscore}
 \usepackage{hyperref} % as per its manual, must be added last
+\definecolor{navyblue}{HTML}{000080}
+
 
 \MakeOuterQuote{"}
 
@@ -132,15 +134,19 @@ headsepline, % Uncomment to get a line under the header
 
 \subject{Computer Science} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
 \keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
-\university{\href{https://wwwen.uni.lu/}{University of Luxembourg}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
-\department{\href{https://wwwen.uni.lu/research/fstm/dcs}{Department of Computer Science}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
-\group{\href{https://www.cryptolux.org/}{CryptoLUX Research Group}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
-\faculty{\href{https://wwwen.uni.lu/fstm}{Faculty of Science, Technology and Medicine}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
+\university{University of Luxembourg} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\department{Department of Computer Science} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
+\group{CryptoLUX Research Group} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
+\faculty{Faculty of Science, Technology and Medicine} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
 
 \AtBeginDocument{
-\hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
-\hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
-\hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+\hypersetup{
+	colorlinks = navyblue,
+	linkcolor  = navyblue,
+	citecolor  = navyblue,
+	urlcolor   = navyblue,
+	filecolor  = navyblue,
+}
 }
 
 \begin{document}

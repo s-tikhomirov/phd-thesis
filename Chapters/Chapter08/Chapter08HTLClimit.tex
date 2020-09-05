@@ -10,7 +10,7 @@ This effect may be critical for micro-payment applications -- a use case LN was 
 This limitation has been pointed out~\cite{EmelyanenkoK2017} but never quantitatively analyzed.
 
 We study the management of concurrent payments in the LN and quantify its negative effect on scalability.
-A payment channel, even with sufficient capacity, can hold only a certain number of concurrent payments (governed by HTLCs), leading to capacity under-utilization.
+A payment channel can hold only a certain number of concurrent payments (governed by HTLCs), leading to capacity under-utilization.
 We study the effect of this limitation.
 We observe that for micropayments, the forwarding capability of up to $50\%$~of channels is restricted to a value smaller than the overall channel capacity.
 This phenomenon not only hinders scalability but also opens the door for DoS attacks.
@@ -23,13 +23,13 @@ We finally discuss countermeasures.
 
 Bitcoin~Core, the reference Bitcoin implementation, imposes a $100$~KB transaction size limit~\cite{StandardTxBitcoinSE, BitcoinCoreMaxTxWeight}.
 More precisely, transaction size is one of the requirements for a \textit{standard} transaction.
-Bitcoin~Core nodes, which constitute $97\%$~of the network~\cite{CoinDance}, do not propagate non-standard transactions, which are therefore highly unlikely to get confirmed.
+Bitcoin~Core nodes, which make up $97\%$~of the network~\cite{CoinDance}, do not propagate non-standard transactions, which are therefore highly unlikely to get confirmed.
 An LN channel cannot contain more than $966$~unsettled HTLCs~\cite{BOLT2Rationale}.
 This limit ensures that both counterparties can close the channel using one standard Bitcoin transaction.
 We refer to this limitation as the \textit{HTLC limit}.
 
 Despite the perceived focus on micropayments, LN does not fully support transactions of very small value.
-Every HTLC makes the potential closing transaction larger, and the on-chain fees higher.
+Every HTLC makes the potential closing transaction larger, and increases the on-chain fees.
 Redeeming very small outputs on-chain can be more expensive than their value.
 Therefore, BOLT specifications prescribe that nodes negotiate the \textit{dust limit} before opening a channel, and for payments below this limit, no HTLCs are created (see \textit{trimmed HTLCs}~\cite{BOLT3Trimmed}).
 Out of the three most popular LN implementations, c-lightning and Eclair use the default dust limit of~$546$~satoshis.
@@ -45,7 +45,7 @@ We derived a series of historic snapshots which represent the state of the LN on
 We refer to this dataset as \textit{LNHist}.
 
 Let $D$ be the dust limit.
-We only consider amounts higher than $D$.
+We only consider amounts above $D$.
 Let $C$ be the total network capacity (i.e., the sum of the individual capacities of all channels).
 Let $a_\textit{avg}$ be the average transaction amount.
 Then, we say that the limit on concurrent updates based solely on capacity is defined as $u_\textit{cap} := C / a_\textit{avg}$.
@@ -57,8 +57,8 @@ Given those two values, we define the \textit{effective update rate} $ur_\textit
 \[ur_\textit{eff} = \frac{min(u_\textit{cap}, u_\textit{HTLC})}{u_\textit{cap}}\]
 
 Note that the effective update rate $ur_\textit{eff}$ depends on the average transaction amount, as shown in Figure~\ref{fig:effective-channel-updates}.
-Starting from $D$, there is a gap between the effective number of concurrent updates and what could be theoretically possible in the absence of the HTLC limit.
-We observe that $2\,677$~satoshis ($0.24$~USD) is the \textit{borderline amount}: for higher average transaction amounts, the limiting factor for the number of concurrent channel updates is channel capacity.
+Starting from $D$, the effective number of concurrent updates diverges from what could be theoretically possible in the absence of the HTLC limit.
+We observe that $2\,677$~satoshis ($0.24$~USD) is the \textit{borderline amount}: for larger average transaction amounts, the limiting factor for the number of concurrent channel updates is channel capacity.
 For amounts between $D$~and~$2\,677$~satoshis, the limiting factor is the HTLC limit.
 
 \begin{figure}[tb]
@@ -88,7 +88,7 @@ Given a fixed average transaction amount $a_\textit{avg}$, we consider a channel
 
 We study the effect of the HTLC limit on the LN using our historical snapshots \emph{LNHist}.
 For each monthly snapshot and four assumed average transaction amounts, we calculate the share of channels affected by the HTLC limit (\cref{fig:historic-htlc-limited-share}).
-As expected, the HTLC limit becomes a more pressing issue with smaller transaction amounts, if they are higher than the dust limit.
+As expected, the HTLC limit becomes a more pressing issue with smaller transaction amounts, if they are above the dust limit.
 We also observe that the share of affected channels has been increasing in the early months of LN and has remained stable since mid-2019.
 
 We finally study how the \textit{borderline amount} has changed over time.
@@ -143,15 +143,15 @@ For example, it requires $0.05$~BTC to block 10~top channels with combined capac
 \end{figure}
 
 \paragraph{Real HTLC limit}
-Our calculations above are based on the maximum number of concurrent HTLCs ($483$) as defined by BOLT specifications.
-LN implementations may choose lower default values for this parameter.
+Our calculations are based on the maximum number of concurrent HTLCs ($483$) as defined by BOLT specifications.
+LN implementations may choose other values.
 In particular, Eclair and c-lightning enforce a lower default HTLC limit ($30$).
 This means that in the real network the attacker needs to create fewer HTLCs to block channels between c-lightning and Eclair nodes as opposed to theoretical calculations and LND nodes (which by default support $483$~concurrent HTLCs per channel).
 LND makes up $91\%$~of the nodes in the network, and Eclair is another $1\%$~\cite{Mizrahi2020}.
 That brings real average HTLC limit to $442.23$~and lowers the attack cost by~$8.44\%$.
 
 \paragraph{Multi-hop transactions}
-The estimation above assumes single-hop transactions.
+Our estimation assumes single-hop transactions.
 An attacker can leverage multi-hop transactions to multiply the effect of the committed capital, connecting to both ends of a $20$-hop~\cite{Bolt4OnionRouting} payment path and performing a payment to itself that never gets completed.
 This is similar to capacity-based griefing attacks~\cite{HerreraJoancomarti2019}, but with much lower capital requirements.
 
@@ -160,7 +160,7 @@ The attacker may wish to prevent different parts of the network from transacting
 To evaluate this possibility, we first divide the network into \textit{communities} using the Clauset-Newman-Moore greedy modularity maximization algorithm~\cite{Clauset2004}.
 Then we consider a scenario where the attacker tries to block the channels that connect communities rather than channels within communities.
 For a chosen number $N$~of the largest communities, we calculate how many channels the attacker has to block to split the network into at least $N+1$~parts: the $N$~largest communities and the rest of the network (\cref{fig:isolate-communities}).
-We observe, e.g.,~that the attacker needs to block $4\,670$~channels ($13\%$~of all channels) to isolate the largest community from the rest of the network, locking up $25$~BTC ($225k$~USD) -- or just around $2.8\%$~of the total LN capacity.
+We observe, e.g.,~that the attacker needs to block $4\,670$~channels ($13\%$~of all channels) to isolate the largest community from the rest of the network, locking up $25$~BTC ($225k$~USD) -- or around $2.8\%$~of the total LN capacity.
 
 \begin{figure}[tb]
 	\centering
@@ -172,12 +172,14 @@ We observe, e.g.,~that the attacker needs to block $4\,670$~channels ($13\%$~of 
 
 \section{Discussion}
 Our simplistic model does not fully reflect all the details of transaction handling.
-In particular, we do not account for the fact that transactions take multiple hops (and multiple failed paths) before succeeding, nor do we reflect the unequal forwarding ability of a unit of capacity at a well-connected node, as opposed to a poorly connected one.
+In particular, we do not account for multi-hop transactions and transactions that try multiple paths before succeeding.
+We do not reflect the unequal forwarding ability of a unit of capacity at a well-connected node, as opposed to a poorly connected one.
 We also do not account for non-public channels, which may account for $28\%$~of all channels~\cite{BitMEXPrivateChannels}.
 Yet, our approach allows us to calculate the effect of the HTLC limit, as both estimations (capacity-based limit and HTLC limit) are calculated under the same assumptions.
 Our estimation shows that the HTLC limit reduces the number of concurrent channel updates for payments under certain average transaction amount.
 
-The fact that the HTLC limit manifests itself at low transaction amounts negatively affects scalability and some potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
+The HTLC limit manifests itself at low transaction amounts.
+This negatively affects scalability and some potential LN applications, such as paying for online content~\cite{Poon2016}, which involve transactions with small amounts. 
 Our calculations show that for payments of~$1\,000$~satoshis ($0.009$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
 
 The low value for the default minimum transaction amount and the reduced number of in-flight transactions open a DoS attack vector with a moderate cost for the adversary.

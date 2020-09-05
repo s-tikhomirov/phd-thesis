@@ -5,7 +5,7 @@ Dynamic analysis runs the program, while static analysis considers the program c
 Static analysis usually includes three stages:
 \begin{enumerate}
 	\item building an intermediate representation (IR), such as abstract syntax tree or three-address code, for a deeper analysis compared to analyzing text;
-	\item enriching the IR with additional information~\cite{Woegerer2005} using algorithms such as control- and dataflow analysis (synonym, constant, and type propagation~\cite{Aho1986}), taint analysis~\cite{Tripp2009}, symbolic execution, abstract interpretation;
+	\item enriching the IR with more information~\cite{Woegerer2005} using algorithms such as control- and dataflow analysis (synonym, constant, and type propagation~\cite{Aho1986}), taint analysis~\cite{Tripp2009}, symbolic execution, abstract interpretation;
 	\item vulnerability detection w.r.t.~a database of patterns, which define vulnerability criteria in IR terms.
 \end{enumerate}
 In this paper, we do not consider formal verification methods, as they require a rarely available formal specification of the contract's intended functionality.
@@ -17,7 +17,7 @@ It uses ANTLR~\cite{Parr} and a custom Solidity grammar to generate an XML parse
 The tool detects vulnerabilities by using XPath~\cite{Liu2009} queries on the IR\@.
 Thus, SmartCheck provides full coverage: the analyzed code is fully translated to the IR, and all its elements can be reached with XPath matching.
 Line numbers are stored as XML attributes and help localize findings in the source code.
-IR attributes can be enriched with additional information as new analysis methods are implemented.
+IR attributes can be enriched with more information as new analysis methods are implemented.
 The tool can be extended to support other smart contact languages by adding the corresponding ANTLR grammar and a pattern database.
 The IR-level algorithms remain unchanged.
 

@@ -11,10 +11,10 @@ We review the history of payment channel protocols in Bitcoin and describe the a
 Layer-two protocols allow blockchains to scale without modifying the core protocol (also referred to as \textit{layer-one} in this context).
 This approach is also known as \textit{off-chain scaling}.
 A layer-two protocol allows its two participants to exchange value without broadcasting every transaction to the blockchain.
-Conflicts can be resolved on layer-one, hence preserving some if its security guarantees.
+Conflicts can be resolved on layer-one, therefore preserving some if its security guarantees.
 
 In the context of Bitcoin, layer-two protocols usually implement the concept of \textit{payment channels}.
-A payment channel is a protocol that allows two parties to subsequently update the distribution of the initially committed funds.
+A payment channel is a protocol that allows two parties to continuously update the distribution of the initially committed funds.
 Multiple ideas and implementations of Bitcoin payment channel have been proposed.
 To put our work in historical context, we now describe the evolution of Bitcoin-based payment channels.
 See~\cite{McCorry2016} for an overview of Bitcoin payment channel designs.
@@ -33,7 +33,7 @@ The final state would be confirmed after the timelock expires.
 
 The major drawback of this approach is that sequence numbers are not enforceable.
 Miners have no economic incentives to prioritize a transaction with a higher sequence number, if it offers a lower fee than a conflicting transaction with a lower sequence number.
-Miners even have a degree of plausible deniability: they may claim that they simply have not heard of the later transaction versions.
+Miners enjoy a degree of plausible deniability: they may claim that they simply have not heard of the later transaction versions.
 This may happen without malicious intent due to delays in the P2P network.
 
 
@@ -44,8 +44,7 @@ This protocol is a modified implementation of Nakamoto's transaction replacement
 It has been implemented in BitcoinJ, a popular Bitcoin library written in Java~\cite{BitcoinJ}.
 
 The channel participants are often described as a customer and a merchant.
-Initially, they lock coins into a multi-signature output.
-Additionally, they establish a time-locked refund transaction.
+Initially, they lock coins into a multi-signature output and establish a time-locked refund transaction.
 It allows the customer to withdraw all funds in case the merchant goes offline.
 Then the customer signs a transaction that distributes the coins from the funding transaction in a new proportion, allocating more funds to the merchant.
 The customer then sends the new transaction to the merchant. 
@@ -80,7 +79,7 @@ Only the latest channel state should be valid.
 In other words, only the last of multiple co-signed transactions should be accepted if broadcast to the blockchain.
 All previous transactions, representing old channel states, must be provably invalidated.
 
-The state replacement mechanism in unidirectional channels is referred to as \textit{revocation by incentive}~\cite{Gudgeon2019}.
+The state replacement mechanism in unidirectional channels is called \textit{revocation by incentive}~\cite{Gudgeon2019}.
 Bob is \textit{incentivized} to close the channel using the last transaction, because that transaction gives him the largest amount of money.
 To implement bi-directional channels, other state replacement mechanisms are required.
 
@@ -99,36 +98,36 @@ Second, such channels only support a limited number of updates.
 The delta between the timelocks of subsequent transactions must not be smaller than some security margin.
 This ensures that each party can close the channel with the latest state before older states become valid.
 Therefore, the maximum number of channel updates is determined by the channel lifetime and the minimal allowed difference between timelocks.
-This type of state replacement is known as \textit{replace by timelock}.
+This state replacement mechanism is known as \textit{replace by timelock}.
 
 Duplex micropayment channels~\cite{Decker2015} (DMC) implement bidirectional channels as a pair of unidirectional channels.
 This protocol combines \textit{replace by timelock} and \textit{replace by incentive} state replacement.
-The key concept of DMC is \textit{invalidation tree} -- a hierarchical transaction structure that allows for invalidation of old channel states.
-Invalidation tree is based on the fact that the timelock of the first transaction in a chain defines the validity of all subsequent transactions.
+The key concept of DMC is \textit{invalidation tree} -- a hierarchical transaction structure that allows for invalidation of old channel states, because the timelock of the first transaction in a chain defines the validity of all subsequent transactions.
 A follow-up paper~\cite{Burchert2017} describes a way to share the cost of opening and closing channels among multiple parties.
 
 
 \subsection{Poon-Dryja channels (Lightning)}
 
-The Lightning Network (LN), proposed in 2016~\cite{Poon2016}, overcomes the limitations of previous channel designs.
+The Lightning Network (LN), proposed in 2016~\cite{Poon2016}, overcomes the limitations of earlier channel designs.
 Lightning channels are \textit{bidirectional} and have an \textit{unlimited lifetime}.
 
 The key insight in Lightning is its \textit{revocation-based state replacement}.
 The transactions reflecting channel states are constructed in such a way that each next update \textit{invalidates} the previous one.
-Despite the fact that all intermediate states are valid Bitcoin transactions (and can be broadcast and confirmed on the blockchain), broadcasting any state except the latest one by one party allows the other party to withdraw \textit{all} funds from the channel, punishing the cheater.
+All intermediate states are valid Bitcoin transactions (and can be broadcast and confirmed on the blockchain).
+However, broadcasting any state except the latest one by one party allows the other party to withdraw \textit{all} funds from the channel, punishing the cheater.
 
-The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, which are then followed by several implementation teams.
+The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, followed by several implementation teams.
 The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
 Other implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
 As of 2020,~LN facilitates the off-chain exchange of more than $950$~BTC\@.
-A separate Lightning Network also operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency very similar to Bitcoin.
+A separate Lightning Network also operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency similar to Bitcoin.
 
 Lightning takes advantage of two relatively recent updates in Bitcoin.
 One of them is \textit{relative timelocks}.
 Contrary to earlier protocol, Lightning uses relative timelocks, as opposed to absolute ones.
 A relative timelock makes a UTXO valid only after a certain time has passed after the transaction that created this UTXO is confirmed.
 This functionality was implemented in BIP-112~\cite{BtcDrak2015} (\texttt{CHECKSEQUENCEVERIFY}) and activated in 2016.
-An important advantage is that a transaction with a relative timelock may be signed but not broadcast for an indefinite period of time.
+A transaction with a relative timelock may be signed but not broadcast for an indefinite period of time.
 This allows Lightning channels to be left open indefinitely.
 Let us now discuss the other Bitcoin update that made Lightning possible -- \textit{Segregated Witness}, or \textit{SegWit} -- in more detail.
 
@@ -139,11 +138,11 @@ Each transaction must specify the outputs it is spending.
 An output is referenced by the \textit{hash} of the transaction and the \textit{index} of the output in that transaction.
 In the initial versions of Bitcoin, the transaction hash was calculated based on all transaction data, including the signature.
 The ECDSA signature scheme used in Bitcoin allows for multiple ways to sign the same message.
-Consequently, one could abuse the signature malleability and sign the same transaction in different ways.
-These would result in different transactions with equivalent semantics but different hashes.
+Therefore, one could abuse the signature malleability and sign the same transaction in different ways.
+These would result in different transactions with the same semantics but different hashes.
 
 Transaction malleability was a critical roadblock preventing the development of L2 protocols for Bitcoin.
-A payment channels is generally initiated in three steps.
+A payment channels is initiated in three steps.
 First, the parties co-sign the funding transaction that creates a multi-signature output.
 Second, they co-sign a transaction that spends that output and reflect the initial distribution of funds.
 Third, they confirm the funding transaction on the blockchain.
@@ -153,14 +152,14 @@ Transaction malleability makes this step unreliable.
 One of the parties may broadcast a modified version of the funding transaction, which has the same semantics but a different hash.
 As a result, the original funding transaction would be become invalid~\cite{Harding2016}.
 
-Additionally, transaction malleability complicates fraud prevention.
+Transaction malleability also complicates fraud prevention.
 L2 protocols often assume that parties watch the blockchain for events of interest, such as broadcasts of old channel states.
 With transaction malleability, the transaction hash does not uniquely define transaction semantics.
 This issue makes watching the blockchain for relevant events hard, if not impossible.
 
 SegWit, introduced in 2017, mitigated transaction malleability.
 This update introduced a new category of transaction outputs, where the \textit{witness} (i.e.,~the signature) and other components of a transaction are \textit{segregated}.
-As a result, the signature no longer affects the transaction hash, which mitigates the problem.
+As a result, the signature no longer affects the transaction hash, which mitigates the issue.
 This opened the way for the practical implementation and deployment of more advanced Bitcoin-based L2 protocols.
 
 
@@ -173,7 +172,7 @@ We now describe the key details of the Lightning Network protocol.
 
 Each \textit{LN node} is defined by an ECDSA private-public key pair.
 A persistent \textit{node identifier} is derived from the hash of the public key. 
-Additionally, the owner can assign a human-readable alias to their node.
+A user can add a human-readable alias to their node.
 Operations from a node are authorized with a digital signature created with the corresponding signing key.
 One user can potentially own several nodes.
 
@@ -215,7 +214,7 @@ More precisely, each channel state is encoded in a \textit{pair} of commitment t
 These transactions are symmetric: they enforce a timelock on the party that holds the transaction.
 In particular, Alice's version of commitment transactions allow her to redeem her output only after a timeout.
 Bob's version imposes analogous restrictions on his output.
-This enables the state replacement mechanism (described below), which provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
+This enables the state replacement mechanism that provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
 
 Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
 %An HTLC gives the funds either to one party, if it provides a preimage of a given hash, or to the other party after a timeout.
@@ -229,7 +228,7 @@ If Alice wants to send $x$~coins to Bob, she first asks him for a \textit{paymen
 Bob generates $r$~uniformly at random and sends its hash $H(r)$~to Alice in an \textit{invoice} message.
 Alice then \textit{offers} Bob an HTLC that can be \textit{resolved} in one of two ways.
 Either Bob reveals $r$~and \textit{redeems} the coins before time $t$, or Alice gets the coins back.
-A payment channel can keep track of multiple concurrent unresolved HTLCs, which are also called \textit{in-flight} HTLCs.
+A payment channel can keep track of multiple concurrent unresolved, or \textit{in-flight} HTLCs.
 
 
 \paragraph{Multi-channel transactions}
@@ -265,7 +264,7 @@ In the actual LN protocol, the fee consists of two parts: a constant \textit{bas
 Note that the time parameter of the HTLCs along the path is decreasing to ensure a safety margin between the timeouts.
 For example, the HTLC between $u_1$~and~$u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and~$u_3$~is only three days.
 This ensures that $u_2$~has enough time to settle the contract with~$u_1$~after receiving $r$~from $u_3$, even if $u_3$~reveals the preimage just before the corresponding timeout expires.
-There is an inherent trade-off regarding timeout lengths.
+We observe an inherent trade-off regarding timeout lengths.
 Short timeouts open the risk of not being able to dispute a fraudulent transaction in case of blockchain congestion.
 Long timeouts open up a DoS vector, where an attacker can route many unsettled payments through a channel and effectively block it until the timelock expires.
 
@@ -280,20 +279,20 @@ This may happen in one of three ways:
 
 \begin{itemize}
 	\item Collaborative closure. Alice signals the intent to close the channel, and Bob cooperates in signing the transaction that reflects the latest channel state. This results in one on-chain transaction to close a channel, and no delays for both parties. Both parties must be online and cooperating.
-	\item Non-cooperative closure without breach. Alice signals the intent to close the channel, but Bob does not respond. In this case, Alice publishes the latest commitment transaction on the blockchain. Bob can redeem his output immediately, but Alice has to wait until a timeout expires. This is a safety measure to provide Bob with an opportunity to broadcast a \textit{justice transaction} (see below).
+	\item Non-cooperative closure without breach. Alice signals the intent to close the channel, but Bob does not respond. In this case, Alice publishes the latest commitment transaction on the blockchain. Bob can redeem his output immediately, but Alice has to wait until a timeout expires. This is a safety measure to provide Bob with an opportunity to broadcast a \textit{justice transaction}.
 	\item Non-cooperative closure with breach. Alice broadcasts an old commitment transaction in an attempt to close the channel with an outdated channel state (thus potentially stealing from Bob). If Bob does not react before the timelock on Alice's output expires, Alice can redeem her output, and the channel is closed.\footnote{From the on-chain point of view, a non disputed non-cooperative close is indistinguishable from a non-cooperative close without a breach. Layer-one does not know whether a commitment transaction is the last one, unless this fact is disputed.} If Bob is online and notices the breach before the timeout, he broadcasts the latest commitment transaction, which allows Bob to spend Alice's output before she can, punishing her for the cheating attempt.
 \end{itemize}
 
 This state replacement mechanism is the key element of LN, which makes it superior to earlier payment channel designs.
 Lightning channels have an unlimited lifetime (the parties do not have to close the channel if none of them wants to) and supports payments in both directions.
-However, there is a trade-off here: the parties must be online to notice potential malicious channel closures and broadcast justice transactions.
+However, the parties must be online to notice potential malicious channel closures and broadcast justice transactions.
 This functionality can be outsourced.
 Entities that watch the blockchains for malicious channel closures and dispute them on behalf of a user are called \textit{watchtowers}.
 Implementing effective, economically incentivized, and privacy-preserving watchtowers in an active area of research~\cite{McCorry2019}.
 
 LN's revocation technique has proved effective as a deterrence against malicious channel closures.
-As of July~2019, there has been only $241$~channel closures followed by a justice transaction.
-This constitutes only $0.7\%$~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and is not absolutely accurate. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, as a result of a broken backup restore (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
+As of July~2019, only $241$~channel closures have been followed by a justice transaction.
+This constitutes only $0.7\%$~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and may not show the full picture. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, if a channel is incorrectly restored from backup (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
 
 
 \subsection{P2P network and path-finding}
@@ -301,7 +300,7 @@ This constitutes only $0.7\%$~of channels at that time~\cite{BitMEXLN3}.\footnot
 Lightning network is \textit{source-routed}: the sender determines the path to the receiver.
 But how does the sender construct such a path?
 
-LN nodes gossip about newly opened channels that are marked as available for routing.
+LN nodes gossip about new channels available for routing.
 Based on this information, each node maintains a local model of the network graph, and uses it to generate routes to the receiver.
 Total capacities of public channels are known.
 Therefore, the sender only considers channels with the capacity larger than $x$~for a payment of amount $x$.
@@ -313,7 +312,7 @@ After Alice opens a channel with Bob, all funds are initially on her side.
 This means that she can send up to the total capacity, but she can not receive.
 As the local balances change, the routing capabilities of the channel in both directions also change.
 
-The fact that local channel balances are not public makes routing unreliable, especially for larger amounts.
+The lack of information about local channel balances makes routing unreliable, especially for larger amounts.
 If a payment fails, an error message notifies the sender which channel has failed.
 The sender then tries a different route.
 The process repeats until the payment succeeds.
@@ -329,7 +328,7 @@ Let us outline some of the directions for future developments of Lightning.
 
 \textit{Schnorr signatures} is a digital signature algorithm that is considered preferable to ECDSA currently used in Bitcoin\footnote{Schnorr signature was covered by US patent~\cite{Schnorr1989}, which expired in 2008. This prevented its implementation in the original version of Bitcoin.}
 In particular, this signature scheme allows for arithmetic on signatures.
-In the context of Bitcoin, this allows for multi-signatures that are indistinguishable from signatures with a single signer.
+In the context of Bitcoin, this allows for multi-signatures indistinguishable from signatures with a single signer.
 Schnorr signatures are being integrated in Bitcoin as part of a complex \textit{Schnorr-Tapscript-Taproot} update~\cite{Hertig2020}.
 For Lightning Network, Schnorr signatures allow for privacy improvements.
 For instance, Lightning-related transactions indistinguishable from other transaction types from an external observer.
@@ -350,17 +349,17 @@ If \texttt{SIGHASH\_NOINPUT} is deployed, this replacement mechanism can be used
 \section{Research directions in payment channel networks}
 
 Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019},  liquidity~\cite{Dandekar2011, MorenoSanchez2018, Conoscenti2019}, topology~\cite{Martinazzi2019, Seres2019}, and routing~\cite{Engelmann2017, Prihodko2016, Malavolta2017a, Grunspan2018, Osuntokun2018, Piatkivskyi2018, Roos2018, Sivaraman2018, Bagaria2019, Pickhardt2019, Pickhardt2019a, ZmnSCPxj2019, ZmnSCPxj2019a, ZmnSCPxj2019b}.
-We now outline the related work in the directions that are most relevant for our work.
+We now outline the related work in the directions most relevant for our work.
 
 \paragraph{Security}
-One important aspect of payment channel network security is the resilience to DoS attacks.
+A payment channel network should be resilient to DoS attacks.
 Such network operate in a permissionless environment: anyone can join and start routing payments.
 In the current LN design, no fees are charged if a payment fails, but failed payments consume network resources.
 This may lead to DoS attacks.
 Various DoS attacks have been described: based on route hijacking~\cite{Tochner2019}, depleting channel capacity~\cite{PerezSola2019}, and exceeding the supported number of concurrent in-flight HTLCs~\cite{Mizrahi2020}.
 
 \paragraph{Privacy}
-From the privacy point of view, layer-two protocols constitute an improvement compared to layer-one.
+From the privacy point of view, layer-two protocols improve upon layer-one.
 In L2, all transactions ever made are not conveniently stored in a globally distributed open database, available for future analysis.
 However, multiple weaknesses in the LN privacy have been identified.
 It has been demonstrated that payment privacy can be breached due to short routes and strong statistical hints~\cite{Beres2019}.

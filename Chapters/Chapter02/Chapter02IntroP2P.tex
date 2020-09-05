@@ -33,7 +33,7 @@ This distinguishes it from file-sharing networks, which are agnostic to the type
 The blockchain has a logical structure: each blocks depends on the previous block.
 If one block is invalid, this makes all subsequent blocks in the branch invalid.
 Therefore, a cryptocurrency node has to embrace a trade-off.
-On the one hand, it should download the blocks in order to avoid spending resources on potentially invalid blocks.
+On the one hand, it should download the blocks to avoid spending resources on potentially invalid blocks.
 On the other hand, downloading blocks in parallel would significantly speed up the process.
 In Bitcoin, the compromise was found with the \textit{headers-first} block download (described below).
 
@@ -55,14 +55,14 @@ Such protocols should prioritize resilience over efficiency.
 For instance, Bitcoin's P2P protocol ensures the diversity of connections.
 Each peer maintains multiple connections from different IP~regions and autonomous systems.
 
-Compare this to file-sharing, which optimizes for an opposite outcome: for instance re-trackers 
+Compare this with file-sharing, which optimizes for an opposite outcome: for instance re-trackers 
 File-sharing protocols, on the contrary, often prioritize local connections for efficiency~\cite{Yoshida2012,Wang2012}.
 This allows to achieve faster throughput by utilizing the ISP's local infrastructure instead of the global Internet.
 
 
 \section{P2P protocols in cryptocurrencies}
 
-Let us now describe the P2P protocol that is used in Bitcoin, as well as an alternative P2P protocol for cryptocurrencies -- Dandelion.
+Let us now describe the P2P protocol used in Bitcoin and an alternative P2P protocol for cryptocurrencies -- Dandelion.
 
 \subsection{Bitcoin P2P protocol}
 \label{sec:BitcoinP2PProtocol}
@@ -79,7 +79,7 @@ The default method is \textit{DNS bootstrapping}.
 The software contains a list of eight hard-coded DNS records maintained by well-known Bitcoin developers.
 The records resolve into IP addresses of stable Bitcoin peers.
 A new peer connects to a random subset of those.
-In case DNS bootstrapping does not succeed, there is a fallback mechanism of \textit{seed nodes}.
+In case DNS bootstrapping does not succeed, the peer uses a fallback mechanism of \textit{seed nodes}.
 Bitcoin~Core contains a list of IP addresses of known stable nodes.
 A new node connects to a subset of nodes at these IP addresses.
 
@@ -103,8 +103,7 @@ Ideally, this should suffice for all subsequent connections to the network.
 DNS bootstrapping and seed nodes remain available as a fallback mechanism.
 
 Bitcoin peers aims to diversify the set of neighboring peers.
-Neighbors are chosen randomly from a large set of possibly live peers.
-Additional checks ensure that the neighbors represent a diverse set of subnetworks or autonomous systems~\cite{Naumenko2019a}.
+Each peer choose its neighbors randomly from a large set of possibly live peers, ensuring that the neighbors represent a diverse set of subnetworks or autonomous systems~\cite{Naumenko2019a}.
 
 
 \paragraph{Initial block download}
@@ -144,8 +143,8 @@ Compact blocks reduce this inefficiency by allowing peers to share \textit{sketc
 A sketch describes the block contents using short transaction identifiers.
 It also contains some full transactions that the receiving peer does not have (as \textit{predicted} by the sending peer).
 The receiving peer tries to reconstruct the block based on the sketch and the available transactions.
-It may request the missing transactions with additional queries (\texttt{getblocktxn} -- \texttt{blocktxn}).
-An additional P2P optimization called Erlay~\cite{Naumenko2019} is being implemented.
+It may request the missing transactions with more queries (\texttt{getblocktxn} -- \texttt{blocktxn}).
+Another P2P optimization called Erlay~\cite{Naumenko2019} is being implemented.
 This protocol improvement reduces the number of redundant \texttt{inv} messages that Bitcoin nodes exchange.
 
 Miners have special requirements for the P2P protocol.
@@ -162,7 +161,7 @@ The inherent symmetry of P2P gossip may allow the attacker to locate the origina
 
 Bitcoin uses \textit{broadcast randomization} to protect against such attacks.
 Instead of announcing a new transaction as soon as possible, each peer introduces a random delay unique for each neighbor.
-This mechanism, referred to as \textit{diffusion}, replaced~\cite{Wuille} another randomization technique known as \textit{trickling}.
+This mechanism, called \textit{diffusion}, replaced~\cite{Wuille} another randomization technique known as \textit{trickling}.
 With trickling, a peer announces a transaction to a random subset of neighbors.
 Such subsets are chosen once in a fixed-length time period.
 Replacing trickling with diffusion provided only a marginal privacy improvement~\cite{Fanti2017}.
@@ -179,7 +178,7 @@ The node that received the message randomly chooses whether to continue the stem
 Therefore, for a network adversary, the original message sender the the originator of the fluff phase are separated.
 
 The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism.
-The drawbacks of Dandelion are additional propagation delays and sensitivity to DoS attacks at stem phase.
+The drawbacks of Dandelion are increased propagation delays and sensitivity to DoS attacks at stem phase.
 As of 2020, Dandelion is used in privacy-focused cryptocurrencies Monero, Grin, and Beam.
 
 
@@ -190,9 +189,9 @@ They are supposed to download and store the whole blockchain and share it with o
 Alternative types of nodes offer ways to use Bitcoin without such requirements.
 
 \paragraph{Pruned nodes}
-The simplest modification of the full protocol is not to store old blocks.
-Nodes in this mode of operation are referred to as \textit{pruned}.
-A pruned node performs the initial block download and validates all blocks, but removes the old blocks once they are validates.
+The simplest change of the full protocol is not to store old blocks.
+Nodes in this mode of operation are called \textit{pruned}.
+A pruned node performs the initial block download and validates all blocks, but removes the old blocks after they are validated.
 This allows to significantly reduce the storage requirements.
 For instance, Bitcoin~Core allows allocating as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $270$~GB as of 2020).
 Pruned nodes do not support transaction indexing and can not serve blockchain data to others.
@@ -204,7 +203,7 @@ Instead of downloading full blocks, it only asks for block headers and specific 
 The peers respond with the requested data along with Merkle proofs that the transactions were included in the blocks.
 
 SPV is less secure compared to the full protocol.
-Only PoW in the headers can be checked independently, but not the validity of the blocks themselves.
+Only PoW in the headers can be verified independently, but not the validity of the blocks themselves.
 SPV nodes must therefore ensure they are not eclipse-attacked.
 An adversary controlling all connections of a victim SPV node can conceal the true main chain.
 
@@ -213,7 +212,7 @@ In the naive implementation, the full node learns the addresses that belong to t
 To mitigate this threat, \textit{Bloom filters} have been introduced.
 A Bloom filter is a probabilistic data structure that allows to check whether an element belongs to a set.
 It never produces false negatives: if an element is in the set, the filter always indicates that.
-It may produce false positives, wrongly reporting that an element belongs to a set when in fact it does not.
+It may produce false positives, wrongly reporting that an element belongs to a set.
 In the context of Bitcoin, an SPV node submits a Bloom filter to a full node to specify the addresses it is interested in.
 The full node replies with the transactions that pass the filter.
 The SPV node then discards the false positives locally.
@@ -225,11 +224,11 @@ It requires a \textit{trusted node} to report balances and broadcast transaction
 Many mobile wallets take this approach.
 They store the keys and sign transactions locally, but can only publish them through a trusted server maintained by the developers.
 This approach is based on an even weaker security model.
-The trusted node can lie about the state of the blockchain, deny service, and learn what addresses a user controls.\footnote{The wallet provider can even log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
+The trusted node can lie about the state of the blockchain, deny service, and learn what addresses a user controls.\footnote{The wallet provider can log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
 On the other hand, from the viewpoint of the global attacker, it may be harder to distinguish users that broadcast transactions using the same trusted node.
 
 %There is an inherent trade-off between wallets with centralized and P2P broadcast.
-%Centralized wallets may better protect the user's privacy from external adversaries, but can themselves link users' transactions and correlate them with additional information obtained from the app.
+%Centralized wallets may better protect the user's privacy from external adversaries, but can themselves link users' transactions and correlate them with other information obtained from the app.
 %Users must also trust centralized wallet providers for availability.
 
 
@@ -266,13 +265,13 @@ One attack~\cite{Miller2015} exploits some peculiarities in the update mechanism
 Each Bitcoin node maintains a database of IP addresses of peers it knows, along with corresponding timestamps intended to reflect the peer's "freshness".
 Counterintuitively\footnote{As of the time of writing. After an update of Bitcoin Core in March~2015, the attack is no longer feasible.}, Bitcoin nodes only update timestamps for nodes that they maintain outgoing connections with.
 For incoming connections, the peer preserves the first timestamp relayed along with the address.
-The authors implement a tool that exploits these rules to make an accurate guess of the network topology.
+The authors implement a tool that exploits these rules to make a reliable guess of the network topology.
 
 % 2016 - Neudecker - Timing Analysis for Inferring the Topology of the Bitcoin Peer-to-Peer Network
 Another paper~\cite{Neudecker2016} infer the network topology with a timing analysis attack.
 Unlike~\cite{Miller2015}, this approach uses the timing of transaction propagation.
 The authors managed to infer the topology of the real-world Bitcoin network with high recall and precision.
-They also show that an inappropriately parameterized trickling mechanism can actually reduce the resistance to topology discovery attacks based traffic analysis, compared to naive gossip.
+They also show that an inappropriately parameterized trickling mechanism can reduce the resistance to topology discovery attacks based traffic analysis, compared to naive gossip.
 
 % 2017 - Wang - Towards better understanding of Bitcoin unreachable nodes
 Finally,the authors of~\cite{Wang2017} conduct a measurement study of Bitcoin to analyze the \textit{unreachable} peers (i.e.,~peers behind NATs and firewalls).
@@ -302,7 +301,7 @@ First, the attacker  prevents the victim from using Tor -- an anonymization over
 (This technique is described separately in~\cite{Biryukov2015}.)
 In particular, the attacker sends invalid blocks or transactions through Tor, which causes Bitcoin peers to temporarily ban all Tor exit nodes.
 Next, the attacker establishes multiple \textit{parallel} connections to all nodes\footnote{Only nodes that accept incoming connections are concerned. The paper refers to such nodes as \textit{servers}.} and tracks which of them advertise an IP address of the victim.
-The intuition is that the peers that advertise the victim's IP address to the attacker are the victim's immediate neighbors (referred to as \textit{entry nodes}).
+The intuition is that the peers that advertise the victim's IP address to the attacker are the victim's immediate neighbors, or \textit{entry nodes}.
 While this is not guaranteed, the paper suggests ways to reduce noise in the resulting data.
 The attacker compiles maps the victims' IP addresses to sets of their entry nodes.
 The attacker then listens to new transactions and correlates them with peers if they are broadcast from that peer's entry nodes.

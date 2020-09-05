@@ -11,11 +11,11 @@ We then provide the necessary technical background on Ethereum -- a blockchain-b
 
 A contract is a basic building block of market economy.
 The foundational mechanics of a contract has not changed in centuries.
-It is usually a written text which is designed to be interpreted by humans.
+It is usually a written text designed to be interpreted by humans.
 
 Contracts face major challenges in the digital era.
 First, contacts are becoming more complex.
-It is hard for humans to keep up with the increased speed and complexity of international finance.
+It is hard for humans to keep up with the speed and complexity of international finance.
 Second, contracts must be enforced.
 Usually, the government assumes the responsibility for contract enforcement.
 However, this introduces challenges in the global Internet.
@@ -59,7 +59,7 @@ On the other hand, they make implementing many types of contracts difficult, if 
 Ethereum is a blockchain platform that aims to address these limitations.
 It was announced in 2014~\cite{Buterin2014, Wood2014} and launched in 2015.
 
-There are three key differences between Ethereum and Bitcoin.
+Ethereum differs from Bitcoin in three major ways.
 
 First, Ethereum provides a richer programming environment.
 An Ethereum smart contract is written in a Turing-complete programming language and stored at a unique address.
@@ -85,7 +85,7 @@ Simple systems are usually more secure than complex ones.
 The more interactions parts of the system engage in, the more things can potentially go wrong or be purposefully exploited.
 The rich programming environment of Ethereum leaves more possibilities for programmers to make mistakes.
 Indeed, multiple high-profile smart contracts have been hacked, losing tens of millions of~US~dollars.
-These unfortunate events have shown that secure programming practices are especially important for smart contracts.
+These unfortunate events have shown that secure programming practices are crucial for smart contracts.
 
 
 \section{Ethereum architecture}
@@ -99,7 +99,7 @@ Ethereum nodes communicate through a peer-to-peer network and maintain a shared 
 The state reflects the state of all \textit{accounts}.
 It maps account \textit{addresses} to account \textit{states}.
 
-There are two types of accounts in Ethereum: externally owned accounts and contract accounts.
+Accounts in Ethereum belong to one of two types: externally owned accounts and contract accounts.
 An \textit{externally owned account} is controlled by a private key.
 A \textit{contract account} is controlled by a \textit{smart contract}.
 Each account has a \textit{balance} and a \textit{nonce}.
@@ -110,7 +110,7 @@ The nonce is a counter that keeps track of the number of transactions issued fro
 Apart from balance, contract accounts have \textit{code} and \textit{storage}.
 Contract code is a piece of bytecode for the Ethereum virtual machine (EVM).
 Contract storage is a mapping of arbitrary variable names to their values.
-The contract code controls the changes to the balance and storage of the account.\footnote{There are exceptions: the balance of any account can be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
+The contract code controls the changes to the balance and storage of the account.\footnote{The balance of any account can also be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
 Internally, account data is stored in Merkle Patricia trees -- radix trees with~$256$-bit keys~\cite{MPTSpec, Buchman14}.
 % The storage of a contract account can be modified (if allowed by its code), but the code itself cannot.
 % "one can use create2 to deploy different bytecode to the same contract: deploy code1 - selfdestruct - deploy code2 - ..."
@@ -131,12 +131,12 @@ A transaction includes the following fields:
 	\item \emph{v}, \emph{r}, \emph{s} -- signature data.
 \end{itemize}
 
-There are two types of transactions in Ethereum.
+An Ethereum transaction belongs to one of two categories.
 A \textit{message call transaction} executes a function of an existing contract or transfers ether.
 It contains the arguments for the function call in an optional \textit{data} field.
 A smart contract function called by a transaction can in turn call other functions in this or other contracts.
 A \textit{contract creation transaction} deploys a new contract.
-It contains an additional \emph{init} field -- a byte array containing the EVM bytecode of the new contract and the initialization code that is executed once on contract creation.
+It contains an \emph{init} field -- a byte array containing the EVM bytecode of the new contract and the initialization code executed once on contract creation.
 
 Transactions incur fees to prevent resource abuse.
 Every computational step in EVM is priced in units of \emph{gas}.
@@ -170,17 +170,17 @@ Contrary to Bitcoin, Ethereum issuance rate is not hard-coded into the protocol~
 Changes in issuance are decided in an informal governance process and implemented by the core developers.
 
 Ethereum aims at a short average interval between blocks: $15$~seconds, compared to $10$~minutes in Bitcoin.
-Without additional countermeasures, short block intervals can lead to a high \textit{orphan rate}.
+Without specific countermeasures, short block intervals can lead to a high \textit{orphan rate}.
 An \textit{orphan} is a valid block that did not get accepted in the main chain.
 Network delays lead to miners unwillingly generating multiple blocks on the same height.
 Only one of these block is eventually accepted, whereas the hash power spent on others is essentially wasted.
 In a double-spend attack, the attacker would only have to re-generate the PoW for the main chain, but not for orphan blocks.
-Short time between blocks exacerbates this problem.
+Short time between blocks exacerbates the issue.
 
-To address the issue, Ethereum uses a modification~\cite{Lewenberg2015} of GHOST protocol~\cite{Sompolinsky2013, EthdocsMining}.
+To address the issue, Ethereum uses the modified~\cite{Lewenberg2015} GHOST protocol~\cite{Sompolinsky2013, EthdocsMining}.
 %This blockchain protocol accounts for the weight of orphaned blocks~\cite{Wuille2017, Johnson2017}.
 In Ethereum, orphan blocks are refereed to as \textit{uncle} blocks, or \textit{uncles}.
-Miners include hashes of uncles in block headers to receive additional reward.
+Miners include hashes of uncles in block headers to receive a higher reward.
 The protocol rewards uncles no more than $6$~blocks old.
 No more than $2$~uncles per block are allowed.
 Miners of uncles whose headers get included in the main chain are also rewarded.
@@ -188,7 +188,7 @@ Miners of uncles whose headers get included in the main chain are also rewarded.
 
 \subsection{Contracts}
 
-Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.\footnote{An alternative language which is in earlier stage of development is Vyper~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
+Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.\footnote{Vyper is an alternative language in an earlier stage of development~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
 It is a statically typed language with a Javascript-like syntax.
 Listing~\ref{lst:SolidityExample} provides an example of a program in Solidity.
 
@@ -245,7 +245,7 @@ This was a controversial move, because the EVM behaved correctly.
 It was the logical fault in the contract code that caused the calamity.
 Most community members accepted the proposal.
 A dissident minority continued to support the original chain (Ethereum~Classic~\cite{EthereumClassic}).
-In 2017, an estimated $150$~million~USD were lost as a result of two attacks on the Parity MultiSig contract~\cite{Palladino2017}.
+In 2017, an estimated $150$~million~USD were lost in two attacks against the Parity MultiSig contract~\cite{Palladino2017}.
 These and other attacks on smart contracts~\cite{Delmolino2016, Atzei2017} have shown the importance of tools to ensure correctness and security of smart contracts.
 Let us list some of the most pressing security challenges in this area.
 
@@ -259,7 +259,7 @@ Some argue that Solidity itself inclines programmers towards unsafe development 
 Moreover, the actual Ethereum network executes bytecode, not Solidity code.
 The security thus depends on the compiler and the EVM runtime environment.
 
-Approaches to smart contract security include systematizing good and bad programming practices~\cite{ConsenSys16, Chen2017}, designing general-purpose~\cite{Hirai2017a, Buterin2017b, Pettersson2016} as well as domain-specific~\cite{EgelundMueller2017} smart contract programming languages, formalizing smart contracts execution model~\cite{Sergey2017}.
+Approaches to smart contract security include systematizing good and bad programming practices~\cite{ConsenSys16, Chen2017}, designing general-purpose~\cite{Hirai2017a, Buterin2017b, Pettersson2016} and domain-specific~\cite{EgelundMueller2017} smart contract programming languages, formalizing smart contracts execution model~\cite{Sergey2017}.
 Multiple tools aim at improving the security and correctness of Ethereum smart contracts~\cite{Bhargavan2016, Luu2016, Hirai2017, Hildenbrandt2018, Tsankov2018, Jiang2018, Slither, Manticore, Mythril, Echidna}.
 See~\cite{Seijas2016} for an overview of approaches to smart contract programming.
 
@@ -267,7 +267,7 @@ See~\cite{Seijas2016} for an overview of approaches to smart contract programmin
 Smart contracts can not be patched.
 This presents an inherent trade-off~\cite{Porru2017}.
 On the one hand, smart contracts should guarantee fairness.
-Ideally, after a contract is deployed, nobody should be able modify its code, even its developers.
+Ideally, after a contract is deployed, nobody should be able change its code.
 This ensures that privileged parties cannot unexpectedly change the rules of the game in their favor.
 On the other hand, smart contracts are experimental software.
 Deployed contracts are likely to contain bugs.
@@ -279,14 +279,14 @@ For example, an administrator might be able to pause withdrawals without the abi
 \paragraph{Anonymous attackers}.
 Exploiting smart contracts is attractive compared to other types of cybercrime.
 First, smart contracts store significant amounts of value.
-Second, unlike, for instance, compromised databases, digital assets are more liquid.\footnote{However, the know-your-customer procedure that most exchanges require, as well as blockchain analytics, has made cashing out more difficult.}
+Second, unlike, for instance, compromised databases, digital assets are more liquid.\footnote{However, the know-your-customer procedure that most exchanges require, and blockchain analytics, has made cashing out more difficult.}
 Third, the risk of punishment is relatively low.
 
 \paragraph{External data sources}
 Some smart contract rely on external data to operate.
 A large portion of potential use cases envisions smart contracts that depend on the data from the "real world", e.g.,~financial quotes.
 External information can only get into a smart contract from a transaction.
-Centralized data providers (also known as \textit{oracles}) constitute a potential point of failure.
+Centralized data providers (also known as \textit{oracles}) are a potential point of failure.
 This issue is known as the \textit{oracle problem}.
 Multiple designs of trust-minimized oracles have been proposed.
 Mechanisms to ensure data authenticity include TLS-based cryptographic guarantees~\cite{Provable}, trusted hardware~\cite{Zhang2016}, and economic incentives~\cite{Chainlink}.

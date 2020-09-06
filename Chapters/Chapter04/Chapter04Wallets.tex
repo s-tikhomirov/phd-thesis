@@ -234,7 +234,7 @@ Bither privacy policy provides the rationale behind a permission to record audio
 BRD uses cookies, trackers, and third-party providers for analytics: Google Analytics and Firebase.
 These tools allow wallet developers to collect and analyze crash reports, and collect application usage patterns.
 This may be used to link users' activity with unique identifiers of their devices.
-%GreenBits is the only wallet which reserves the right to collect users' Bitcoin addresses.
+%GreenBits is the only wallet that reserves the right to collect users' Bitcoin addresses.
 Simple Bitcoin does not have a privacy policy.
 The link from Google Play refers to the wallet's official website~\cite{SimpleBitcoin}, which does not specify whether the application collects, stores or transmits the users' personal data.
 Monerujo privacy policy notes that the application uses the exchange rate information provided by the public API of \url{kraken.com}, and an exchange service \url{xmr.to}, which are subjects to their own privacy policies (marked with (+) in Table~\ref{tab:privacy-policies}).
@@ -288,7 +288,7 @@ All wallets with P2P transaction broadcasting except Monerujo use hard-coded DNS
 Simple Bitcoin adds one random node from a hard-coded list to a list of peers obtained via bootstrapping.\footnote{\url{5.9.104.252}, \url{213.133.103.56}, \url{213.133.99.89}; all unreachable as of 2018.}
 Electrum connects to two random servers from a hard-coded list of~$52$~servers.
 It requests the transaction history from a single server and checks it against block headers sent by other servers.
-Monerujo lets the user either choose from three hard-coded URLs which resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide the credentials for connecting to a custom node.
+Monerujo lets the user either choose from three hard-coded URLs that resolve to a list of publicly available nodes~\footnote{\url{node.moneroworld.com:18089}, \url{node.xmrbackb.one}, \url{node.xmr.be}} or provide the credentials for connecting to a custom node.
 
 We tried to connect Bitcoin wallets with P2P broadcast to our own full node.
 Bitcoin wallet and Simple~Bitcoin did connect,\footnote{Version strings: \texttt{/bitcoinj:0.14.7/Bitcoin Wallet:6.29/}, \texttt{/bitcoinj:0.14.4/Bitcoin:1.075/}.} BRD did not.
@@ -362,7 +362,7 @@ Table~\ref{tab:source-code} lists the classes containing implementations of the 
 \subsubsection*{FlowDroid}
 
 We scanned the wallets with FlowDroid~\cite{Arzt2014} -- an open source static analysis tool\footnote{The source code is available at~\cite{FlowDroid}.}
-It uses data flow analysis to detect execution paths which transfer data from \textit{sources} (functions that may return sensitive data) into \textit{sinks} (functions that send data elsewhere).
+It uses data flow analysis to detect execution paths that transfer data from \textit{sources} (functions that may return sensitive data) into \textit{sinks} (functions that send data elsewhere).
 The analyses of Bitcoin wallet, Bither, and Monerujo were stopped after a 2~hour timeout.
 Samourai was not scanned due to a technical limitation: the application is labeled as unreleased, which prevented us from downloading the APK\@.
 FlowDroid detected potential data leaks in $8$~out of~$14$~applications (see Table~\ref{tab:static-analysis}).
@@ -379,7 +379,7 @@ An application can only access its own directory in the internal storage.
 External storage is available for other applications.
 
 Sensitive data should only be kept in the internal storage.
-Android automatically backs up data and settings of applications which did not opt out\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}.
+Android automatically backs up data and settings of applications that did not opt out\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}.
 Automatic backups should be disabled for privacy-critical applications.
 %Only Electrum and Simple~Bitcoin allow backup (other wallets explicitly forbid it).
 %Simple Bitcoin also stores scanned QR~codes in the external storage.

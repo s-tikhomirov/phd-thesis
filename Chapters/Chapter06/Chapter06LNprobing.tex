@@ -354,10 +354,10 @@ The strongly connected component of the live subgraph contained $1\,489$~channel
 The other $139$~channels where pointing towards nodes for which we could not get meaningful error messages.
 
 In total, we sent $12\,895$~probes: $3\,153$~($24.45\%$) during the pre-probing and~$9\,742$~($75.55\%$) during the main probing phase.
-Out of~$9\,742$~probes in the main phase, $8\,256$~($84.75\%$) returned errors which we could use to improve the estimates of balances on payment channels ("channel temporary unavailable" and "incorrect or unknown payment details").
+Out of~$9\,742$~probes in the main phase, $8\,256$~($84.75\%$) returned errors that we could use to improve the estimates of balances on payment channels ("channel temporary unavailable" and "incorrect or unknown payment details").
 Our code was running for~$14$~hours and~$6$~minutes. % 50770 seconds
 Probing $1\,628$~live channels took $65\%$~of the time (roughly $9$~hours).
-The rest was spent on slow-responding channels or channels which replied with an unexpected error.
+The rest was spent on slow-responding channels or channels that replied with an unexpected error.
 
 
 \subsection{Probing times}
@@ -569,7 +569,7 @@ We argue that it is infeasible to reliably protect channel balances in the curre
 This conclusion comes from the following observations:
 \begin{itemize}
 	\item the sender knows whether the payment has failed or succeeded;
-	\item if the payment has failed, the sender knows which channel has failed.
+	\item if the payment has failed, the sender knows, which channel has failed.
 \end{itemize}
 However, we can change the protocol to make the latter assumption to not hold.
 

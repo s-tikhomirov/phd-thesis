@@ -175,7 +175,7 @@ The protocol addresses the key issue with gossip protocols, namely, the symmetry
 In Dandelion, message propagation occurs in two stages: the \textit{stem phase} and the \textit{fluff phase}.
 On the stem phase, instead of relaying a message to multiple neighbors, a node only relays it to one randomly selected neighbor.
 The node that received the message randomly chooses whether to continue the stem phase (pass the message further to one randomly selected node), or start the fluff phase (relay the message to multiple neighbors).
-Therefore, for a network adversary, the original message sender the the originator of the fluff phase are separated.
+Therefore, for a network adversary, the original message sender and the originator of the fluff phase are separated.
 
 The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism.
 The drawbacks of Dandelion are increased propagation delays and sensitivity to DoS attacks at stem phase.

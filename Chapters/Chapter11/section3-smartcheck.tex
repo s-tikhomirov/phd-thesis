@@ -6,7 +6,7 @@ Static analysis usually includes three stages:
 \begin{enumerate}
 	\item building an intermediate representation (IR), such as abstract syntax tree or three-address code, for a deeper analysis compared to analyzing text;
 	\item enriching the IR with more information~\cite{Woegerer2005} using algorithms such as control- and dataflow analysis (synonym, constant, and type propagation~\cite{Aho1986}), taint analysis~\cite{Tripp2009}, symbolic execution, abstract interpretation;
-	\item vulnerability detection w.r.t.~a database of patterns, which define vulnerability criteria in IR terms.
+	\item vulnerability detection w.r.t.~a database of patterns that define vulnerability criteria in IR terms.
 \end{enumerate}
 In this paper, we do not consider formal verification methods, as they require a rarely available formal specification of the contract's intended functionality.
 
@@ -59,7 +59,7 @@ The parse tree of this construction is shown in Figure~\ref{ParseTree}, and the 
 In this case we do not expect false positives, as we are able to precisely describe the target construction in XPath.\footnote{Assuming that ANTLR builds the AST correctly based on the Solidity grammar.}
 More complex rules can not be precisely described with XPath, which leads to false positives.
 Consider the Re-entrancy issue~(\ref{SolidityReentrancyExternalCall}).
-SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which does not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
+SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which do not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
 
 \begin{lstlisting}[caption={Violation of CEI not leading to re-entrancy.},label={ReentrancyListing},language=Solidity]
 pragma solidity 0.4.19;

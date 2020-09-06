@@ -238,7 +238,7 @@ if (this.balance == 42 ether) { /* ... */} // bad
 if (this.balance >= 42 ether) { /* ... */} // good
 \end{lstlisting}
 
-The pattern detects comparison expressions with \texttt{==} which contain \texttt{this.balance} as either left- or right-hand side.
+The pattern detects comparison expressions with \texttt{==} that contain \texttt{this.balance} as either left- or right-hand side.
 
 %% SOLIDITY_UNCHECKED_CALL
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedCall:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedCall}
@@ -252,7 +252,7 @@ if (!addr.send(42 ether)) revert; // better
 addr.transfer(42 ether); // good
 \end{lstlisting}
 
-The pattern detects an external function call (\texttt{call}, \texttt{delegatecall}, or \texttt{send}) which is not inside an \texttt{if}-statement.
+The pattern detects an external function call (\texttt{call}, \texttt{delegatecall}, or \texttt{send}) that is not inside an \texttt{if}-statement.
 
 %% SOLIDITY_DOS_WITH_THROW
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityDosWithThrow:name \let\letcs\etoolboxletcs} \label{SolidityDosWithThrow}
@@ -302,7 +302,7 @@ contract Fund {
 \end{lstlisting}
 
 The contract at \texttt{msg.sender} can get multiple refunds and retrieve all \texttt{Fund}'s ether by recursively calling \texttt{withdraw} before its share is set to \texttt{0}.
-Besides, it can change the state of some third contract, which \texttt{Fund} depends on.
+Besides, it can change the state of some third contract that \texttt{Fund} depends on.
 Use the "checks -- effects -- interactions" pattern: first check the invariants, then update the internal state, then communicate with external entities (see also Section~\ref{SoliditySend}):
 \begin{lstlisting}[language=Solidity]
 function withdraw() public {

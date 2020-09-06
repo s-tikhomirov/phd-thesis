@@ -73,7 +73,7 @@ In that case, a cluster represents transactions from multiple clients connected 
 \subsection{Weight functions and clustering}
 
 Let $tx$ be a transaction.
-Let $p^{tx} = [p^{tx}_1, p^{tx}_2, \dots, p^{tx}_N]$ be the vector of the first $N$~IP addresses which relayed $tx$ to us.
+Let $p^{tx} = [p^{tx}_1, p^{tx}_2, \dots, p^{tx}_N]$ be the vector of the first $N$~IP addresses that relayed $tx$ to us.
 Let $t^{tx} = [t^{tx}_1, t^{tx}_2, \dots, t^{tx}_N]$ be the vector of the corresponding \textit{relative} timestamps.
 A \textit{relative} timestamp is defined as $t = t^{abs}_i - t^{abs}_0$, where $t_{abs}^i$ is the absolute time (Unix timestamp) when we received transaction $tx_i$ (i.e.,~we subtract the timestamp of the first announcement of each transaction from all its announcements).
 For each $p^{tx}_i \in p^{tx}$, we assign a parameterized weight as follows:
@@ -112,7 +112,7 @@ w^{tx} = w_{k^{tx}_{opt}}(t^{tx})
 \]
 
 Let $X$ be the set of all transactions we consider.
-Let $P$ be the set of IP addresses of nodes which appeared in at least one of~$p$ vectors in $X$:
+Let $P$ be the set of IP addresses of nodes that appeared in at least one of~$p$ vectors in $X$:
 
 \[
 P = \bigcup\limits_{tx \in X} p^{tx}
@@ -246,7 +246,7 @@ We re-compiled \texttt{bcclient} with modified constants (port numbers, protocol
 For Monero, not based on the Bitcoin~Core codebase, we modified the full node reference implementation (\texttt{monerod}).
 We added the required logging, and disabled the built-in limits on the total bandwidth and artificial delays between network requests.
 
-For each transaction announcement, we logged the transaction hash, the IP which announced it to us, and the timestamp of this event.
+For each transaction announcement, we logged the transaction hash, the IP that announced it to us, and the timestamp of this event.
 Our method does not need full transaction data.
 Therefore, we only logged \texttt{inv} messages, and never continue with the \texttt{getdata} -- \texttt{tx} exchange.
 For selected experiments on Bitcoin testnet, we also log \texttt{addr} messages.
@@ -279,7 +279,7 @@ We visualize the results using heatmaps.
 We assign a color to each element of the matrix, where each row and each column represents an announced transaction.
 The color of the square at the intersection of the~$i$-th row and~$j$-th column represent the correlation of weight vectors of~$i$-th and~$j$-th transactions.
 Darker colors represent stronger correlation.
-Note the the heatmap is diagonally symmetric by definition: each weight vector is perfectly correlated with itself.
+Note that the heatmap is diagonally symmetric by definition: each weight vector is perfectly correlated with itself.
 
 We permute rows and columns such that the highly correlated elements are close to the main diagonal.
 We expect such permutation to cause the matrix to exhibit a block-diagonal structure.
@@ -388,7 +388,7 @@ This may be explained by a smaller distance between the listener and transaction
 
 \paragraph{Estimating the original IP}
 
-We use the \texttt{addr} messages to determine (with some level of precision) the IP of the node which issued the transactions in the control group.
+We use the \texttt{addr} messages to determine (with some level of precision) the IP of the node that issued the transactions in the control group.
 In our experiments, we first launch the listener, and only then launch the issuing nodes.
 This means that the listener captures the \texttt{addr} messages issued by the issuing nodes during bootstrapping.
 Address messages propagate through the network more slowly than transactions and are periodically re-broadcast.
@@ -399,10 +399,10 @@ If more nodes announce an IP address, we assume that the node has just joined th
 
 Our idea is to leverage the \texttt{addr} messages as follows.
 For each cluster, we determine the IPs of the most "important" nodes, i.e.,~nodes we assume are entry nodes of the transaction source.
-For each transaction in the cluster, we sum up the weights of all IPs which relayed it to us.
+For each transaction in the cluster, we sum up the weights of all IPs that relayed it to us.
 We assume the top $10\%$~of most weighted IPs to be the entry nodes.
 The intuition is that the entry nodes are among the first to relay \texttt{addr} messages from the original source.
-Therefore, we assume that an \texttt{addr} message relayed by a set of IPs which substantially intersects with the entry nodes contains the IP address of the source of the cluster.
+Therefore, we assume that an \texttt{addr} message relayed by a set of IPs that substantially intersects with the entry nodes contains the IP address of the source of the cluster.
 
 We applied this heuristic to the Bitcoin testnet experiments.
 We considered the clusters that mostly consisted of control transactions.
@@ -578,7 +578,7 @@ We chose a diverse selection of wallets for our experiments: Bitcoin-only and mu
 We performed experiments on Bitcoin testnet (Bitcoin wallet), Bitcoin mainnet (Bitcoin wallet, BRD, Coinomi, Mycelium), and Zcash (Coinomi).
 Bitcoin wallet and BRD\footnote{Bitcoin wallet and BRD are the two most popular Bitcoin clients~\cite{Wang2017}.} use P2P broadcast; Coinomi and Mycelium use centralized broadcast.
 For wallets with centralized broadcast, we only issue one set of transactions, using it as a "label" for a presumed wallet cluster.
-If our transactions form a visible cluster, we inspect the IP addresses of nodes which were among the first ones to broadcast them.
+If our transactions form a visible cluster, we inspect the IP addresses of nodes that were among the first ones to broadcast them.
 Thus we infer the IP addresses of nodes likely to be used for transaction broadcasts for this wallet.
 This allows us to later associate transactions in the network with popular wallets.
 
@@ -631,7 +631,7 @@ Second, we only run the experiment on a subset of Bitcoin nodes to avoid disrupt
 
 \subsubsection*{Estimating the IP addresses of wallet's nodes}
 
-Apart from clustering transactions, an adversary might be interested in obtaining the IP address of the nodes which a centralized wallet uses for transaction broadcast.
+Apart from clustering transactions, an adversary might be interested in obtaining the IP address of the nodes that a centralized wallet uses for transaction broadcast.
 The IP address of a centralized wallet's node may not necessarily be secret.
 Still, linking Bitcoin transactions with IP addresses may reveal which wallet a victim is using.
 This information can later be leveraged for social engineering attacks.

@@ -77,38 +77,41 @@
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 
 Bitcoin is the first digital currency without a trusted third party.
-This revolutionary protocol inspired multiple alternative projects that aim to address its limitations such as scalability and privacy.
-This new area of research at the intersection of computer science and economics is often characterized by the term \textit{blockchain}.
+This revolutionary protocol allows mutually distrusting participants to agree on a single common history of transactions.
+Bitcoin nodes pack transactions into blocks and link those in a chain (the \textit{blockchain}).
+Hash-based \textit{proof-of-work} ensures that the blockchain is computationally infeasible to modify.
 
+Bitcoin has spawned a new area of research at the intersection of computer science and economics.
+Multiple alternative \textit{cryptocurrencies} and blockchain projects aim to address Bitcoin's limitations.
 This thesis explores the security and privacy of blockchain systems.
 
-A cryptocurrency is based on a peer-to-peer network.
-Performance, resilience, and privacy of the P2P layer are important for the protocol as a whole.
-In Part~\ref{Part1Privacy}, we study the P2P networks of Bitcoin and selected privacy-focused cryptocurrencies.
-We introduce a new attack on privacy that allows an attacker to link transactions issued by the same node.
-We test the efficiency of the attack in real networks, successfully linking our own transactions.
-We provide a separate study of privacy characteristics of mobile cryptocurrency wallets.
-We discover that very few wallets follow the best practices regarding their users' privacy.
+In Part~\ref{Part1Privacy}, we study the privacy of Bitcoin and the major privacy-focused cryptocurrencies.
+In Chapter~\ref{Chapter02IntroP2P}, we explore the peer-to-peer (P2P) protocols underpinning cryptocurrencies.
+In Chapter~\ref{Chapter03Clustering}, we show how a network adversary can link transactions issued by the same node.
+We test the efficiency of this novel attack in real networks, successfully linking our own transactions.
+Chapter~\ref{Chapter04Wallets} studies the privacy characteristics of mobile cryptocurrency wallets.
+We discover that most wallets do not follow the best practices aimed at protecting users' privacy.
 
-The architecture of Bitcoin and similar cryptocurrencies emphasizes security but severely limits the transaction throughput.
-Off-chain protocols address this issue.
-Part~\ref{Part2Lightning} is dedicated to the Lightning Network (LN) -- a prominent Bitcoin-based off-chain protocol.
-Lightning performs transactions off-chain, but allows for on-chain dispute resolution.
-This ensures low latency while inheriting most of Bitcoin's security guarantees.
-We introduce a probing attack that allows to quickly discover user balances in the LN\@.
-We analyze the likelihood of various privacy attacks on the LN depending on a number of parameters.
-We describe a limitation on the number of concurrent LN payments and quantify its effects on the transaction throughput.
+Part~\ref{Part2Lightning} is dedicated to the Lightning Network (LN).
+Bitcoin's architecture emphasizes security but severely limits transaction throughput.
+LN is a prominent Bitcoin-based protocol that aims to alleviate this issue.
+LN performs low-latency transactions \textit{off-chain} but leverages Bitcoin's security guarantees for dispute resolution.
+We introduce the LN and outline the history of off-chain protocols in Chapter~\ref{Chapter05IntroLightning}.
+Then, in Chapter~\ref{Chapter06LNprobing}, we introduce a probing attack that allows an adversary to discover user balances in the LN\@.
+Chapter~\ref{Chapter07LNattacks} estimates the likelihood of various privacy attacks on the LN\@.
+In Chapter~\ref{Chapter08HTLClimit}, we describe a limitation on the number of concurrent LN payments and quantify its effects on transaction throughput.
 
-Bitcoin allows only a limited means to define how coins can be spent.
-Ethereum is a blockchain network with a focus on programmability.
-It allows writing programs in a Turing-complete language and permanently store them on-chain.
-Such programs are called smart contracts and are usually written in a high-level language Solidity.
-Part~\ref{Part3Ethereum} explores the security and privacy of smart contracts in Ethereum.
-We propose Findel -- a Solidity-based declarative domain-specific language for financial contracts.
-We classify the vulnerabilities in real-world Ethereum contracts.
-We present SmartCheck -- a static analysis tool for bug detection in Solidity.
-We describe an Ethereum-based cryptographic protocol for a more privacy-preserving regulation compliance.
-	
+Part~\ref{Part3Ethereum} explores the security and privacy of Ethereum smart contracts.
+Bitcoin's language for defining spending conditions is intentionally restricted.
+Ethereum is a blockchain network allowing for more programmability.
+Ethereum users can write programs in a Turing-complete high-level language called Solidity.
+These programs, called \textit{smart contracts}, are stored on-chain along with their state.
+Chapter~\ref{Chapter09Introcontracts} outlines the history of blockchain-based programming.
+Chapter~\ref{Chapter10Findel} describes Findel -- a Solidity-based declarative domain-specific language for financial contracts.
+In Chapter~\ref{Chapter11SmartCheck}, we classify the vulnerabilities in real-world Ethereum contracts.
+We then present SmartCheck -- a static analysis tool for bug detection in Solidity programs.
+Finally, Chapter~\ref{Chapter12KYC} introduces an Ethereum-based cryptographic protocol for privacy-preserving regulation compliance.
+
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -120,7 +123,7 @@ We describe an Ethereum-based cryptographic protocol for a more privacy-preservi
 This work would not be possible without the help and support of many people.
 This is an incomplete list of those to whom I would like to express my gratitude.
 
-First of all, I am deeply grateful my advisor, Prof.~Alex~Biryukov, for the opportunity to pursue my research interests and the invaluable guidance throughout this journey.
+First of all, I am deeply grateful to my advisor, Prof.~Alex~Biryukov, for the opportunity to pursue my research interests and the invaluable guidance throughout this journey.
 I appreciate Prof.~Volker M{\"u}ller, A-Prof.~Andrew Miller, Prof.~Matteo Maffei, Dr.~Patrick McCorry, and A-Prof.~Arthur Gervais agreeing to serve as jury members.
 I thank my co-authors: Dmitry Khovratovich, Ekaterina Voskresenskaya, Ivan Ivanitskiy, Ramil Takhaviev, Evgeny Marchenko, Yaroslav Alexandrov, Pedro Moreno-Sanchez, Matteo Maffei, Ren{\'e} Pickhardt, and Mariusz Nowostawski.
 I have learned a lot during our fruitful collaborations.
@@ -131,7 +134,7 @@ I thank my colleagues for the insightful and fun conversations: Aleksei Udovenko
 The country of Luxembourg and the University of Luxembourg generously provided me with excellent research conditions.
 I specifically thank Fabienne Schmitz, Ida Ienna, and Catherine Violet for their assistance in administrative matters.
 
-A huge thanks goes to my co-hosts for the Basic Block Radio podcast Ivan Ivanitskiy, Sergei Pavlin, and Alexander Seleznev, as well as to all our guests and listeners, for helping spread the word about decentralized technologies for the Russian-speaking audience.
+A huge thanks goes to my co-hosts for the Basic Block Radio podcast Ivan Ivanitskiy, Sergei Pavlin, and Alexander Seleznev, and to all our guests and listeners, for helping spread the word about decentralized technologies for the Russian-speaking audience.
 
 My deepest gratitude goes to my family for their endless love and support.
 I want to specifically thank my parents for encouraging me to pursue education abroad.

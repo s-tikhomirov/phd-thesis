@@ -349,6 +349,7 @@ The solutions to such puzzles would be linked in a chain using multiple timestam
 Bitcoin was the first decentralized digital currency to solve the double-spending problem without a trusted third party.
 An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto might have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in~1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
 Shortly after, he published the source code.
+The original code repository was later renamed to \textit{Bitcoin~Core} -- the Bitcoin's \textit{reference implementation}.
 Bitcoin launched on 3~January~2009 and started slowly gaining traction in the technology community.
 
 Nakamoto's insight was in the way he combined Bitcoin's components.
@@ -480,7 +481,7 @@ Second, real-world problems are rarely perfectly tunable.
 Recall that PoW rewards miners in proportion to the committed energy.
 The network can not measure energy expenditures directly.
 For PoW solutions act as a proxy, the committed amount of energy, as estimated from the PoW solutions, should predictably depend on the real committed energy.
-A miner should get roughly $kx\%$~more solutions for $x\%$~more energy spent.
+A miner should get roughly $x\%$~more solutions for $x\%$~more energy spent.
 
 SHA256 produces a uniformly distributed output in the range from $0$~to $H_{max} = 2^{256}-1$.\footnote{This is a \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
 A solution is valid if the hash is smaller than the target $t$.

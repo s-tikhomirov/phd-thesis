@@ -187,7 +187,7 @@ d = \frac{H}{H_{max}}
 \]
 
 Our goal is to put transactions that originate from one target source $S_{control}$ to one cluster.
-Out of~$K$~captured transactions, $k$ were issued from~$S_{control}$.
+Out of~$K$~captured transactions, $k$ are issued from~$S_{control}$.
 For each transaction~$i$, the a priori probability of having originated from~$S_{control}$ is $p_i = k / K$.
 
 We then divide all transactions into clusters.
@@ -265,7 +265,7 @@ We evaluate our method by clustering our own transactions in Bitcoin (testnet an
 For these experiments, we log the traffic for $15$~minutes.
 For Dash and Monero, we run the clustering algorithm without calculating the anonymity degree.
 We obtain clearly visible clusters, which indicated that our approach is applicable to these cryptocurrencies as well.
-The experiments on the Bitcoin mainnet deliberately did not attempt to occupy all connection slots and operated only on a subset of~$1\,000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
+The experiments on the Bitcoin mainnet deliberately do not attempt to occupy all connection slots and operate only on a subset of~$1\,000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
 In this section, we refer to the node that logs the incoming messages as the \textit{listener}.
 Following the terminology of~\cite{Biryukov2014}, \textit{servers} are peers that accept incoming connections.
 
@@ -369,7 +369,7 @@ Therefore, we assume that an \texttt{addr} message relayed by a set of IPs that 
 
 We apply this heuristic to the Bitcoin testnet experiments.
 We consider the clusters that mostly consist of control transactions.
-In three out of four experiments, the actual IP address was among the top five most "important" IPs.
+In three out of four experiments, the actual IP address is among the top five most "important" IPs.
 This result indicates that an adversary can narrow down the search for the source IP address to only a handful of IPs.
 
 \subsubsection{Bitcoin mainnet}
@@ -594,7 +594,7 @@ A reverse DNS lookup service \url{robtex.com} suggests that one of these IP addr
 Both IP addresses belong to Hetzner (a cloud provider) and host Bitcoin nodes with a latency of~$25$~ms~\cite{Bitnodes}.
 We estimate that each of these nodes offers more than $700$~connection slots in a separate experiment.
 The second experiment considers Zcash and Coinomi wallet.
-Though the Coinomi transactions do not form a clear cluster, we observe that some of them (in the second cluster) were quickly announced from the same IP (\texttt{5.79.123.194}), which, we assume, is one of the Coinomi's nodes.
+Though the Coinomi transactions do not form a clear cluster, we observe that some of them (in the second cluster) are quickly announced from the same IP (\texttt{5.79.123.194}), which, we assume, is one of the Coinomi's nodes.
 
 
 \section{Attack cost estimation}

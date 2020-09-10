@@ -294,7 +294,7 @@ We try to perform at least $7$~probings per channel, which means that in a succe
 We launch our own LN node\footnote{c-lightning version \texttt{v0.8.0-40-g899f5de}.} and fund it with testnet coins.
 Then, we establish five~entry channels to handpicked nodes with high connectivity and liquidity.
 Four of our channels have the maximum standard capacity of~$0.167$~BTC\@.\footnote{LN limits the channel capacity at $0.167$~BTC\@. Larger channels can be created with a special command-line argument and are sometimes called \textit{wumbo channels}.}
-One entry channel had a capacity of~$0.043$~BTC\@.
+One entry channel has a capacity of~$0.043$~BTC\@.
 We choose nodes to connect to based on the following requirements (as reported by 1ML~\cite{1MLTopConnected}):
 \begin{itemize}
 	\item well-connected and well-capitalized;
@@ -436,7 +436,7 @@ A channel is perfectly balanced if the two parties have equal balances ($c_{bal}
 	\label{fig:balance-coeff-histogram}
 \end{figure}
 
-Figure~\ref{fig:balance-coeff-histogram} depicts the distribution of balance coefficients among "small" channels that we were able to probe with high accuracy (information coefficient higher than $0.9$).
+Figure~\ref{fig:balance-coeff-histogram} depicts the distribution of balance coefficients among "small" channels that we are able to probe with high accuracy (information coefficient higher than $0.9$).
 We conclude that many small channels are unbalanced (coefficient close to zero).
 $15\%$~have the balance coefficient below $0.001$, $45\%$~below $0.01$, and~$62\%$~below $0.1$.
 However, note that the picture may change if we consider large channels, and that channel management practices on mainnet may differ.
@@ -490,7 +490,7 @@ Recall that for each yet unknown channel balance $b$~we maintain the current est
 The binary search prescribed to choose the next probing amount as $\frac{b_{min} + b_{max}}{2}$.
 If this value is too high, we may instead use the maximum value for which we can find a suitable route.
 Decreasing the probing amount would allow us to obtain at least some information on the channel in question.
-In the initial version of our algorithm, we did not do it for simplicity.
+In the initial version of our algorithm, we do not do it for simplicity.
 
 \paragraph{Concurrent probing of large channels}
 

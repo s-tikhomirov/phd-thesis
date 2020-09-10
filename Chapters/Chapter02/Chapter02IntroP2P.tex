@@ -222,8 +222,7 @@ In \textit{transaction deanonymization} attacks, an adversary is trying to assoc
 A more concrete task towards this goal is to reveal the victim's IP address, which is often linked to their geographical location and real-world identity.
 A related task is transaction clustering, whereby an attacker reveals the hidden relationships between transactions.
 
-The first network-based deanonymization attack was introduced in~2014~\cite{Koshy2014}.
-The authors propose a technique to deanonymize Bitcoin users based on transaction propagation times.
+The first work on network-based deanonymization attacks proposes a technique based on transaction propagation times~\cite{Koshy2014}.
 The adversary aggregates inputs and outputs of transactions into tuples.
 A tuple contains the Bitcoin address, the first IP address to relay the transaction, and the transaction identifier.
 The method considers each tuple as a "vote" in favor of a hypothesis that an IP address "owns" (i.e.,~possesses the private key of) a Bitcoin address.

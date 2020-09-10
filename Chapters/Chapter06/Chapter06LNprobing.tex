@@ -75,7 +75,7 @@ However, if a large channel's capacity is skewed, we can successfully probe it f
 For clarity, we omit this implementation detail from the algorithm description.
 
 \paragraph{A note on applicability}
-Our experiments demonstrate the probing technique's feasibility, but the results from the testnet can not be directly applied to the mainnet.
+Our experiments demonstrate the probing technique's feasibility, but the results from the testnet cannot be directly applied to the mainnet.
 In particular, the mainnet LN contains four times more channels than the testnet LN\@.
 Therefore, probing the whole LN on the mainnet would take more than two~days instead of~$14$~hours.
 We note that the attacker can still target specific channels, such as those belonging to an individual service provider.
@@ -156,7 +156,7 @@ A probe is an unsolicited payment with a random value instead of~$h$.
 Such payments fail in any case.
 However, we can obtain the information on channel balances based on which error occurred and where.
 In particular, we can infer whether the balance of the erring channel is higher than the probing amount $a$.
-Intermediary nodes can not distinguish randomly generated and genuine payment hashes.
+Intermediary nodes cannot distinguish randomly generated and genuine payment hashes.
 They will, therefore, forward our probes as regular payments.
 If all channels along a route have sufficient balances (higher than $a$), the probe only fails at the last step.
 The final recipient finds out that it does not know the preimage for the payment hash and emits the corresponding error message.
@@ -360,13 +360,13 @@ First, we consider the distribution of probing times for various route lengths (
 
 Nearly all probes sent along the routes of $3$~hops and shorter return within $10$~seconds.
 The median of the $8\,256$~probes is at $3.36$~seconds.
-Recall that $15.25\%$~of the probes time out or return an error that we can not interpret within our algorithm.
+Recall that $15.25\%$~of the probes time out or return an error that we cannot interpret within our algorithm.
 The corrected median without the timed out and erring probes is $3.93$~seconds. 
 We conclude that the cutoff at $10$~seconds presents an acceptable trade-off.
 The diameter of the strongly connected component on the LN is~$3$.\footnote{It is not always possible to use the shortest route, as it may not have sufficient balances in all channels.}
 
 Next, we consider the time it takes to probe a single channel.
-With the parameters we have chosen, each probe can not take longer than $70$~seconds ($7$~probes of up to $10$~seconds each).
+With the parameters we have chosen, each probe cannot take longer than $70$~seconds ($7$~probes of up to $10$~seconds each).
 For each channel, we add up the times of probes sent to this channel.
 Figure~\ref{fig:channel-timings-CDF} shows the cumulative distribution function of channels by the total time spent probing them.
 We observe that $50\%$~of channels can be probed in less than $21.2$~seconds.
@@ -483,8 +483,8 @@ An attacker may scan the blockchain looking for such outputs and cross-reference
 
 \paragraph{Lack of suitable routes}
 
-We can not probe a route if we do not find a suitable route to the target channel.
-In particular, we can not probe a high-capacity channel if only a low-capacity channel connects it to the rest of the network.
+We cannot probe a route if we do not find a suitable route to the target channel.
+In particular, we cannot probe a high-capacity channel if only a low-capacity channel connects it to the rest of the network.
 We can partially overcome this limitation by diverging from the series of probing amounts determined by binary search.
 Recall that for each yet unknown channel balance $b$~we maintain the current estimation interval $[b_{min}, b_{max}]$.
 The binary search prescribed to choose the next probing amount as $\frac{b_{min} + b_{max}}{2}$.
@@ -523,7 +523,7 @@ A forwarding node is free to choose a channel from all parallel channels to the 
 This practice is known as \textit{non-strict forwarding} and provides flexibility in addressing local balance restrictions.
 While the LN specification allows non-strict forwarding, c-lightning does not allow opening multiple channels to the same node.
 The other two popular implementations, LND and Eclair, support parallel channels.
-Therefore, we can not ensure that an intermediary node uses a given channel.
+Therefore, we cannot ensure that an intermediary node uses a given channel.
 It may forward out probe through a parallel channel instead.
 We accept this issue as a limitation of our approach.
 
@@ -613,7 +613,7 @@ Therefore, LN payments often fail due to insufficient balance at an intermediary
 In that case, the payment is attempted again with a different route.
 The sender could prevent such failures if it knew the channel balances in advance.
 
-Our experiments show that channel balances can not be considered private data.
+Our experiments show that channel balances cannot be considered private data.
 A low-resource attacker can probe the balances of most live and active channels with high precision.
 We implement and evaluate our technique on the Bitcoin testnet, successfully probing a large portion of channels.
 We identify a \textit{privacy-efficiency trade-off}: hidden balances improve privacy but hinder routing efficiency.

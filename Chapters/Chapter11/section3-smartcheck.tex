@@ -56,7 +56,7 @@ The parse tree of this construction is shown in Figure~\ref{ParseTree}, and the 
 \end{minipage}
 
 In this case, we do not expect false positives, as we can precisely describe the target construction in XPath.\footnote{Assuming that ANTLR builds the AST correctly based on the Solidity grammar.}
-More complex rules can not be precisely described with XPath, which leads to false positives.
+More complex rules cannot be precisely described with XPath, which leads to false positives.
 Consider the Re-entrancy issue~(\ref{SolidityReentrancyExternalCall}).
 SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which do not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
 

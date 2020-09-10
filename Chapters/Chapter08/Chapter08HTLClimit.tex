@@ -200,6 +200,6 @@ While not removing the limitation on the number of concurrent transactions, this
 
 We have quantitatively analyzed the negative effect on scalability produced by the limit on concurrent payments in the LN\@.
 The LN's limited concurrency implies that an adversary can block the complete network investing around $1.5M$~USD ($18.5\%$~of the network capacity).
-In comparison to~\cite{PerezSola2019}, our HTLC depletion attack achieves the same result (a victim node can not forward payments) but exploits the HTLC limit at each channel rather than its capacity.
+In comparison to~\cite{PerezSola2019}, our HTLC depletion attack achieves the same result (a victim node cannot forward payments) but exploits the HTLC limit at each channel rather than its capacity.
 Compared to~\cite{Mizrahi2020}, we properly account for the way LN handles payments below the dust limit.
 The attack cost can be substantially reduced by targeting highly valuable channels (e.g., high-capacity channels or those connecting the network's largest communities).

@@ -257,7 +257,7 @@ Only the proposed owner can (but does not have to) \texttt{join} the contract; \
 
 \subsection{Data sources and gateways} \label{def:Ch10FindelGateways}
 
-Ethereum contracts are intentionally isolated from the broader Internet and can not pull data from external data feeds~\cite{Greenspan2016}.
+Ethereum contracts are intentionally isolated from the broader Internet and cannot pull data from external data feeds~\cite{Greenspan2016}.
 The issue can be solved with asynchronous requests, which work as follows.
 A smart contract records an Ethereum event with the request parameters properly encoded.
 A daemon process at an Ethereum node listens for such events, parses the requests, and sends them to an external data source.
@@ -303,9 +303,9 @@ The execution of an expired contract ($t_1 < now$) returns \texttt{true} uncondi
 Every step in the lifecycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
 
 Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
-Ethereum contracts can not act independently: the owner must issue a transaction to trigger contract execution.
+Ethereum contracts cannot act independently: the owner must issue a transaction to trigger contract execution.
 The owner may be unable to do so due to either opportunistic behavior or technical problems, such as loss of connectivity or lack of ether.
-Thus, we presume that Findel contracts are not guaranteed to execute.\footnote{Compare with~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We can not force a user to make this decision.}
+Thus, we presume that Findel contracts are not guaranteed to execute.\footnote{Compare with~\cite{PeytonJones2000}: "If you acquire \textit{(c1 or c2)} you must immediately acquire either \textit{c1} or \textit{c2} (but not both)". We cannot force a user to make this decision.}
 
 We model unbounded Findel contracts (i.e.,~with~$INF$ as the upper time bound) using a global $expiration$ constant inside the marketplace contract.
 Every Findel contract in the Ethereum implementation can only be executed within $expiration$ time units after creation (e.g.,~ten~years).

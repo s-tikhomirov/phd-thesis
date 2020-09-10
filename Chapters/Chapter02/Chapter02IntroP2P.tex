@@ -147,7 +147,7 @@ The simplest protocol change to decrease storage requirements is to discard (\te
 A pruned node downloads and validates all blocks, and then deletes the old blocks.
 Pruning reduces storage requirements significantly.
 Bitcoin~Core allows allocating as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $300$~GB as of September~2020).
-Pruned nodes do not support transaction indexing and can not serve old blocks to others.
+Pruned nodes do not support transaction indexing and cannot serve old blocks to others.
 
 \paragraph{SPV nodes}
 \textit{Simplified payment verification} (SPV) is another approach, which is roughly outlined in the original Bitcoin paper~\cite{Nakamoto2008}.

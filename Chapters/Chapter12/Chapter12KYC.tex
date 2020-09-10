@@ -221,7 +221,7 @@ $$
 
 Note that revocation is also efficient.
 The KYC contract owner simply multiplies the accumulator value by the inverse of~$g_{L+1-i}$.
-The witness value can not be updated anymore.
+The witness value cannot be updated anymore.
 
 \paragraph{Presentation} 
 When issuing a transaction to use the exchange (e.g.,~create an order), the user submits a \textbf{zero-knowledge proof} of the following statement:
@@ -230,7 +230,7 @@ When issuing a transaction to use the exchange (e.g.,~create an order), the user
 	\item I know a signature~$\sigma_i$ and a witness~$w_i$ for some number~$i$ that has been accumulated in the
 	accumulator~$A$ in the KYC contract.
 \end{itemize}
-This compound statement must be \textit{atomic}, i.e.,~the sub-statements can not be extracted as separate valid proofs, as this would make the transaction malleable.
+This compound statement must be \textit{atomic}, i.e.,~the sub-statements cannot be extracted as separate valid proofs, as this would make the transaction malleable.
 
 The atomicity (and non-malleability) are ensured as follows.
 Let us denote the proof of knowledge for the witness and signature by~$PK_w$.

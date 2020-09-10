@@ -9,7 +9,6 @@ We classify Solidity code issues as follows (based on~\cite{Henney2003}):
 \end{itemize}
 We differentiate between functional and security issues: the former pose problems even without an adversary (though an external malicious actor can aggravate the situation), while the latter do not. Our primary sources are~\cite{Consensys2016, Solidity2017, Atzei2017, Delmolino2016, Chen2017, OpenZeppelin2017a}.
 Table~\ref{AllPatternsTable} presents a summary of all issues.
-We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~\ref{sec:DevelopmentalIssues}.
 
 \definecolor{lightlightgray}{gray}{0.90}
 
@@ -27,8 +26,8 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityBalanceEquality:severityWord 
 		&
-		Adversary can manipulate contract logic by forcibly sending it ether.
-		Use non-strict inequality on balances
+		An adversary manipulates contract logic by forcibly sending it ether.
+		Use non-strict inequality on balances.
 		\\
 		\hline
 		%% SOLIDITY_UNCHECKED_CALL
@@ -38,7 +37,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityUncheckedCall:severityWord 
 		&
 		The return value is not checked.
-		Always check return values of functions
+		Always check the return values of functions.
 		\\
 		\hline
 		%% SOLIDITY_DOS_WITH_THROW
@@ -47,7 +46,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityDosWithThrow:severityWord 
 		&
-		Expect external calls to deliberately \texttt{throw}
+		Expect external calls to deliberately \texttt{throw}.
 		\\
 		\hline
 		%% SOLIDITY_SEND
@@ -57,7 +56,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SoliditySend:severityWord 
 		&
 		The return value of \texttt{send} should be checked.
-		Use \texttt{transfer}, which is equivalent to \texttt{if~(!send())~throw;}
+		Use \texttt{transfer}, which is equivalent to \texttt{if~(!send())~throw;}.
 		\\
 		\hline
 		%% SOLIDITY_REENTRANCY_EXTERNAL_CALL
@@ -66,7 +65,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityReentrancyExternalCall:severityWord 
 		&
-		External contracts should be called after all local state updates
+		External contracts should be called after all local state updates.
 		\\
 		\hline
 		%% SOLIDITY_MALICIOUS_LIBRARIES
@@ -76,7 +75,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityMaliciousLibraries:severityWord 
 		&
 		Using external libraries may be dangerous.
-		Avoid external code dependencies, audit the whole code of the project
+		Avoid external code dependencies, audit the whole code of the project.
 		\\
 		\hline
 		%% SOLIDITY_TX_ORIGIN
@@ -85,7 +84,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityTxOrigin:severityWord 
 		&
 		A malicious contract can act on a user's behalf.
-		Use \texttt{msg.sender} for authentication
+		Use \texttt{msg.sender} for authentication.
 		\\
 		\hline
 		%% SOLIDITY_CALL_VALUE
@@ -95,7 +94,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityCallValue:severityWord 
 		&
 		\texttt{a.call.value()()} forwards all gas, allowing the callee to call back.
-		Use \texttt{a.transfer()}: it only provides the callee with 2300~gas (insufficient for a callback)
+		Use \texttt{a.transfer()}: it only provides the callee with 2300~gas (insufficient for a callback).
 		\\
 		\hline
 		%% SOLIDITY_INTEGER_DIVISION
@@ -105,7 +104,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityIntegerDivision:severityWord 
 		&
 		The quotient is rounded down.
-		Account for it, especially for ether and token amounts
+		Account for it, especially for ether and token amounts.
 		\\
 		\hline
 		%% SOLIDITY_LOCKED_MONEY
@@ -115,7 +114,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityLockedMoney:severityWord 
 		&
 		The contract receives ether, but there is no way to withdraw it.
-		Implement a function to withdraw or reject payments
+		Implement a function to withdraw or reject payments.
 		\\
 		\hline
 		%% SOLIDITY_UNCHECKED_MATH
@@ -124,7 +123,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityUncheckedMath:severityWord 
 		&
 		Without extra checks, integer over- and underflow is possible.
-		Use \hbox{SafeMath}
+		Use \hbox{SafeMath}.
 		\\
 		\hline
 		%% SOLIDITY_TIMESTAMP_DEPENDENCE
@@ -134,7 +133,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityTimestampDependence:severityWord 
 		&
 		Miners can alter timestamps.
-		Make critical code independent of the environment
+		Make critical code independent of the environment.
 		\\
 		\hline
 		%% SOLIDITY_VAR
@@ -143,8 +142,8 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityVar:severityWord 
 		&
-		Type inference choses the smallest integer type possible.
-		Explicitly specify types
+		Type inference chooses the smallest integer type possible.
+		Explicitly specify types.
 		\\
 		\hline
 		%% SOLIDITY_BYTES_BYTE
@@ -152,7 +151,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityBytesByte:severityWord 
 		&
-		\texttt{byte[]} requires more gas than \texttt{bytes}
+		\texttt{byte[]} requires more gas than \texttt{bytes}.
 		\\
 		\hline
 		%% SOLIDITY_GAS_LIMIT_AND_LOOPS
@@ -162,7 +161,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityGasLimitAndLoops:severityWord 
 		&
 		Expensive computation inside loops may exceed the block gas limit.
-		Avoid loops with big or unknown number of steps
+		Avoid loops with a high or unknown number of steps.
 		\\
 		\hline
 		%% SOLIDITY_ERC20_API_VIOLATION
@@ -172,7 +171,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityErc20ApiViolation:severityWord 
 		&
 		The contract \texttt{throw}s where the ERC20 standard expects a \texttt{bool}.
-		Return \texttt{false} instead
+		Return \texttt{false} instead.
 		\\
 		\hline
 		%% SOLIDITY_PRAGMAS_VERSION
@@ -181,7 +180,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityPragmasVersion:severityWord 
 		&
 		Contract compiles with future compiler versions.
-		Specify the exact compiler version
+		Specify the exact compiler version.
 		\\
 		\hline
 		%% SOLIDITY_PRIVATE_MODIFIER
@@ -190,7 +189,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		&
 		\usevalue SolidityPrivateModifier:severityWord 
 		&
-		The \texttt{private} modifier does not hide the variable's value, only prevents external contracts from editing it
+		The \texttt{private} modifier does not hide the variable's value, only prevents external contracts from editing it.
 		\\
 		\hline
 		%% SOLIDITY_REDUNDANT_FALLBACK_REJECT
@@ -199,7 +198,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityRedundantFallbackReject:severityWord 
 		&
 		The payment rejection fallback is redundant.
-		Remove the function to save space: payments are rejected automatically
+		Remove the function to save space: payments are rejected automatically.
 		\\
 		\hline
 		%% SOLIDITY_STYLE_GUIDE_VIOLATION
@@ -208,7 +207,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityStyleGuideViolation:severityWord 
 		&
 		Unfamiliar capitalization style causes confusion.
-		Start function names with lowercase, events with uppercase
+		Start function names with lowercase, events with uppercase.
 		\\
 		\hline
 		%% SOLIDITY_VISIBILITY
@@ -217,7 +216,7 @@ We describe the patterns in more detail in Sections~\ref{sec:SecurityIssues} --~
 		\usevalue SolidityVisibility:severityWord 
 		&
 		Functions are \texttt{public} by default.
-		Avoid ambiguity: explicitly declare visibility level
+		Avoid ambiguity: explicitly declare visibility level.
 		\\
 		\hline
 	\end{tabular}
@@ -259,7 +258,8 @@ The pattern detects an external function call (\texttt{call}, \texttt{delegateca
 
 A conditional statement (\texttt{if}, \texttt{for}, \texttt{while}) should not depend on an external call: the callee may permanently fail (\texttt{throw} or \texttt{revert}), preventing the caller from completing the execution.
 
-In the following example, the caller expects the oracle to return an integer value (\texttt{badOracle.answer()}), but the actual oracle implementation may throw an exception in some or all cases.
+In the following example, the caller expects the oracle to return an integer value (\texttt{badOracle.answer()}).
+ However, the actual oracle implementation may throw an exception in some or all cases.
 
 \begin{lstlisting}[language=Solidity]
 function dos(address oracleAddr) public {
@@ -320,7 +320,7 @@ The pattern detects an external function call followed by an internal function c
 
 Third-party libraries can be malicious.
 Avoid external dependencies or ensure that third-party code implements only the intended functionality.
-The pattern simply detects the \texttt{library} keyword (thus producing some false positives).
+The pattern detects the \texttt{library} keyword (thus producing some false positives).
 
 %% SOLIDITY_TX_ORIGIN
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityTxOrigin:name \let\letcs\etoolboxletcs} \label{SolidityTxOrigin}
@@ -373,7 +373,7 @@ The pattern detects functions whose name is \texttt{call.value} and whose argume
 \paragraph{2020 update}
 In 2019, Ethereum underwent the Istanbul upgrade.
 Among other modifications, gas prices for some operations were increased~\cite{EIP1884}.
-As a result, the call subsidy of~$2\,300$ gas is often not sufficient to handle the call.
+As a result, the call subsidy of~$2\,300$ gas units is often insufficient to handle the call.
 Therefore, it is recommended to forward more than $2\,300$ gas (probably all available gas) when calling external contracts.
 In the light of this pattern, \texttt{transfer} is no longer preferred over \texttt{send}.
 Both these commands are considered undesirable.
@@ -406,11 +406,11 @@ It is still possible to write a contract that receives money but cannot send it 
 %% SOLIDITY_UNCHECKED_MATH
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedMath:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedMath}
 
-Solidity is prone to integer over- and underflow\footnote{Referred to as simply overflow for brevity.}.
+Solidity is prone to integer over- and underflow\footnote{Referred to as overflow for brevity.}.
 Overflow leads to unexpected effects and can lead to loss of funds if exploited by a malicious account.
 Use the SafeMath library\footnote{See Section~\ref{SolidityMaliciousLibraries} for advice on library usage.} that checks for overflows~\cite{OpenZeppelin2017}.
 The pattern detects arithmetic operations \texttt{+}, \texttt{-}, \texttt{*} not inside a conditional statement.
-This rule was temporarily muted for testing (Section~\ref{SectionResults}) due to a high false positive rate.
+This rule has been muted for testing (Section~\ref{SectionResults}) due to a high false positive rate.
 
 
 %% SOLIDITY_TIMESTAMP_DEPENDENCE
@@ -423,8 +423,7 @@ Consider a lottery that distributes prizes depending on whether \texttt{now} (al
 	if (now % 2 == 0) winner = pl1; else winner = pl2;
 \end{lstlisting}
 
-A miner can tweak the timestamp and gain unfair advantage.
-%Use block numbers and average time between blocks to estimate the current time.
+A miner can tweak the timestamp and gain an unfair advantage.
 Use secure sources of randomness, such as RANDAO~\cite{RANDAO2017}.
 The pattern detects the environmental variable \texttt{now}.
 
@@ -499,7 +498,7 @@ returns (bool success) {
 }
 \end{lstlisting}
 
-The pattern detects a contract inherited from a contract with a name including the word "token", which may throw exceptions from inside one of the named functions.
+The pattern detects a contract inherited from a contract with a name including the word "token," which may throw exceptions from inside one of the named functions.
 
 %% SOLIDITY_PRAGMAS_VERSION
 \subsubsection{\usevalue SolidityPragmasVersion:name } \label{SolidityPragmasVersion}

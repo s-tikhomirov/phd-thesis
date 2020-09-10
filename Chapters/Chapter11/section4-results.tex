@@ -7,7 +7,7 @@ We compare SmartCheck with the results of manual audit (Section~\ref{ManualAudit
 
 We define a true finding as an issue (detected by a tool with manual verification or manually) that is a bad practice and should be fixed from our viewpoint.
 It may or may not be an exploitable vulnerability.
-All issues found by the tools were manually labeled as either true positive (TP) or false positive (FP).
+All issues found by the tools are manually labeled as either true positive (TP) or false positive (FP).
 A false negative (FN) for each of the four tools (Oyente, Remix, Securify, and SmartCheck) is a true finding that was not detected by this tool.
 
 For each tool, the false discovery rate (FDR) is the number of FPs for this tool divided by the number of all issues reported by this tool:
@@ -22,7 +22,7 @@ False negative rate (FNR) is the number of FNs for this tool divided by the numb
 \subsection{Case studies} \label{ManualAudit}
 
 We consider three contracts: Genesis ("the platform for the private trust management market"~\cite{Genesis}, source code~\cite{GenesisGithub}, analyzed at commit \texttt{1ecf99d}), Hive ("the first crypto currency [sic] invoice financing platform"~\cite{Hive}, source code~\cite{HiveGithub}, analyzed at commit \texttt{0d54699}), and Populous ("an online platform that matchmakes invoice sellers to invoice buyers hosted on the blockchain"~\cite{Populous}, source code~\cite{PopulousGithub}, analyzed at commit \texttt{10de4ae}).
-The FDR and FNR for each tool (in \% and in absolute numbers) are presented in Table~\ref{CaseStudyTable}.
+The FDR and FNR for each tool (in \% and absolute numbers) are presented in Table~\ref{CaseStudyTable}.
 
 \begin{table*}[t]
 	\centering
@@ -63,24 +63,25 @@ The FDR and FNR for each tool (in \% and in absolute numbers) are presented in T
 	\label{CaseStudyTable}
 \end{table*}
 
-Oyente and Securify did not show any TPs on these three contracts.
-Remix detected TPs only in the Populous contract.
-Remix and SmartCheck showed an overall FDR of~$97\%$~and~$69\%$~respectively, and an overall FNR of~$92\%$~and~$47\%$~respectively.
-This means that SmartCheck showed better FDR and FNR compared to its closest competitor.
+Oyente and Securify show no TPs on these three contracts.
+Remix detects TPs only in the Populous contract.
+Remix and SmartCheck show an overall FDR of~$97\%$ and~$69\%$ and an overall FNR of~$92\%$ and~$47\%$, respectively.
 Overall, SmartCheck reported $87$~issues in the three contracts.
 
 Requirements for code analysis tools differ across platforms and domains.
-Due to a special security requirements in smart contract programming, low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
+Due to special security requirements in smart contract programming, a low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
 Most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
 
 Though SmartCheck's FDR of~$69\%$~may seem pretty high, it is not a serious issue in this domain.
-$47\%$~is a reasonable level of FNR, since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
+$47\%$~is a reasonable level of FNR since many vulnerabilities in smart contracts are related to business logic and can not be detected automatically.
 Most of SmartCheck's FNs were found manually (not by other tools).
 
-SmartCheck detected a critical issue in one of the contracts: an attacker could create an unlimited number of internal entities and block the normal operation of the contract.
-A public function (i.e.,~such that any Ethereum user can call it) allowed to add an element to an internal array (Listing~\ref{AddingGroup}).
-Several critical functions then iterated through this array (e.g.,~Listing~\ref{Iterating}).
-An attacker could make those functions permanently fail, as the function call would require more gas than the block gas limit.
+SmartCheck detects a critical issue in one of the contracts.
+The vulnerability is as follows.
+An attacker can create an unlimited number of internal entities and block the contract's normal operation.
+A public function (i.e.,~such that any Ethereum user can call it) allows adding an element to an internal array (Listing~\ref{AddingGroup}).
+Several critical functions then iterate through this array (e.g.,~Listing~\ref{Iterating}).
+An attacker can make those functions permanently fail, as the function call would require more gas than the block gas limit.
 
 \begin{minipage}{\linewidth} 
 \begin{lstlisting}[caption={Adding an element to an internal array.},label={AddingGroup},language=Solidity]
@@ -124,7 +125,7 @@ function findBidder(bytes32 bidderId) constant returns (uint8 err, uint groupInd
 A \textit{blockchain explorer} is a website that displays information about blockchain transactions.
 Etherscan~\cite{EtherscanVerified} is a popular Ethereum blockchain explorer.
 Among other information, it offers \textit{contract verification} as a service.
-A contract developer would upload the source code to Etherscan, which would then confirm that the deployed bytecode was indeed obtained from the provided source code.
+A contract developer uploads the source code to Etherscan, which checks whether the deployed bytecode corresponds to the provided source code.
 We downloaded the source code of~$4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
 We then ran SmartCheck on this dataset.
 

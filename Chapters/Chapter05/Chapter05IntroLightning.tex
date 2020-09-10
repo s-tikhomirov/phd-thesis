@@ -14,7 +14,7 @@ This Chapter provides the background on the evolution of payment channels and it
 
 \section{Evolution of payment channels in Bitcoin}
 
-A \textit{payment channel} is a protocol for off-chain transactions.
+A \textit{payment channel} is a protocol for off-chain payments.\footnote{We follow the terminology of~\cite{Antonopoulos2020}: a transaction is a data structure that records the transfer of control over bitcoins, whereas a payment is a process of moving value across one or multiple LN channels. Each LN payment implies signing and exchanging multiple Bitcoin transactions.}
 It allows two parties to continuously update the distribution of the initially committed funds.
 To put our work in a historical context, we now describe the evolution of Bitcoin-based payment channels.\footnote{See~\cite{McCorry2016} for an overview of Bitcoin payment channel designs.}
 
@@ -71,7 +71,7 @@ On the other hand, only one (latest) channel state should be enforceable on-chai
 All previous transactions, representing old channel states, must be provably invalidated.
 
 The state replacement mechanism in unidirectional channels is called \textit{revocation by incentive}~\cite{Gudgeon2019}.
-Bob is \textit{incentivized} to close the channel using the last transaction because that transaction gives him the largest amount of money.
+Bob is \textit{incentivized} to close the channel using the last transaction because it gives him the largest amount of money.
 Bi-directional channels require other state replacement mechanisms.
 
 
@@ -104,7 +104,7 @@ The Lightning Network (LN)~\cite{Poon2016} overcomes the limitations of earlier 
 Lightning channels are \textit{bidirectional} and have an \textit{unlimited lifetime}.
 
 Lightning is based on a novel \textit{revocation-based state replacement}.
-Each transaction in a channel \textit{invalidates} the previous one.
+Each payment in a channel \textit{invalidates} the previous one.
 Though all intermediate states are represented by valid Bitcoin transactions, broadcasting any of them except the latest one leads to economic loss: the other party can then withdraw \textit{all} funds from the channel, punishing the cheater.
 
 The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, followed by several implementation teams.
@@ -164,7 +164,7 @@ Nodes communicate with an underlying bitcoin node (such as Bitcoin~Core) to rece
 
 \subsection{Channels}
 
-A Lightning channel operates in three stages: opening (locking the coins), operating (exchanging off-chain transactions), and closing (broadcasting the most recent channel state to the blockchain).
+A Lightning channel operates in three stages: opening (locking the coins), operating (performing off-chain payments), and closing (broadcasting the most recent channel state to the blockchain).
 
 
 \subsubsection*{Channel opening}
@@ -179,11 +179,11 @@ The capacity of the channel stays constant during its lifetime.
 
 \subsubsection*{Channel updates}
 
-An \textit{LN transaction} is an atomic update of one or multiple channels.
+An \textit{LN payment} is an atomic update of one or multiple channels.
 In single-channel updates, two users agree on an updated balance.
-In multi-hop transactions, the balances of several channels forming a path are simultaneously updated.
+In multi-hop payments, the balances of several channels forming a path are simultaneously updated.
 
-\paragraph{Single-channel transactions}
+\paragraph{Single-channel payments}
 
 To send a payment to Bob, Alice negotiates a new channel state.
 Each channel state is reflected in a \textit{commitment transaction}.
@@ -210,7 +210,7 @@ Either Bob reveals $r$~and \textit{redeems} the coins before time $t$, or Alice 
 A payment channel can keep track of multiple concurrent unresolved, or \textit{in-flight} HTLCs.
 
 
-\paragraph{Multi-channel transactions}
+\paragraph{Multi-channel payments}
 
 \begin{figure*}
 	\includegraphics[width=\textwidth]{htlc-figure}
@@ -218,8 +218,8 @@ A payment channel can keep track of multiple concurrent unresolved, or \textit{i
 	\label{fig:htlc}
 \end{figure*}
 
-A multi-channel transaction leverages a path of channels between a sender and a receiver, who might not share a channel between them.
-To initiate a multi-channel transaction, the receiver generates a random $r$~and sends its hash $H(r)$~to the sender.
+A multi-channel payment leverages a path of channels between a sender and a receiver, who might not share a channel between them.
+To initiate a multi-channel payment, the receiver generates a random $r$~and sends its hash $H(r)$~to the sender.
 The sender then constructs a path to the receiver and sets up an HTLC with the next node in the path.
 The second node sets up an HTLC with the \textit{same} hash value with the third node, and so on.
 Finally, the receiver redeems the payment from the last channel by revealing $r$, which allows all involved channels to be updated.
@@ -228,11 +228,11 @@ Note that all HTLCs along the path use the same hash value $y=H(r)$ to achieve a
 If the receiver reveals $r$, all channels are updated.
 Otherwise, none of them are.
 
-An illustrative example of an HTLC-based transaction is depicted in~\cref{fig:htlc}.
+An illustrative example of an HTLC-based payment is depicted in~\cref{fig:htlc}.
 Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$~and~$u_4$~as intermediaries.
 For that, $u_5$~locally chooses a value $r$~uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$~to the sender in an \textit{invoice} (step 1).
 Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, starting from the sender, establishes an HTLC using $y$.
-After the commit phase is finished, the transaction enters the release phase.
+After the commit phase is finished, the payment enters the release phase.
 Here, the receiver reveals $r$~to $u_4$~to fulfill the contract (step 6), triggering the release phase where every pair of nodes fulfills their contract from the receiver to the sender (steps 6-9).
 
 Intermediaries may charge fees for their forwarding service.

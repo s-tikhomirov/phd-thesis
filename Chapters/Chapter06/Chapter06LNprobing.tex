@@ -26,7 +26,7 @@ Answering this question remains an exciting avenue for future work.
 \subsection{Overview}
 
 As described in Chapter~\ref{Chapter05IntroLightning}, an LN channel operates as follows.
-Two parties lock funds in a multi-signature UTXO and then change the distribution of funds in a sequence of off-chain transactions.
+Two parties lock funds in a multi-signature UTXO and then change the distribution of funds in a sequence of off-chain payments.
 Nodes gossip about channels available for routing and their total capacities.
 To issue a multi-hop payment, the sender chooses a route based on its local knowledge of the network.
 Nodes do not announce the distribution of funds in their channels.
@@ -70,7 +70,7 @@ Each channel party controls the routing policy in its channel direction.
 Alice may allow routing to Bob without Bob allowing routing to Alice.
 To extract the maximum amount of information, we probe channels in both directions.
 Doing so also helps us overcome the technical issue with large channels.
-Due to the limitation on the LN transaction amount, we cannot probe large channels.
+Due to the limitation on the LN payment amount, we cannot probe large channels.
 However, if a large channel's capacity is skewed, we can successfully probe it from the "smaller" instead of the "larger" end.
 For clarity, we omit this implementation detail from the algorithm description.
 
@@ -457,7 +457,7 @@ This is the minimal amount the attacker has to commit to theoretically be able t
 Our experience shows that it is beneficial to open multiple channels to decrease the negative effect of hanging HTLCs.
 In our experiments, we use five~entry channels.
 
-Note that since all the probing transactions fail, the attacker pays no fees.
+Note that since all the probing payments fail, the attacker pays no fees.
 If no HLTCs are left unresolved after the probing, the attacker can close the entry channels collaboratively and withdraw the committed funds immediately.
 If some HTLCs are left unresolved, or the attacker's channel partners are offline or unwilling to cooperate on channel closure, the attacker would have to wait for the agreed-upon timeout (usually on the order of days) before withdrawing the funds.
 In any case, no coins are irrevocably lost.

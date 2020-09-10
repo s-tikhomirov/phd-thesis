@@ -71,13 +71,13 @@ In this experiment, we aim to quantify the impact of these security and privacy 
 \end{figure*}
 
 \subsubsection*{Value privacy}
-Intuitively, value privacy ensures that for a transaction involving only honest users, corrupted users outside the payment path learn no information about the transaction value.
+Intuitively, value privacy ensures that for a payment involving only honest users, corrupted users outside the payment path learn no information about the payment value.
 This notion thus heavily relies on the existence of paths without malicious nodes.
-Otherwise, a malicious intermediary node can trivially learn the (upper bound of the) amount of a transaction that it forwards.
-For instance, in~\cref{fig:wormhole-attack} the adversary~$u_3$ forwards $1.2$~coins to~$u_4$, estimating the transaction amount at around $1$~coin plus forwarding fees.
+Otherwise, a malicious intermediary node can trivially learn the (upper bound of the) amount of a payment that it forwards.
+For instance, in~\cref{fig:wormhole-attack} the adversary~$u_3$ forwards $1.2$~coins to~$u_4$, estimating the payment amount at around $1$~coin plus forwarding fees.
 
 \subsubsection*{Relationship anonymity}
-Intuitively, relationship anonymity ensures that given two simultaneous transactions between two pairs of nodes $(u_1, u_2)$ and~$(u'_1, u'_2)$ routed through the same path of intermediary users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than~$1/2$.
+Intuitively, relationship anonymity ensures that given two simultaneous payments between two pairs of nodes $(u_1, u_2)$ and~$(u'_1, u'_2)$ routed through the same path of intermediary users $i_1, \ldots, i_n$, the adversary controlling some of those intermediaries cannot tell who is paying to whom with probability better than~$1/2$.
 However, the LN does not achieve relationship anonymity.
 An adversary controlling $i_1$ and~$i_n$ can use the cryptographic challenge included in the HTLC to determine who pays to whom.
 For instance, in~\cref{fig:wormhole-attack} the adversary controlling $u_2$ and~$u_4$ can determine that $u_1$ is transacting with~$u_5$ as the same value~$y$ is used along the whole path.
@@ -91,14 +91,14 @@ However, this attack diminishes the economic incentive for honest users to forwa
 An example of the wormhole attack is depicted in~\cref{fig:wormhole-attack}.
 Here, $u_4$ does not send the opening value~$r$ to~$u_3$ (step 7 in~\cref{fig:htlc}).
 Instead, $u_4$ sends the value~$r$ to~$u_2$ outside the LN protocol, which allows $u_2$ to settle the HTLC with~$u_1$.
-As a result, contracts with~$u_3$ expire, simulating transaction failure, and prevent $u_3$ from participating in the transaction's successful completion.
+As a result, contracts with~$u_3$ expire, simulating payment failure, and prevent $u_3$ from participating in the payment's successful completion.
 
 
 \section{Methodology}
 
 We first compute the paths between pairs of nodes.
 Given nodes $u_1$ and~$u_2$, we compute the list of paths that connect them with one restriction: we consider only the paths with at most three intermediary nodes.
-We observe that these path lengths suffice to allow more than~$85\%$ of transactions between a random pair of nodes (\cref{fig:payment-success}) and allow us to exemplify all attacks that we want to study in this experiment.
+We observe that these path lengths suffice to allow more than~$85\%$ of payments between a random pair of nodes (\cref{fig:payment-success}) and allow us to exemplify all attacks that we want to study in this experiment.
 
 \begin{figure}
 	\centering
@@ -113,12 +113,12 @@ For instance, $\textit{paths}_{\langle u_1, u_2 \rangle, 10}$ contains the paths
 
 For a channel to be capable of transferring $x$~satoshis from~$u_i$ to~$u_j$, $u_i$ must have a balance of at least $x$~satoshis.
 However, the current balance of each counterparty in a channel is not publicly available.
-Thus, we consider a path suitable for a given transaction if the total capacity of every channel in the path is above the transaction amount, independently of how this capacity is distributed between the counterparties.
-This heuristic might consider a path suitable for a transaction while it is not.
+Thus, we consider a path suitable for a given payment if the total capacity of every channel in the path is above the payment amount, independently of how this capacity is distributed between the counterparties.
+This heuristic might consider a path suitable for a payment while it is not.
 We nevertheless follow this heuristic as LN nodes also use it in practice.
 
 As the next step, we study the effectiveness of the selected attack.
-For a chosen transaction amount~$x$, we split the set $\textit{paths}_{\langle u_1, u_2 \rangle, x}$ into two subsets:
+For a chosen payment amount~$x$, we split the set $\textit{paths}_{\langle u_1, u_2 \rangle, x}$ into two subsets:
 
 \begin{enumerate}
 	\item $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$: the subset of paths prone to the attack;
@@ -154,7 +154,7 @@ For each number of malicious nodes ($y$) and each strategy, we re-split the set 
 For instance, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-con}}$ the subset of paths between $u_1$ and~$u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes with the highest node degree are corrupted.
 Correspondingly, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-ran}}$ the subset of paths between $u_1$ and~$u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes chosen uniformly at random are corrupted.
 
-Finally, for each attack strategy, we consider $$\alpha_{\langle u_i, u_j \rangle} := \frac{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}|}{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}| + |\textit{paths-safe}_{\langle u_i, u_j \rangle, x, y}|}$$ the probability that a transaction between $u_i$ and~$u_j$ is vulnerable to the attack.
+Finally, for each attack strategy, we consider $$\alpha_{\langle u_i, u_j \rangle} := \frac{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}|}{|\textit{paths-prone}_{\langle u_i, u_j \rangle, x, y}| + |\textit{paths-safe}_{\langle u_i, u_j \rangle, x, y}|}$$ the probability that a payment between $u_i$ and~$u_j$ is vulnerable to the attack.
 Averaging across all the pairs of nodes tested, we extract the final probabilities reported in~\cref{fig:fig-all-attacks}.
 
 \section{Results and discussion}
@@ -191,19 +191,19 @@ We note that randomly selected nodes have few connections (note the degree distr
 Thus their compromise does not affect routing at large.
 
 In summary, our results show that highly connected nodes and nodes with high capacity channels have a high impact on the security and privacy of the LN\@.
-Assuming that paths are selected uniformly at random from the set of available paths, an adversary that selectively corrupts $100$~(i.e.,~only $2\%$) of LN nodes can effectively learn all the transaction values, the sender and the receiver for most transactions, and carry out the wormhole attack in about $30\%$~of the paths.
+Assuming that paths are selected uniformly at random from the set of available paths, an adversary that selectively corrupts $100$~(i.e.,~only $2\%$) of LN nodes can effectively learn all the payment values, the sender and the receiver for most payments, and carry out the wormhole attack in about $30\%$~of the paths.
 These estimations evidence that the security and privacy attacks shown in theory are indeed crucial in practice.
 
 Carrying out such attacks might be feasible in the live network: an unknown entity under the pseudonym LNBIG is known to control $23$~out of top~$50$~highest connected nodes~\cite{1MLTopConnected} and~$40\%$~of the network capacity~\cite{TheBlockLNBIG} (as of 2019).
 
 
 \section{Countermeasures}
-We assume that every two nodes carry out their transactions along a path chosen uniformly at random from the set of all available paths.
+We assume that every two nodes carry out their payments along a path chosen uniformly at random from the set of all available paths.
 However, LN nodes might implement different routing strategies.
 For instance, while routing through well-connected nodes improves the chances to reach the receiver through a short and highly liquid path, the sender might instead choose low degree nodes.
 Routing around popular nodes may reduce the probability of choosing a compromised path.
 We envision a trade-off between connectivity on the one hand and security and privacy on the other, which constitutes a direction for future work.
-A node may also route transactions through a trusted proxy node, thus guaranteeing that the first node in a path is not compromised.
+A node may also route payments through a trusted proxy node, thus guaranteeing that the first node in a path is not compromised.
 This strategy would mitigate the relationship anonymity and wormhole attacks (if the path contains no more than three intermediaries).
 
 

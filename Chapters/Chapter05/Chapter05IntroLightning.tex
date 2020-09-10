@@ -323,23 +323,22 @@ If \texttt{SIGHASH\_NOINPUT} is deployed, this replacement mechanism can be used
 
 \section{Research directions in payment channel networks}
 
-Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019},  liquidity~\cite{Dandekar2011, MorenoSanchez2018, Conoscenti2019}, topology~\cite{Martinazzi2019, Seres2019}, and routing~\cite{Engelmann2017, Prihodko2016, Malavolta2017a, Grunspan2018, Osuntokun2018, Piatkivskyi2018, Roos2018, Sivaraman2018, Bagaria2019, Pickhardt2019, Pickhardt2019a, ZmnSCPxj2019, ZmnSCPxj2019a, ZmnSCPxj2019b}.
+Multiple research works have shed light on various aspects of payment-channel networks, such as security~\cite{Malavolta2019, Kiayias2019}, liquidity~\cite{Dandekar2011, MorenoSanchez2018, Conoscenti2019}, topology~\cite{Martinazzi2019, Seres2019}, and routing~\cite{Engelmann2017, Prihodko2016, Malavolta2017a, Grunspan2018, Osuntokun2018, Piatkivskyi2018, Roos2018, Sivaraman2018, Bagaria2019, Pickhardt2019, Pickhardt2019a, ZmnSCPxj2019, ZmnSCPxj2019a, ZmnSCPxj2019b}.
 Security and privacy are the directions most relevant to our work.
 
 \paragraph{Security}
 Payment channel networks operate in a permissionless environment and should be resilient to attacks.
 For instance, in the current LN design, no fees are charged if a payment fails, but failed payments consume network resources.
 An attacker may leverage this issue to launch a DoS attack.
-Various DoS attacks have been described: based on route hijacking~\cite{Tochner2019}, depleting channel capacity~\cite{PerezSola2019}, and exceeding the supported number of concurrent in-flight HTLCs~\cite{Mizrahi2020}.
+Various DoS attacks have been described based on route hijacking~\cite{Tochner2019}, depleting channel capacity~\cite{PerezSola2019}, and exceeding the supported number of concurrent in-flight HTLCs~\cite{Mizrahi2020}.
 
 \paragraph{Privacy}
 From the privacy point of view, layer-two protocols improve upon layer-one.
-L2 protocols do not store transactions in a globally distributed open database available for future analysis.
+L2 protocols do not store transactions in a globally distributed open database available for analysis.
 However, multiple weaknesses in LN privacy have been identified.
-It has been demonstrated that payment privacy can be breached due to short routes and strong statistical hints~\cite{Beres2019}.
+Payment privacy can be breached due to short routes and strong statistical hints~\cite{Beres2019}.
 A potential countermeasure -- adding noise to channel balances -- has been shown ineffective~\cite{Tang2019}.
 An attack that allows determining channel balances, similar to our contribution presented in Chapter~\ref{Chapter06LNprobing}, has also been proposed~\cite{HerreraJoancomarti2019}.
-Lightning network privacy remains an active research area~\cite{Malavolta2017, Kohen2019, Tang2020, Rohrer2020, Kappos2020}.
-
 A payment channel protocol called Bolt\footnote{Not to be confused with Basics of Lightning Technology (BOLT) -- the Lightning Network specification.} has also been proposed for a privacy-focused cryptocurrency Zcash~\cite{Green2017} and later modified for compatibility with Bitcoin and renamed to zkChannels~\cite{Akinyele2020}.
+Lightning network privacy remains an active research area~\cite{Malavolta2017, Kohen2019, Tang2020, Rohrer2020, Kappos2020}.
 

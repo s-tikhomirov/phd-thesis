@@ -505,7 +505,7 @@ We connect to $200$~nodes and receive $124$~transactions in a $38$~minute window
 
 We explain a less clear picture compared to Bitcoin testnet as follows.
 First, we connect to only~$200$ out of $1\,700$--$1\,800$ nodes (as of the time of the experiment~\cite{MoneroHash}).
-Second, Monero does not employ the three-step transaction propagation (\texttt{inv} -- \texttt{getdata} -- \texttt{tx}),which may have opposite effects on clustering quality.
+Second, Monero does not use the three-step transaction propagation (\texttt{inv} -- \texttt{getdata} -- \texttt{tx}), which may have opposite effects on clustering quality.
 On the one hand, relaying a transaction unconditionally to all neighbors increases the probability that we receive a new transaction from a node other than the source of one of its entry nodes.
 On the other hand, this broadcast type may provide a near-perfect insight into transaction sources, if the attacker connects to all or nearly all nodes.
 Third, \texttt{monerod} connects to nodes slower than \texttt{bcclient}, which impedes data collection.

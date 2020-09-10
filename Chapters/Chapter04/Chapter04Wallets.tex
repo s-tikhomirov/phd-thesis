@@ -134,7 +134,7 @@ We now study these wallets in more detail.
 \subsection{Manual inspection}
 
 \paragraph{Independent installation}
-Users usually install Android applications from the Google Play store, which requires a Google account.
+Users usually install Android applications from the Play Store, which requires a Google account.
 A privacy-conscious user may want to avoid linking their cryptocurrency activity with their Google profile.
 They may use F-Droid (an independent application store for free and open-source applications~\cite{FDroid}) or install the application manually from an APK file.
 Out of the seven~wallets we considered, three are available in F-Droid, and five~can be installed from an APK file (see Table~\ref{tab:installation}).
@@ -342,7 +342,7 @@ Automatic backups should be disabled for privacy-critical applications.
 One method of developing dynamic user interfaces on Android is using JavaScript inside a \texttt{WebView} -- an Android component that displays web pages.
 By default, execution of JavaScript code in \texttt{WebView} is disabled, but a developer can override this setting (\texttt{setJavaScriptEnabled(true)}).
 Executing malicious JavaScript code may lead to cross-site scripting (XSS) and other attacks.\footnote{Even trusted code, e.g.,~from the application's resources, may contain unintended side effects or bugs, and implicitly leak information.}
-We detect two instances of this issue (in \texttt{FragmentSupport} and \texttt{WebViewActivity} classes) in BRD\@.
+We detect two instances of this issue in BRD (in \texttt{FragmentSupport} and \texttt{WebViewActivity} classes).
 In both cases, the warning from Android Lint -- a static analyzer built into the standard Android development environment -- is suppressed.
 
 \paragraph{Insecure connection}

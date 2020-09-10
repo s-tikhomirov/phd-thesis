@@ -5,7 +5,7 @@
 In this Chapter, we describe the current approach to identity management and propose KYCE -- a privacy-preserving KYC scheme for token whitelisting on Ethereum.\footnote{This Chapter is based on~\cite{Biryukov2018}, which, in turn, described a hackathon project. The team consisting of Daniel Feher, Dmitry Khovratovich, Sergei Tikhomirov, Aleksei Udovenko, and Maciej \.{Z}urad implemented a proof-of-concept implementation in May~2017 during the Luxblock hackathon in Luxembourg and won a joint first prize. Contributions of the author of this thesis include: implementing parts of the hackathon project and writing the paper (except for Section~\ref{sec:PrivacyPreservingKYC}).}
 
 
-\section{Introduction}
+\section{Identity}
 
 Digital identity is the information used by a computer system to represent a user.
 Access to services is controlled in two steps:
@@ -37,7 +37,7 @@ KYCE allows banks to implement KYC checks using an external smart contract -- a 
 Our scheme uses zero-knowledge proofs to check users' eligibility without disclosing their private information to anyone except the KYC provider.
 A smart contract stores the KYC whitelist in the form of a cryptographic accumulator.
 This construction allows users to be efficiently added to, removed from, and checked against the list without storing any plaintext data on the blockchain.
-We then discuss possible use cases, implementation challenges, and outline the direction for future work.
+We then discuss possible use cases and implementation challenges.
 
 \subsection{Centralized identity}
 
@@ -90,7 +90,7 @@ In 2018, two pieces of legislation came into force in the EU.
 	\item The \textbf{Revised Payment Service Directive} (PSD2) obligates banks to provide access to their customers' accounts through open APIs~\cite{Hellstroem2017}.
 	This measure is meant to foster competition and give rise to third-party financial service providers.
 	For instance, a unified banking API would simplify connecting banking infrastructure to open blockchains~\cite{Elison2016}.
-	\item The \textbf{General Data Protection Regulation} (GDPR), coming into force on 25~May~2018, harmonizes data privacy laws across the EU~\cite{GDPR16} and introduces stricter rules for handling data of EU residents even for companies from outside the EU. We refer the reader to~\cite{Berberich2016} describes possible implications of blockchain adoption from the viewpoint of the EU data protection regulation.
+	\item The \textbf{General Data Protection Regulation} (GDPR) harmonizes data privacy laws across the EU~\cite{GDPR16} and introduces stricter rules for handling data of EU residents even for companies from outside the EU. We refer the reader to~\cite{Berberich2016} describes possible implications of blockchain adoption from the viewpoint of the EU data protection regulation.
 \end{itemize}
 
 

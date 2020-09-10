@@ -49,8 +49,7 @@ First, it only supports unidirectional channels.
 The customer can pay the merchant but not vice versa.
 Second, the timelock of the refund transaction limits the lifetime of a channel.
 
-A similar unidirectional payment channel design uses \texttt{CHECKLOCKTIMEVERIFY} (CLTV).
-This opcode was added to Bitcoin in 2015~\cite{Todd2014}.
+A similar unidirectional payment channel design uses \texttt{CHECKLOCKTIMEVERIFY} -- an opcode added to Bitcoin in 2015~\cite{Todd2014}.
 Contrary to \texttt{nLockTime}, which specifies transaction-level timelocks, CLTV allows specifying absolute timelocks for each transaction output.
 
 \paragraph{State replacement}
@@ -197,8 +196,8 @@ Bob's version imposes analogous restrictions on his output.
 The timelocks allow the counterparty to dispute an incorrect channel closure.
 This mechanism provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
 
-Outputs of commitment transactions are called \textit{Hash time-locked contracts}, or \textit{HTLC}s.
-An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between two nodes ($u_1$~and~$u_2$) and release them according to the encoded conditions.
+Outputs of commitment transactions are called \textit{Hash time-locked contracts} (\textit{HTLC}s).
+An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between $u_1$~and~$u_2$ and release them according to the encoded conditions.
 The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$~of coins, and a timeout $t$, as follows: 
 (i) If $u_2$~reveals a value $r$~such that $H(r) = y$~before $t$~expires, $u_1$~pays $x$~to $u_2$; 
 (ii) if $t$~expires, $u_1$~receives $x$~back.
@@ -239,7 +238,7 @@ Here, the receiver reveals $r$~to $u_4$~to fulfill the contract (step 6), trigge
 Intermediaries may charge fees for their forwarding service.
 For instance, $u_2$~receives $1.3$~coins but only forwards $1.2$~coins, getting a fee of~$0.1$~coins.
 No fees are collected if a payment fails, as all pending balance updates roll back.
-In the LN implementations, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the payment value.\footnote{The LN fee structure is different from Bitcoin fees, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the transaction value. As of 2020, LN fees are largely non-economical~\cite{Beres2019}.}
+In the LN implementations, the fee consists of two parts: a constant \textit{base fee} for each payment and a \textit{fee rate} proportional to the payment value.\footnote{The LN fee structure is different from Bitcoin fees, where the fee is proportional to transaction weight (roughly speaking, size in bytes) but does not account for the transaction value. As of 2019, LN fees are largely non-economical~\cite{Beres2019}.}
 
 The time parameter of the HTLCs along the path decreases to guarantee a safety margin between the timeouts.
 For example, the HTLC between $u_1$~and~$u_2$~sets a timeout of four days, whereas the timeout in the HTLC between $u_2$~and~$u_3$~is only three days.

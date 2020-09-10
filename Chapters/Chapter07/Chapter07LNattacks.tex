@@ -174,7 +174,7 @@ For value privacy, the effect of added highly-connected nodes being compromised 
 The share of prone paths is $50\%$~if only the $5$~most connected nodes are compromised, and nearly $100\%$~if the $100$~most connected nodes are compromised.
 Thus, we conclude that an adversary needs to corrupt only $2\%$~of the nodes to almost nullify any value privacy guarantee in the LN\@.
 
-We observe that the average share of prone paths decreases for relationship anonymity.
+The average share of prone paths decreases for relationship anonymity.
 However, the adversary controlling the $100$~most connected nodes can launch the relationship anonymity attack on about $70\%$~of the paths.
 Interestingly, the adversary has fewer possibilities to launch the wormhole attack.
 For instance, with~$100$~most connected nodes corrupted, around $30\%$~of the paths are prone to the attack.
@@ -202,7 +202,7 @@ We assume that every two nodes carry out their transactions along a path chosen 
 However, LN nodes might implement different routing strategies.
 For instance, while routing through well-connected nodes improves the chances to reach the receiver through a short and highly liquid path, the sender might instead choose low degree nodes.
 Routing around popular nodes may reduce the probability of choosing a compromised path.
-We envision a trade-off between connectivity on the one hand and security and privacy on the other, which constitutes a venue for future work.
+We envision a trade-off between connectivity on the one hand and security and privacy on the other, which constitutes a direction for future work.
 A node may also route transactions through a trusted proxy node, thus guaranteeing that the first node in a path is not compromised.
 This strategy would mitigate the relationship anonymity and wormhole attacks (if the path contains no more than three intermediaries).
 

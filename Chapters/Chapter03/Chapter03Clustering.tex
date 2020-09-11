@@ -527,7 +527,7 @@ Unlike Bitcoin~Core, BitcoinJ sends \texttt{tx} unconditionally\footnote{Note th
 The BitcoinJ developers acknowledge that the three-step \texttt{inv} -- \texttt{getdata} -- \texttt{tx} exchange in Bitcoin~Core improves privacy, but argue that since SPV nodes have a weaker privacy model, the three-step broadcast would only decrease efficiency.
 
 We choose a diverse selection of mobile wallets for our experiments: Bitcoin-only and multi-coin, with centralized and P2P networking.
-We perform experiments on Bitcoin testnet (Bitcoin wallet), Bitcoin mainnet (Bitcoin wallet, BRD, Coinomi, Mycelium), and Zcash (Coinomi).
+We perform experiments on the Bitcoin testnet (Bitcoin wallet), the Bitcoin mainnet (Bitcoin wallet, BRD, Coinomi, Mycelium), and Zcash (Coinomi).
 Bitcoin wallet and BRD\footnote{Bitcoin wallet and BRD are the two most popular Bitcoin clients~\cite{Wang2017}.} use P2P broadcast.
 Coinomi and Mycelium use centralized broadcast.
 For wallets with centralized broadcast, we only issue one set of transactions, using it as a "label" for a presumed wallet cluster.

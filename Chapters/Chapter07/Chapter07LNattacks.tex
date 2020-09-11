@@ -149,7 +149,7 @@ Finally, we consider that random nodes are colluding.
 We illustrate here that any node (independently of its node degree) might be corrupted.
 For instance, the same user might create several LN nodes at strategic positions to carry out the attacks.
 
-We then refine our path datasets to consider these three attack strategies.
+We then consider these three attack strategies.
 For each number of malicious nodes ($y$) and each strategy, we re-split the set $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x}$ into prone paths and safe paths.
 For instance, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-con}}$ the subset of paths between $u_1$ and~$u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes with the highest node degree are corrupted.
 Correspondingly, we denote by $\textit{paths-prone}_{\langle u_1, u_2 \rangle, x, y\textit{-ran}}$ the subset of paths between $u_1$ and~$u_2$ that allow to transfer $x$~satoshis and that are prone to the attack if $y$~nodes chosen uniformly at random are corrupted.
@@ -180,7 +180,7 @@ Interestingly, the adversary has fewer possibilities to launch the wormhole atta
 For instance, with~$100$~most connected nodes corrupted, around $30\%$~of the paths are prone to the attack.
 A restrictive path structure in the definition of the attack may explain this reduction in the attack's effectiveness.
 
-Compromising high-capacity nodes, as opposed to high-degree nodes, is less beneficial for the attacker.
+The attacker benefits less from compromising high-capacity nodes, as opposed to high-degree nodes.
 This distinction is most profound for relationship anonymity: around $50\%$ of paths are vulnerable if the~$50$~highest degree nodes are corrupted, but only around~$25\%$~paths are vulnerable if the~$50$~highest capacity nodes are corrupted.
 This difference may be explained by the fact that routing algorithms optimize for short paths.
 Note that forwarding channels' capacity is not as important as good connectivity, especially for payments of small and medium amounts.

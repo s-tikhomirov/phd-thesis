@@ -20,7 +20,7 @@ To put our work in a historical context, we now describe the evolution of Bitcoi
 
 \subsection{Transaction replacement with sequence numbers}
 
-The first protocol for re-negotiating unconfirmed transactions, proposed by Satoshi Nakamoto~\cite{Hearn2013}, uses two fields of a Bitcoin transaction: sequence number (\texttt{nSequence}) and time lock (\texttt{nLockTime}).
+The first protocol for re-negotiating unconfirmed transactions, proposed by Satoshi Nakamoto~\cite{Hearn2013}, uses two transaction fields: sequence number (\texttt{nSequence}) and time lock (\texttt{nLockTime}).
 \texttt{nSequence} acts as a counter.
 \texttt{nLockTime}) mandates a time before which a transaction cannot be included in a block.
 In the transaction replacement protocol, two parties sign a series of transactions with increasing sequence numbers and a timelock set to a point in the future.

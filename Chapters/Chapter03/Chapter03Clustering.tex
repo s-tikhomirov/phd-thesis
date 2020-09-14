@@ -109,17 +109,16 @@ We define an extended weight vector $v_{tx}$ for each~$tx$ by setting the weight
 We then calculate a matrix where an element in $i$-th row and~$j$-th column is the Pearson correlation of the extended weight vectors $v_{tx_i}$ and~$v_{tx_j}$.
 This matrix can supposedly be transformed into a block-diagonal matrix with blocks (clusters) corresponding to transaction sources.
 To reveal the clusters, we use spectral co-clustering~\cite{Dhillon2001} implemented in the Python \texttt{sklearn.cluster.bicluster} module~\cite{scikit-learn, scikitlearn2018}.
-Given an input matrix $A$, the algorithm preprocesses it as follows:
+Given an input matrix $A$, the algorithm forms $A_n$ as follows:
 
 \[
-A_n = R^{1/2}AC^{-1/2}
+A_n = R^{-1/2}AC^{-1/2}
 \]
 
 Where $R$ is the diagonal matrix with entry $i$ equal to $\sum_{j} A_{ij}$, and~$C$ is the diagonal matrix with entry $j$ equal to $\sum_{i} A_{ij}$.
-
-The singular value decomposition of~$A$ provides the partitions of rows and columns: $A_{n}=U \Sigma V^{T}$.
-The $l$ = $\lceil \log_2 k \rceil$ singular vectors provide the partitioning information.
-Let $U$ be a matrix with columns $u_2,\dots,u_{l+1}$, and similarly for $V$.
+This defines the singular value decomposition (SVD) of the normalized matrix $A_n$.
+The $l$ = $\lceil \log_2 k \rceil$ singular vectors $u_2,\dots,u_{l+1}$ and $v_2,\dots,v_{l+1}$ of $A_n$ may be used to solve a real approximation of the minimal cut problem.
+Let $U$ be a matrix with columns $u_2,\dots,u_{l+1}$, and similarly for $V$ and $v_2,\dots,v_{l+1}$.
 Then $Z$ is defined as:
 
 \[
@@ -130,7 +129,7 @@ C^{-1/2} & V
 \end{bmatrix}
 \]
 
-The rows of~$Z$ are clustered using the k-means algorithm.
+The rows of~$Z$ are then clustered using the k-means algorithm to obtain the desired partitioning.
 
 
 \subsection{Measuring clustering quality}

@@ -5,28 +5,17 @@
 \input{Chapters/Chapter11/rules}
 
 In this Chapter, we study the security of smart contracts in Solidity.\footnote{This Chapter is based on~\cite{Tikhomirov2018}. The author of this thesis contributed to researching and formalizing the types of vulnerabilities and writing the paper. The author thanks Evgeny Marchenko for the help in adding "2020 updates" to reflect the changes in the applicability of the patterns since the original publication.}
-
 We provide a comprehensive classification of code issues in Solidity and propose SmartCheck -- an extensible static analysis tool.\footnote{The source code is available at~\cite{SmartCheck}.}
 SmartCheck translates Solidity source code into an XML-based intermediate representation and checks it against XPath patterns.
-We evaluate our tool on a big dataset of real-world contracts and compare the results with manual audit on three contracts.
-SmartCheck shows significant improvements over existing alternatives in terms of false discovery rate (FDR) and false negative rate (FNR).
-While SmartCheck has its limitations, we believe that a static analyzer should be an essential part of contract developers' toolbox.
+We evaluate our tool on a big dataset of real-world contracts, and compare its output with the results of a manual audit on three contracts.
+SmartCheck shows significant improvements in false discovery rate (FDR) and false negative rate (FNR) over existing alternatives.
+A static analyzer should be an essential part of the contract developers' toolbox.
 Automated detection of simple bugs lets developers allocate more effort to complex issues.
 
-%%%% SECTION 1: INTRODUCTION %%%%
-% moved to Chapter09
-
-%%%% SECTION 2: CLASSIFICATION %%%%
 \input{Chapters/Chapter11/section2-classification.tex}
 
-%%%% SECTION 3: SMARTCHECK %%%%
 \input{Chapters/Chapter11/section3-smartcheck.tex}
 
-%%%% SECTION 4: RESULTS %%%%
 \input{Chapters/Chapter11/section4-results.tex}
 
-%%%% SECTION 5: RELATED WORK %%%%
-% moved to Chapter09
-
-%%%% SECTION 6: CONCLUSION %%%%
 \input{Chapters/Chapter11/section6-conclusion.tex}

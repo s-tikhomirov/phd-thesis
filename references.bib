@@ -180,10 +180,11 @@
   title  = {The Falcon Project},
 }
 
-@Article{Kroll2013,
-  author = {Joshua Kroll and Ian Davey and Edward Felten},
-  title  = {The Economics of Bitcoin Mining, or Bitcoin in the Presence of Adversaries},
-  year   = {2013},
+@InProceedings{Kroll2013,
+  author    = {Joshua Kroll and Ian Davey and Edward Felten},
+  booktitle = {Proceedings of WEIS},
+  title     = {The Economics of Bitcoin Mining, or Bitcoin in the Presence of Adversaries},
+  year      = {2013},
 }
 
 @InProceedings{Yoshida2012,
@@ -398,11 +399,10 @@
   url    = {https://web.getmonero.org/},
 }
 
-@Article{Saberhagen2013,
+@Misc{Saberhagen2013,
   author = {Nicolas Van Saberhagen},
   title  = {CryptoNote v 2.0},
   year   = {2013},
-  month  = oct,
   url    = {https://cryptonote.org/whitepaper.pdf},
 }
 
@@ -771,7 +771,7 @@
   url           = {http://arxiv.org/abs/1712.01210},
 }
 
-@Article{Miller2015,
+@Misc{Miller2015,
   author = {Andrew Miller and James Litton and Andrew Pachulski and Neal Gupta and Dave Levin and Neil Spring and Bobby Bhattacharjee},
   title  = {Discovering {Bitcoin}’s public topology and influential nodes},
   year   = {2015},
@@ -967,7 +967,6 @@
 
 @Misc{Sirer2016,
   author = {Emin G{\"{u}}n Sirer},
-  month  = jun,
   title  = {Thoughts on The DAO Hack},
   year   = {2016},
   url    = {https://hackingdistributed.com/2016/06/17/thoughts-on-the-dao-hack/},
@@ -1024,7 +1023,7 @@
   url       = {http://eprint.iacr.org/2014/803},
 }
 
-@Article{Lewison2016,
+@Misc{Lewison2016,
   author = {Lewison, Karen and Corella, Francisco},
   title  = {Backing rich credentials with a blockchain PKI},
   year   = {2016},
@@ -1055,13 +1054,15 @@
 }
 
 @Article{Cox1979,
-  author = {John C. Cox and Stephen A. Ross and Mark Rubinstein},
-  title  = {Option pricing: A simplified approach},
-  year   = {1979},
-  issn   = {0304-405X},
-  pages  = {229-263},
-  volume = {7},
-  doi    = {10.1016/0304-405x(79)90015-1},
+  author  = {John C. Cox and Stephen A. Ross and Mark Rubinstein},
+  journal = {Journal of Financial Economics},
+  title   = {Option pricing: A simplified approach},
+  year    = {1979},
+  issn    = {0304-405X},
+  pages   = {229-263},
+  volume  = {7},
+  doi     = {10.1016/0304-405x(79)90015-1},
+  issue   = {3},
 }
 
 @Misc{Gibbons2015,
@@ -1179,7 +1180,7 @@
   url           = {http://arxiv.org/abs/1608.00771},
 }
 
-@Article{Schuldenzucker2016,
+@Misc{Schuldenzucker2016,
   author = {Schuldenzucker, Steffen},
   title  = {An Axiomatic Framework for No-Arbitrage Relationships in Financial Derivatives Markets},
   year   = {2016},
@@ -1399,13 +1400,15 @@
 }
 
 @Article{Sullivan2017,
-  author = {Clare Sullivan and Eric Burger},
-  title  = {E-residency and blockchain},
-  year   = {2017},
-  issn   = {0267-3649},
-  pages  = {470-481},
-  volume = {33},
-  doi    = {10.1016/j.clsr.2017.03.016},
+  author  = {Clare Sullivan and Eric Burger},
+  journal = {Computer Law and Security Review},
+  title   = {E-residency and blockchain},
+  year    = {2017},
+  issn    = {0267-3649},
+  number  = {4},
+  pages   = {470-481},
+  volume  = {33},
+  doi     = {10.1016/j.clsr.2017.03.016},
 }
 
 @Misc{Bitnation15,
@@ -1938,11 +1941,11 @@
   url       = {https://www.ndss-symposium.org/ndss2017/ndss-2017-programme/silentwhispers-enforcing-security-and-privacy-decentralized-credit-networks/},
 }
 
-@Article{Prihodko2016,
+@Flare{Prihodko2016,
   author = {Pavel Prihodko and Slava Zhigulin and Mykola Sahno and Aleksei Ostrovskiy and Olaoluwa Osuntokun},
   title  = {Flare: An approach to routing in lightning network},
-  year   = {2016},
   url    = {https://bitfury.com/content/downloads/whitepaper_flare_an_approach_to_routing_in_lightning_network_7_7_2016.pdf},
+  year   = {2016},
 }
 
 @Article{Grunspan2018,
@@ -2032,12 +2035,12 @@
   author = {BOLT},
   title  = {BOLT 2: Peer Protocol for Channel Management},
   year   = {2019},
-  url    = {https://github.com/lightningnetwork/lightning-rfc/blob/78bc516f96efd7e0f8734e73e171dff57005f6bf/02-peer-protocol.md},
+  url    = {https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md},
 }
 
 @Misc{BOLT3Trimmed,
   author = {BOLT},
-  title  = {BOLT3 - Trimmed outputs},
+  title  = {BOLT 3: : Bitcoin Transaction and Script Formats. Trimmed outputs},
   year   = {2020},
   url    = {https://github.com/lightningnetwork/lightning-rfc/blob/dcbf8583976df087c79c3ce0b535311212e6812d/03-transactions.md},
 }
@@ -2131,10 +2134,9 @@
   doi       = {10.1145/3178876.3186099},
 }
 
-@Article{Decker2018,
+@Misc{Decker2018,
   author = {Christian Decker and Rusty Russell and Olaoluwa Osuntokun},
   title  = {eltoo: A simple layer2 protocol for bitcoin},
-  year   = {2018},
   url    = {https://blockstream.com/eltoo.pdf},
 }
 
@@ -2434,7 +2436,7 @@
   url    = {https://media.consensys.net/an-introduction-to-lll-for-ethereum-smart-contract-development-e26e38ea6c23},
 }
 
-@Article{McAdams2017,
+@Misc{McAdams2017,
   author = {Darryl McAdams},
   title  = {An Ontology for Smart Contracts},
   year   = {2017},
@@ -2729,7 +2731,7 @@
   urldate = {2017-07-06},
 }
 
-@Article{Mazieres2014,
+@Misc{Mazieres2014,
   author  = {David Mazi{\`e}res},
   title   = {The Stellar Consensus Protocol: A Federated Model for Internet-level Consensus},
   year    = {2014},
@@ -3053,7 +3055,7 @@
 }
 
 @Article{Pickhardt2019a,
-  author        = {Rene Pickhardt and Mariusz Nowostawski},
+  author        = {Ren\'e Pickhardt and Mariusz Nowostawski},
   journal       = {CoRR},
   title         = {Imbalance measure and proactive channel rebalancing algorithm for the Lightning Network},
   year          = {2019},
@@ -3101,7 +3103,7 @@
 }
 
 @Misc{Pickhardt2020,
-  author = {Rene Pickhardt},
+  author = {Ren\'e Pickhardt},
   title  = {random short channel id for private channels},
   year   = {2020},
   url    = {https://github.com/lightningnetwork/lightning-rfc/issues/675},
@@ -3469,19 +3471,24 @@
 }
 
 @Article{White2014,
-  author = {Lawrence H. White},
-  title  = {The Troubling Suppression of Competition from Alternative Monies: The Cases of the Liberty Dollar and E-Gold},
-  year   = {2014},
-  issn   = {1556-5068},
-  doi    = {10.2139/ssrn.2406983},
+  author  = {Lawrence H. White},
+  journal = {GMU Working Paper in Economics},
+  title   = {The Troubling Suppression of Competition from Alternative Monies: The Cases of the Liberty Dollar and E-Gold},
+  year    = {2014},
+  issn    = {1556-5068},
+  doi     = {10.2139/ssrn.2406983},
+  issue   = {14-06},
 }
 
 @Article{Trautman2014,
-  author = {Lawrence J. Trautman},
-  title  = {Virtual Currencies: Bitcoin and What Now after Liberty Reserve and Silk Road?},
-  year   = {2014},
-  issn   = {1556-5068},
-  doi    = {10.2139/ssrn.2393537},
+  author  = {Lawrence J. Trautman},
+  journal = {Richmond Journal of Law and Technology},
+  title   = {Virtual Currencies: Bitcoin and What Now after Liberty Reserve and Silk Road?},
+  year    = {2014},
+  issn    = {1556-5068},
+  volume  = {20},
+  doi     = {10.2139/ssrn.2393537},
+  issue   = {4},
 }
 
 @Book{Narayanan2016,
@@ -3865,7 +3872,7 @@
 }
 
 @Article{Tikhomirov2020,
-  author        = {Sergei Tikhomirov and Rene Pickhardt and Alex Biryukov and Mariusz Nowostawski},
+  author        = {Sergei Tikhomirov and Ren\'e Pickhardt and Alex Biryukov and Mariusz Nowostawski},
   journal       = {CoRR},
   title         = {Probing Channel Balances in the Lightning Network},
   year          = {2020},
@@ -3923,12 +3930,10 @@
   url   = {https://eips.ethereum.org/EIPS/eip-1884},
 }
 
-@Article{Willett2016,
-  author  = {Willett, JR and Hidskes, Maran and Johnston, David and Gross, Ron and Schneider, Marv},
-  journal = {white paper), accessed January},
-  title   = {Omni Protocol Specification (formerly Mastercoin)},
-  year    = {2016},
-  volume  = {28},
+@Misc{Willett2016,
+  author = {Willett, JR and Hidskes, Maran and Johnston, David and Gross, Ron and Schneider, Marv},
+  title  = {Omni Protocol Specification (formerly Mastercoin)},
+  year   = {2016},
 }
 
 @InProceedings{Bartoletti2017a,
@@ -4062,15 +4067,16 @@
 
 @Book{Antonopoulos2014,
   author    = {Andreas Antonopoulos},
-  publisher = {"O'Reilly Media, Inc."},
+  publisher = {O'Reilly Media},
   title     = {Mastering Bitcoin: unlocking digital cryptocurrencies},
   year      = {2014},
 }
 
-@Article{Poelstra2015,
+@Misc{Poelstra2015,
   author = {Andrew Poelstra},
   title  = {On stake and consensus},
   year   = {2015},
+  url    = {https://nakamotoinstitute.org/static/docs/on-stake-and-consensus.pdf},
 }
 
 @Misc{Wuille2020,
@@ -4087,7 +4093,7 @@
   url    = {https://github.com/bitcoin/bips/blob/master/bip-0119.mediawiki},
 }
 
-@Article{Dryja,
+@Misc{Dryja,
   author = {Thaddeus Dryja},
   title  = {Discreet Log Contracts},
   url    = {https://adiabat.github.io/dlc.pdf},
@@ -4336,6 +4342,69 @@
 @Misc{Echidna,
   title = {Echidna: A Fast Smart Contract Fuzzer},
   url   = {https://github.com/crytic/echidna},
+}
+
+@InProceedings{Dingledine2004,
+  author    = {Roger Dingledine and Nick Mathewson and Paul F. Syverson},
+  booktitle = {Proceedings of the 13th {USENIX} Security Symposium, August 9-13, 2004, San Diego, CA, {USA}},
+  title     = {Tor: The Second-Generation Onion Router},
+  year      = {2004},
+  editor    = {Matt Blaze},
+  pages     = {303--320},
+  publisher = {{USENIX}},
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/uss/DingledineMS04.bib},
+  url       = {http://www.usenix.org/publications/library/proceedings/sec04/tech/dingledine.html},
+}
+
+@Article{scikit-learn,
+  author  = {Pedregosa, F. and Varoquaux, G. and Gramfort, A. and Michel, V. and Thirion, B. and Grisel, O. and Blondel, M. and Prettenhofer, P. and Weiss, R. and Dubourg, V. and Vanderplas, J. and Passos, A. and Cournapeau, D. and Brucher, M. and Perrot, M. and Duchesnay, E.},
+  journal = {Journal of Machine Learning Research},
+  title   = {Scikit-learn: Machine Learning in {P}ython},
+  year    = {2011},
+  pages   = {2825--2830},
+  volume  = {12},
+}
+
+@Misc{Hearn2013,
+  author = {Mike Hearn},
+  title  = {Anti DoS for tx replacement},
+  year   = {2013},
+  url    = {https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2013-April/002417.html},
+}
+
+@Misc{Robinson2020,
+  author = {Dan Robinson and Georgios Konstantopoulos},
+  title  = {Ethereum is a Dark Forest},
+  year   = {2020},
+  url    = {https://medium.com/@danrobinson/ethereum-is-a-dark-forest-ecc5f0505dff},
+}
+
+@Book{Antonopoulos2020,
+  author    = {Andreas Antonopoulos and Olaoluwa Osuntokun and Ren\'e Pickhardt},
+  publisher = {O'Reilly Media},
+  title     = {Mastering the Lightning Network},
+  year      = {2020},
+  url       = {https://lnbook.info/},
+}
+
+@Misc{EGS,
+  title = {Ethereus Gas Station},
+  year  = {2020},
+  url   = {https://ethgasstation.info/},
+}
+
+@Article{Dotan2020,
+  author        = {Maya Dotan and Yvonne Anne Pignolet and Stefan Schmid and Saar Tochner and Aviv Zohar},
+  journal       = {CoRR},
+  title         = {Survey on Cryptocurrency Networking: Context, State-of-the-Art, Challenges},
+  year          = {2020},
+  volume        = {abs/2008.08412},
+  archiveprefix = {arXiv},
+  bibsource     = {dblp computer science bibliography, https://dblp.org},
+  biburl        = {https://dblp.org/rec/journals/corr/abs-2008-08412.bib},
+  eprint        = {2008.08412},
+  url           = {https://arxiv.org/abs/2008.08412},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

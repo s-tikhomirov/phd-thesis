@@ -48,7 +48,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage[utf8]{inputenc} % Required for inputting international characters
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 \usepackage{mathpazo} % Use the Palatino font by default
-\usepackage[backend=bibtex,style=numeric,natbib=true]{biblatex}
+\usepackage[backend=bibtex,style=numeric,natbib=true,urldate=iso]{biblatex}
 % was: backend=bibtex,style=authoryear,natbib=true
 % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
@@ -189,26 +189,13 @@ headsepline, % Uncomment to get a line under the header
 \include{Chapters/Chapter12/Chapter12KYC}
 
 %----------------------------------------------------------------------------------------
-%	THESIS CONTENT - APPENDICES
-%----------------------------------------------------------------------------------------
-
-\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
-
-% Include the appendices of the thesis as separate files from the Appendices folder
-% Uncomment the lines as you write the Appendices
-
-%\include{Appendices/AppendixA}
-%\include{Appendices/AppendixB}
-%\include{Appendices/AppendixC}
-
-%----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
-%\iffalse
+
 \printbibliography[heading=bibintoc]
 \setcounter{secnumdepth}{-1}
 \input{ListOfPublications}
-%\fi
+
 %----------------------------------------------------------------------------------------
 
 \end{document}  

@@ -2,321 +2,242 @@
 
 \label{Chapter02IntroP2P}
 
-Each cryptocurrency is based upon a P2P network.
-The nodes of the network exchange transactions and other protocol messages.
-Ensuring that all nodes can reliably obtain all relevant data is a prerequisite for a working consensus mechanism.
+Each cryptocurrency relies on a P2P network to disseminate transactions and other messages.
+Ensuring that all nodes reliably obtain the relevant data is a prerequisite for consensus.
+Resilience, privacy, and performance are crucial design considerations for the P2P layer.
 
-This introductory Chapter provides the necessary background on the network-layer aspect of cryptocurrencies, focusing on Bitcoin.
+This introductory Chapter provides the background on the network-layer aspect of cryptocurrencies.
 First, we outline the design goals for a cryptocurrency P2P network.
-Then, we describe the technical details of the P2P protocol in Bitcoin.
-We refer the reader to~\cite{BitcoinWiki, Garay2015} for a more comprehensive documentation.
-We also describe the approaches to networking taken in selected alternative cryptocurrencies.
-Finally, we classify different types of nodes that participate in a cryptocurrency network, and provide a review of network-level attacks on cryptocurrency privacy.
+Then, we describe the technical details of the P2P protocol in Bitcoin\footnote{We refer the reader to~\cite{BitcoinWiki, Garay2015} for more comprehensive documentation.} and selected alternative cryptocurrencies.
+Finally, we classify cryptocurrency nodes from a networking perspective and provide a review of network-level attacks on cryptocurrency privacy.
 
 
 \section{Design goals for a cryptocurrency P2P network}
 
-A P2P protocol assigns all network nodes equal roles.
-This differentiates it from the client-server network architecture.
-File-sharing networks are a popular example of P2P protocols (see Section~\ref{sec:FileSharingNetworks}).
+Unlike client-server protocols, all nodes in a P2P network have equal roles.
+A cryptocurrency P2P protocol has two major tasks.
+First, it provides new peers with the entire set of existing blocks.
+Second, it continuously disseminates new blocks and transactions as they appear.
 
-The task of a cryptocurrency P2P network is twofold:
-\begin{itemize}
-	\item provide new peers with the entire set of confirmed blocks;
-	\item continuously disseminate new blocks, transactions, and other protocol data.
-\end{itemize}
+While adhering to the same general philosophy with file-sharing, discussed in~Section~\ref{sec:FileSharingNetworks}, cryptocurrency P2P protocols aim at slightly different goals~\cite{Dotan2020}.
+First, a cryptocurrency P2P protocol is tailored to disseminating one specific dataset, whereas file-sharing is content-agnostic.
+Moreover, each block in the blockchain depends on the previous one.
+This logical structure leads to a trade-off: downloading blocks out of order in parallel is faster but may lead to bandwidth waste if some of them turn out to be invalid.
 
-While sharing the general philosophy with file-sharing, cryptocurrency P2P protocols have different design goals, which inform the differences in protocol design.
+Second, content addressing is not as essential in cryptocurrencies as in file-sharing networks, where locating the peer that hosts the required file is the key challenge.
+All cryptocurrency peers store the same set of blocks (except possibly a few latest blocks).
 
-First, a cryptocurrency P2P network is intended for sharing one specific dataset (the confirmed blocks).
-This distinguishes it from file-sharing networks, which are agnostic to the type of data being shared.
-The blockchain has a logical structure: each blocks depends on the previous block.
-If one block is invalid, this makes all subsequent blocks in the branch invalid.
-Therefore, a cryptocurrency node has to embrace a trade-off.
-On the one hand, it should download the blocks in order to avoid spending resources on potentially invalid blocks.
-On the other hand, downloading blocks in parallel would significantly speed up the process.
-In Bitcoin, the compromise was found with the \textit{headers-first} block download (described below).
-
-Second, content addressing is not as essential in cryptocurrencies.
-Recall that locating the peer who hosts the necessary file was the key problem in file-sharing networks.
-In cryptocurrencies, all peers share the same set of all confirmed blocks.
-
-Third, cryptocurrencies put more stringent security requirements on the underlying P2P networks.
-The protocol should protect against attacks such as:% denial-of-service, eclipse attacks, and network data analysis.
-
-\begin{itemize}
-	\item \textit{denial-of-service}, where an adversary overwhelms with messages either the whole network or a group of selected nodes;
-	\item \textit{eclipse attacks}, where an adversary aims to fully control the communication between a victim and the rest of the network;
-	\item \textit{data analysis attacks}, where an adversary extracts information from the P2P messages and infers private information about the victim.
-\end{itemize}
-
-The variety and severity of potential attacks inform the design choices of cryptocurrency protocols.
-Such protocols should prioritize resilience over efficiency.
-For instance, Bitcoin's P2P protocol ensures the diversity of connections.
-Each peer maintains multiple connections from different IP~regions and autonomous systems.
-
-Compare this to file-sharing, which optimizes for an opposite outcome: for instance re-trackers 
-File-sharing protocols, on the contrary, often prioritize local connections for efficiency~\cite{Yoshida2012,Wang2012}.
-This allows to achieve faster throughput by utilizing the ISP's local infrastructure instead of the global Internet.
+Third, cryptocurrencies demand stringent security guarantees.
+Cryptocurrency P2P protocols prioritize resilience over efficiency to defend against denial-of-service, eclipse attacks, and network data analysis.
+For instance, Bitcoin peers deliberately connect to peers from a diverse set of IP~regions and autonomous systems~\cite{Naumenko2019a}.
+File-sharing protocols, on the contrary, prioritize local connections to utilize the ISP's local networks instead of the global Internet~\cite{Yoshida2012,Wang2012}.
 
 
 \section{P2P protocols in cryptocurrencies}
 
-Let us now describe the P2P protocol that is used in Bitcoin, as well as an alternative P2P protocol for cryptocurrencies -- Dandelion.
+Let us now describe the P2P protocol used in Bitcoin and an alternative P2P protocol for cryptocurrencies -- Dandelion.
+Cryptocurrencies based on a modified Bitcoin~Core codebase, such as Dash and Zcash, inherit its P2P protocol.
+Others, such as Ethereum, implement their own one~\cite{Henningsen2019}.
 
 \subsection{Bitcoin P2P protocol}
 \label{sec:BitcoinP2PProtocol}
 
 We now describe the technical details of the P2P protocol in Bitcoin.
-Alternative cryptocurrencies based on a modified Bitcoin~Core codebase, such as Dash and Zcash, inherit the Bitcoin's protocol.\footnote{Others implement their own networking protocol. For instance, Ethereum uses a Kademlia-like DHT to locate peers~\cite{Henningsen2019}.}
 
 \paragraph{Bootstrapping}
 
 Any P2P network faces the bootstrapping problem: a new peer does not know any other peers.
 Bitcoin solves this issue in two ways.
-The reference implementation (Bitcoin~Core) supports two bootstrapping methods.
-The default method is \textit{DNS bootstrapping}.
-The software contains a list of eight hard-coded DNS records maintained by well-known Bitcoin developers.
-The records resolve into IP addresses of stable Bitcoin peers.
-A new peer connects to a random subset of those.
-In case DNS bootstrapping does not succeed, there is a fallback mechanism of \textit{seed nodes}.
-Bitcoin~Core contains a list of IP addresses of known stable nodes.
-A new node connects to a subset of nodes at these IP addresses.
+Bitcoin~Core provides two bootstrapping methods: \textit{DNS bootstrapping} and \textit{seed nodes}.
+The code contains hard-coded DNS records that resolve into IP addresses of stable peers.
+If DNS bootstrapping fails, the new peer connects to some of the \textit{seed nodes} whose IP addresses are also hard-coded.
 
 
 \paragraph{Connections and peer discovery}
 
 Bitcoin peers establish unencrypted TCP connections.\footnote{Different networks use different default ports: 8333 for Bitcoin, 18333 for Bitcoin testnet, 8233 for Zcash, 18080 for Monero, 9999 for Dash.}
-A peer tries to maintain $10$~outgoing connections\footnote{Eight connections for relaying all types of messages plus two dedicated connections for block propagation~\cite{Daftuar2019}.} and may also allow up to $117$~incoming connections.\footnote{The parameters can be changed in the configuration file of using command line arguments.}
+A peer tries to maintain $10$~outgoing connections: eight connections for relaying all types of messages plus two dedicated connections for block propagation~\cite{Daftuar2019}.
+A peer allows up to $117$~incoming connections by default.
 
-Peers exchange information about other peers.
+Peers exchange information about the IP addresses of known peers.
 A new peer advertises its IP address to its neighbors in an \texttt{addr} message.
 Upon receiving an \texttt{addr} message, a peer may decide to relay it to some of its neighbors.
-
 A peer can ask its neighbor which peers it is aware of using a \texttt{getaddr} message.
 The neighbor responds with an \texttt{addr} message containing up to $1\,000$~addresses of recently seen peers.
 
 After establishing the initial connections, a new peer asks the bootstrapping peers about other peers and connects to those.
 It then disconnects from the bootstrapping peers to keep them available for new joining peers.
-Each peer maintains a persistent database of IP addresses of peers it knows.
-Ideally, this should suffice for all subsequent connections to the network.
+Each peer maintains a persistent database of IP addresses of known peers.
+Ideally, this database should suffice for all subsequent connections to the network.
 DNS bootstrapping and seed nodes remain available as a fallback mechanism.
-
-Bitcoin peers aims to diversify the set of neighboring peers.
-Neighbors are chosen randomly from a large set of possibly live peers.
-Additional checks ensure that the neighbors represent a diverse set of subnetworks or autonomous systems~\cite{Naumenko2019a}.
 
 
 \paragraph{Initial block download}
 
 After connecting to the network, a new peer downloads and validates all previous blocks.
 This process is known as the \textit{initial block download} (IBD).
-A peer may decide to delete most of the block data from disk after validation (\textit{pruning}).
+A peer may decide to delete most blocks after validating them (\textit{pruning}).
 It may also enable \textit{indexing}, allowing for fast querying of transactions in the local database.
 
-Bitcoin supports two IBD modes: \textit{blocks-first} and \textit{headers-first}.
-In a blocks-first IBD, a peer would download and validate the blocks sequentially from a single peer.
-Sequential download ensures that the peer downloads the next block only after it ensures that the previous block is valid.
-However, blocks-first IBD method is slow (it is not parallelized) and depends on a single peer.
-
+Bitcoin~Core supports two IBD modes: \textit{blocks-first} and \textit{headers-first}.
+In blocks-first IBD, a peer downloads the blocks sequentially from a single peer.
+This process ensures that the peer downloads the next block only if the previous block is valid.
+Blocks-first IBD is slow and depends on a single peer.
 Headers-first IBD mode, introduced in~2015~\cite{Core2015}, addresses these shortcomings.
-A peer first downloads all block headers and ensures that they are well-formed and contain the necessary PoW.
-The headers synchronization is performed with \texttt{getheaders} and \texttt{headers} messages.
+A peer first downloads all block headers (using \texttt{getheaders} and \texttt{headers} messages) and ensures that they are well-formed and contain the necessary PoW.
 The peer then downloads the full blocks from multiple peers in parallel.
-Note that the blocks can not be fully validated by their headers alone.
-A block may contain a valid header with sufficient PoW despite including an invalid transaction.
-This can only be caught when the full block is available.
-However, downloading blocks after simply verifying the block headers is beneficial in most piratical scenarios.
+Note that a peer cannot validate a block by only looking at its header.
+A block may contain a valid header with sufficient PoW despite containing an invalid transaction.
+However, headers-first IBD is beneficial in most piratical scenarios.
 
 
 \paragraph{Propagation of transactions and blocks}
 
-Bitcoin peers exchange data about objects (blocks or transactions) in a three-step protocol.
-A sending peer first announces that it knows about a new object with an inventory (\texttt{inv}) message.
-An \texttt{inv} message uniquely identify an object by its hash.
-Upon receiving an \texttt{inv}, a peer may reply with \texttt{getdata} to receive the full data.
-The data is sent in a \texttt{block} or \texttt{tx} message for blocks and transactions, respectively.
+Bitcoin peers exchange blocks and transactions in a three-step message exchange.
+A sending peer first announces the hash of a new object with an inventory (\texttt{inv}) message.
+Upon receiving an \texttt{inv}, another peer may reply with \texttt{getdata} to receive the full data.
+The sending peer replies with a \texttt{block} or a \texttt{tx} message for blocks and transactions, respectively.
 
-Since 2016, Bitcoin uses an optimized block propagation protocol called \textit{compact blocks}~\cite{Core2016}.
-The key insight behind compact blocks is that in a naive implementation each peer receives data at least twice.
-Each transaction is first propagated on its own, and then as a part of a block.
-Compact blocks reduce this inefficiency by allowing peers to share \textit{sketches} of blocks.
-A sketch describes the block contents using short transaction identifiers.
-It also contains some full transactions that the receiving peer does not have (as \textit{predicted} by the sending peer).
-The receiving peer tries to reconstruct the block based on the sketch and the available transactions.
-It may request the missing transactions with additional queries (\texttt{getblocktxn} -- \texttt{blocktxn}).
-An additional P2P optimization called Erlay~\cite{Naumenko2019} is being implemented.
-This protocol improvement reduces the number of redundant \texttt{inv} messages that Bitcoin nodes exchange.
-
-Miners have special requirements for the P2P protocol.
-They need to quickly receive new transactions to include them in a block, and propagate new blocks to other miners.
-Miners use dedicated networks~\cite{FALCON, FIBRE} for fast block dissemination.
+Developers have introduced multiple improvements to Bitcoin's P2P protocol.
+In the initial protocol, each transaction is propagated twice: first on its own, then as a part of a block.
+An optimized block propagation protocol called \textit{compact blocks}~\cite{Core2016} eliminates this redundancy.
+Peers share block \textit{sketches} that describe its contents using short transaction identifiers.
+A sketch also contains the transactions that the receiving peer lacks (as \textit{predicted} by the sending peer).
+The receiving peer reconstructs the block from the sketch and requests the missing transactions with additional \texttt{getblocktxn} queries if necessary.
+Erlay~\cite{Naumenko2019} is another P2P optimization that reduces the number of redundant \texttt{inv} messages that peers exchange.
+Miners have special requirements for the P2P protocol and use dedicated networks~\cite{FALCON, FIBRE} for fast block dissemination.
 
 
 \paragraph{Broadcast randomization}
 
-Privacy is important for a cryptocurrency.
-A gossip-based propagation of messages in a P2P network may reveal private information.
-For instance, an attacker may listen to the network and record the timestamps of messages received from different peers.
-The inherent symmetry of P2P gossip may allow the attacker to locate the original transaction sender.
-
-Bitcoin uses \textit{broadcast randomization} to protect against such attacks.
-Instead of announcing a new transaction as soon as possible, each peer introduces a random delay unique for each neighbor.
-This mechanism, referred to as \textit{diffusion}, replaced~\cite{Wuille} another randomization technique known as \textit{trickling}.
+A gossip-based propagation in a P2P network may reveal private information such as the original message sender.
+An attacker may analyze the timestamps of messages received from different peers.
+Bitcoin uses \textit{broadcast randomization} to protect against network attacks.
+A peer introduces a random delay before announcing a transaction to each neighbor.
+This mechanism, called \textit{diffusion}, replaced~\cite{Wuille} another randomization technique called \textit{trickling}.
 With trickling, a peer announces a transaction to a random subset of neighbors.
-Such subsets are chosen once in a fixed-length time period.
-Replacing trickling with diffusion provided only a marginal privacy improvement~\cite{Fanti2017}.
+Such subsets are chosen once in a fixed-length interval.
+Replacing trickling with diffusion provided only a modest privacy improvement~\cite{Fanti2017}.
 
 
 \subsection{Dandelion}
 \label{sec:Dandelion}
 
-Dandelion~\cite{Venkatakrishnan2017, Fanti2018} is an alternative P2P protocols for cryptocurrencies designed for stronger privacy.
-The protocol addresses the key issue with gossip protocols, namely, the symmetry of message propagation.
-In Dandelion, message propagation occurs in two stages: the \textit{stem phase} and the \textit{fluff phase}.
-On the stem phase, instead of relaying a message to multiple neighbors, a node only relays it to one randomly selected neighbor.
-The node that received the message randomly chooses whether to continue the stem phase (pass the message further to one randomly selected node), or start the fluff phase (relay the message to multiple neighbors).
-Therefore, for a network adversary, the original message sender the the originator of the fluff phase are separated.
-
-The authors show that the protocol achieves much stronger anonymity than Bitcoin's current propagation mechanism.
-The drawbacks of Dandelion are additional propagation delays and sensitivity to DoS attacks at stem phase.
-As of 2020, Dandelion is used in privacy-focused cryptocurrencies Monero, Grin, and Beam.
+Dandelion~\cite{Venkatakrishnan2017, Fanti2018} is an alternative P2P protocol for cryptocurrencies designed for stronger privacy.
+It addresses the key issue with gossip protocols -- the symmetry of message propagation.
+Dandelion peers propagate a message in two stages: the \textit{stem phase} and the \textit{fluff phase}.
+On the stem phase, a peer only relays a message to one randomly selected neighbor.
+The peer that received the message randomly chooses whether to continue the stem phase (forward the message to one random neighbor) or start the fluff phase (relay the message to multiple neighbors).
+Dandelion makes a network adversary confuse the original message sender with the originator of the fluff phase.
+The authors show that the protocol achieves much stronger anonymity than Bitcoin's current P2P protocol.
+The drawbacks of Dandelion include increased propagation delays and sensitivity to DoS attacks at the stem phase.
+As of 2020, Dandelion is not introduced in Bitcoin but used in privacy-focused cryptocurrencies Monero, Grin, and Beam.
 
 
 \section{Taxonomy of nodes}
+\label{sec:TaxonomyOfNodes}
 
-Fully implementing the P2P protocol imposes a burden on Bitcoin nodes.
-They are supposed to download and store the whole blockchain and share it with other peers, which consumed bandwidth and storage.
-Alternative types of nodes offer ways to use Bitcoin without such requirements.
+Full Bitcoin nodes download, validate, and share the whole blockchain.
+These activities consume bandwidth, storage, and processing power.
+Alternative types of nodes offer ways to use Bitcoin with more lenient requirements.
 
 \paragraph{Pruned nodes}
-The simplest modification of the full protocol is not to store old blocks.
-Nodes in this mode of operation are referred to as \textit{pruned}.
-A pruned node performs the initial block download and validates all blocks, but removes the old blocks once they are validates.
-This allows to significantly reduce the storage requirements.
-For instance, Bitcoin~Core allows allocating as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $270$~GB as of 2020).
-Pruned nodes do not support transaction indexing and can not serve blockchain data to others.
+The simplest protocol change to decrease storage requirements is to discard (\textit{prune}) old blocks.
+A pruned node downloads and validates all blocks, and then deletes the old blocks.
+Pruning reduces storage requirements significantly.
+Bitcoin~Core allows allocating as little as $550$~MB for the most recent blocks (the full Bitcoin blockchain requires $300$~GB as of September~2020).
+Pruned nodes do not support transaction indexing and cannot serve old blocks to others.
 
 \paragraph{SPV nodes}
-Another approach, roughly outlined in the original Bitcoin paper~\cite{Nakamoto2008}, is called \textit{simplified payment verification} (SPV).
-An SPV node connects to peers in the P2P network.
-Instead of downloading full blocks, it only asks for block headers and specific transactions.
-The peers respond with the requested data along with Merkle proofs that the transactions were included in the blocks.
-
-SPV is less secure compared to the full protocol.
-Only PoW in the headers can be checked independently, but not the validity of the blocks themselves.
-SPV nodes must therefore ensure they are not eclipse-attacked.
-An adversary controlling all connections of a victim SPV node can conceal the true main chain.
+\textit{Simplified payment verification} (SPV) is another approach, which is outlined in the original Bitcoin paper~\cite{Nakamoto2008}.
+Instead of downloading full blocks, an SPV node only asks for block headers and transactions of interest.
+The peers respond with the requested transactions and a Merkle proof that they are included in the blocks.
+SPV is based on weaker security assumptions than the full protocol.
+Recall that a peer cannot verify a block based only on its header.
+A malicious peer may provide a Merkle proof that a transaction is included in an invalid block with sufficient PoW.
+SPV nodes must therefore ensure they are not eclipse-attacked and query block headers from multiple independent sources.
 
 Moreover, SPV provides weaker privacy.
 In the naive implementation, the full node learns the addresses that belong to the SPV node.
-To mitigate this threat, \textit{Bloom filters} have been introduced.
-A Bloom filter is a probabilistic data structure that allows to check whether an element belongs to a set.
-It never produces false negatives: if an element is in the set, the filter always indicates that.
-It may produce false positives, wrongly reporting that an element belongs to a set when in fact it does not.
-In the context of Bitcoin, an SPV node submits a Bloom filter to a full node to specify the addresses it is interested in.
-The full node replies with the transactions that pass the filter.
-The SPV node then discards the false positives locally.
-The privacy guarantees of Bloom filters have been questioned~\cite{Gervais2014}.
+To mitigate this threat, modern SPV uses \textit{Bloom filters} -- probabilistic data structures that allow checking whether an element belongs to a set.
+A Bloom filter may produce false positives, wrongly reporting that an element belongs to a set, but never produces false negatives.
+If an element is in the set, the filter always indicates that.
+An SPV node submits a Bloom filter to a full node to specify the addresses it is interested in.
+The full node replies with the transactions involving all addresses that pass the filter.
+The SPV node discards the false positives locally.
+The privacy guarantees of Bloom filters have also been questioned~\cite{Gervais2014}.
 
 \paragraph{Wallets with trusted remote nodes}
 Finally, one may use Bitcoin without directly connecting to its P2P network.
-It requires a \textit{trusted node} to report balances and broadcast transactions.
-Many mobile wallets take this approach.
-They store the keys and sign transactions locally, but can only publish them through a trusted server maintained by the developers.
-This approach is based on an even weaker security model.
-The trusted node can lie about the state of the blockchain, deny service, and learn what addresses a user controls.\footnote{The wallet provider can even log all users' transactions and link them to their IP addresses. Using Tor is not applicable in this case, as the wallet servers will still be able to associate a user's transactions by other means (e.g.,~by making the wallet send a cookie along with transactions).}
-On the other hand, from the viewpoint of the global attacker, it may be harder to distinguish users that broadcast transactions using the same trusted node.
+This mode of operation, implemented by many mobile wallets, requires a \textit{trusted node}.
+A wallet stores the keys and signs transactions locally but can only publish them through a trusted node.
+The trusted node can lie about the blockchain state, deny service, learn what addresses a user controls, and link them to their IP address.
+The user may gain partial protection by connecting to the trusted node through Tor -- an anonymization overlay network~\cite{Dingledine2004}.
+However, the administrator of the trusted node can use other methods to associate user's transactions (e.g.,~by making the wallet send a cookie along with transactions).
+On the other hand, it gets harder for a global attacker to distinguish users that broadcast transactions from the same trusted node.
 
 %There is an inherent trade-off between wallets with centralized and P2P broadcast.
-%Centralized wallets may better protect the user's privacy from external adversaries, but can themselves link users' transactions and correlate them with additional information obtained from the app.
+%Centralized wallets may better protect the user's privacy from external adversaries, but can themselves link users' transactions and correlate them with other information obtained from the app.
 %Users must also trust centralized wallet providers for availability.
+
+\pagebreak
 
 
 \section{Network-level privacy in cryptocurrencies}
 
-Multiple types of network-level attacks on cryptocurrency privacy have been described.
-We can outline various goals that an attacker can pursue.
+We now outline various types of network-level attacks on privacy of cryptocurrency users.
 
-First, an adversary can flood the network with messages to overwhelm honest nodes.
-This is to some extent addressed by the internal accounting.
-Honest Bitcoin peers would not re-broadcast the same message and would ban a node that sends invalid data or exhibits other unexpected behavior.
+First, an adversary can perform a \textit{denial-of-service} attack by flooding the network with messages overwhelm honest nodes.
+The Bitcoin's P2P protocol addresses this threat: peers do not re-broadcast the same message and ban peers that send invalid data or exhibit other unexpected behavior.
 
-Second, eclipse attacks are possible.
-An attacker takes control of all connections between the victim and the rest of the network.
-This allows to influence the victim's view of the network, selectively block victim's transactions, or silently collect all network traffic for future analysis.
-Eclipse attacks may have severe consequences for mining: the attacker can censor or slow down block propagation.
-In layer-two protocols such as Lightning\footnote{Part~\ref{Part2Lightning} of this thesis is dedicated to privacy and security of the Lightning network. Chapter~\ref{Chapter05IntroLightning} provides an introduction to Lightning and layer-two protocols.}, network-level attacks can lead to direct loss of funds~\cite{Riard2020}.
+Second, in an \textit{eclipse attack}, an adversary takes control of all connections between the victim and the rest of the network.
+Controlling the victim's view of the network allows the attacker to provide incorrect data, censor transactions, and collect network traffic for future analysis.
+Eclipse attacks may have severe consequences for miners, as the attacker inhibits or slows down block propagation.
+In layer-two protocols such as Lightning\footnote{Part~\ref{Part2Lightning} of this thesis is dedicated to the privacy and security of the Lightning network. Chapter~\ref{Chapter05IntroLightning} provides an introduction to Lightning and layer-two protocols.}, network-level attacks can lead to direct loss of funds~\cite{Riard2020}.
 
-Third, global data collection is also possible.
-An adversary can establish multiple connections and collect the network traffic from many vantage points.
+Third, in a \textit{network data analysis attack}, an adversary extracts information from the P2P messages and infers private information about the victim.
+For instance, timing differences in transaction announcements from different peers may reveal the original sender.
+An adversary can establish multiple connections and collect traffic from many vantage points for more accurate results.
 
-Finally, network-level data can leak sensitive information about transactions.
-Different nodes receive the announcement of the same transaction at slightly different time.
-This may allow an adversary to infer which node has initially sent it.
-
-The adversary can also try to learn the \textit{network topology}, i.e.,~which pairs of nodes are connected.
-As P2P networks are formed in an ad hoc manner, the topology is fluid.
-The adversary can estimate the topology from traffic patterns and use this information in further attacks.
-
+Fourth, the adversary can infer the \textit{network topology}, i.e.,~which pairs of nodes are connected, and use this information in further attacks.
 Multiple topology estimation attacks have been described.
 
-% 2015 - Miller - Discovering bitcoin's public topology and influential nodes
 One attack~\cite{Miller2015} exploits some peculiarities in the update mechanism for the address database (\texttt{addrMan}) in Bitcoin~Core.
-Each Bitcoin node maintains a database of IP addresses of peers it knows, along with corresponding timestamps intended to reflect the peer's "freshness".
-Counterintuitively\footnote{As of the time of writing. After an update of Bitcoin Core in March~2015, the attack is no longer feasible.}, Bitcoin nodes only update timestamps for nodes that they maintain outgoing connections with.
+Each Bitcoin peer maintains a database of known IP addresses, along with corresponding "freshness" timestamps.
+Counterintuitively, Bitcoin peers only update timestamps for peers that they maintain outgoing connections with.\footnote{After an update of Bitcoin~Core in March~2015, the attack is no longer possible.}
 For incoming connections, the peer preserves the first timestamp relayed along with the address.
-The authors implement a tool that exploits these rules to make an accurate guess of the network topology.
+The authors implement a tool that exploits these rules to estimate the network topology.
 
-% 2016 - Neudecker - Timing Analysis for Inferring the Topology of the Bitcoin Peer-to-Peer Network
-Another paper~\cite{Neudecker2016} infer the network topology with a timing analysis attack.
-Unlike~\cite{Miller2015}, this approach uses the timing of transaction propagation.
-The authors managed to infer the topology of the real-world Bitcoin network with high recall and precision.
-They also show that an inappropriately parameterized trickling mechanism can actually reduce the resistance to topology discovery attacks based traffic analysis, compared to naive gossip.
+Another method~\cite{Neudecker2016} infers the network topology by analyzing transaction propagation timing.
+The authors test the method on the real-world Bitcoin network with high recall and precision.
+They also show that an inappropriately parameterized trickling mechanism can reduce the network's resilience against topology discovery.
 
-% 2017 - Wang - Towards better understanding of Bitcoin unreachable nodes
-Finally,the authors of~\cite{Wang2017} conduct a measurement study of Bitcoin to analyze the \textit{unreachable} peers (i.e.,~peers behind NATs and firewalls).
-They report, among other findings, that a large share of Bitcoin transactions originate from only two mobile applications.
+Finally, a measurement study~\cite{Wang2017} of Bitcoin's \textit{unreachable} peers (i.e.,~peers behind NATs and firewalls) reports, among other findings, that a large share of Bitcoin transactions originate from only two mobile applications.
 
 
 \paragraph{Network-based transaction deanonymization}
 
-In the following two Chapters, we focus on \textit{transaction deanonymization}.
-In the attacks of this type, the goal of the adversary, broadly speaking, is to associate the identities used inside and outside of the protocol.
-A more concrete task towards this goal is to reveal the IP address of the victim.
-IP addresses are often linked to geographical locations and real-world identities.
+In \textit{transaction deanonymization} attacks, an adversary is trying to associate the victim's identities used inside and outside of the cryptocurrency protocol.
+A more concrete task towards this goal is to reveal the victim's IP address, which is often linked to their geographical location and real-world identity.
 A related task is transaction clustering, whereby an attacker reveals the hidden relationships between transactions.
 
-% 2014 - Koshy - An Analysis of Anonymity in Bitcoin Using P2P Network Traffic 
-The first network-based deanonymization attack was introduced in~2014~\cite{Koshy2014}.
-The authors analyze Bitcoin's anonymity through the lens of P2P network properties.
-They propose a technique for a global passive adversary to deanonymize users based on transaction propagation times.
-The adversary aggregates network traffic into tuples containing the Bitcoin address, the first IP address to relay this transaction, and the transaction identifier.
-For each transaction, the tuples are constructed for each input and output.
-Each tuple is counted as a "vote" in favor of a hypothesis that a certain IP "owns" (i.e.,~possesses the private key of) a certain Bitcoin address.
-While this paper provided valuable insights, it does not account for broadcast randomization, which must have decreased the efficiency of the deanonymization algorithm.
+The first work on network-based deanonymization attacks proposes a technique based on transaction propagation times~\cite{Koshy2014}.
+The adversary aggregates inputs and outputs of transactions into tuples.
+A tuple contains the Bitcoin address, the first IP address to relay the transaction, and the transaction identifier.
+The method considers each tuple as a "vote" in favor of a hypothesis that an IP address "owns" (i.e.,~possesses the private key of) a Bitcoin address.
 
-% 2014 - Biryukov - Deanonymisation of clients in Bitcoin P2P network
 A similar attack~\cite{Biryukov2014} correlates Bitcoin transactions with IP addresses.
-First, the attacker  prevents the victim from using Tor -- an anonymization overlay network -- by abusing the Bitcoin's anti-DoS mechanism.
-(This technique is described separately in~\cite{Biryukov2015}.)
-In particular, the attacker sends invalid blocks or transactions through Tor, which causes Bitcoin peers to temporarily ban all Tor exit nodes.
-Next, the attacker establishes multiple \textit{parallel} connections to all nodes\footnote{Only nodes that accept incoming connections are concerned. The paper refers to such nodes as \textit{servers}.} and tracks which of them advertise an IP address of the victim.
-The intuition is that the peers that advertise the victim's IP address to the attacker are the victim's immediate neighbors (referred to as \textit{entry nodes}).
-While this is not guaranteed, the paper suggests ways to reduce noise in the resulting data.
-The attacker compiles maps the victims' IP addresses to sets of their entry nodes.
-The attacker then listens to new transactions and correlates them with peers if they are broadcast from that peer's entry nodes.
+First, the attacker prevents the victim from using Tor by abusing the Bitcoin's anti-DoS mechanism~\cite{Biryukov2015}.
+Next, the attacker establishes multiple \textit{parallel} connections to all nodes that accept incoming connections.
+The intuition is that the peers that advertise the victim's IP address to the attacker are the victim's immediate neighbors (\textit{entry nodes}).
+The attacker then maps IP addresses to sets of entry nodes.
 
-% 2017 - Neudecker, Hartenstein - Could Network Information Facilitate Address Clustering in Bitcoin?
-Another attack~\cite{Neudecker2017} combines transaction graph analysis and network analysis to cluster Bitcoin addresses and associate them with IP addresses.
-The attacker determines the transaction originator using the first originator heuristic.
-This heuristic assumes that the IP of the original transaction sender is the IP that first announces a transaction to the attacker.
-Clearly, this is not always the case because of both naturally occurring network delays and broadcast randomization.
-The authors suggest ways to increase the precision of this baseline heuristics.
+Another attack~\cite{Neudecker2017} clusters Bitcoin addresses and associates them with IP addresses by combining transaction graph analysis and network analysis.
+The attacker determines the transaction originator using the first relayer heuristic: the transaction sender's IP is supposed to be the IP that first announces a transaction to the attacker.
+This correspondence is not guaranteed because of naturally occurring network delays and broadcast randomization.
+The authors suggest ways to increase the precision of the heuristic.
 
-Network-level attacks on privacy-focused cryptocurrencies have also been described.
-For instance,~\cite{Tramer2020} describes remote attacks on Monero and Zcash.
-By measuring the time it takes a remote node to reply to a specific request, an attacker infers whether that node is the sender of a given transaction.
-Moreover, the implementation of zero-knowledge proof in Zcash allows for timing side-channel attacks.
-In another example,~\cite{Bogatyy2019} proposes a method to link transaction senders and receivers in Grin.
-
+Network-level attacks on privacy-focused cryptocurrencies have also been described~\cite{Tramer2020}.
+The time it takes for a remote node to reply to a specific request reveals whether that node is the sender of a given transaction.
+The implementation of zero-knowledge proof in Zcash allows for timing side-channel attacks.
+Moreover, Grin allows for linking transaction senders and receivers~\cite{Bogatyy2019}.

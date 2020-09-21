@@ -4,18 +4,17 @@
 
 In this Chapter, we provide an introduction to smart contracts and Ethereum.\footnote{This Chapter is partially based on~\cite{Tikhomirov2017}.}
 We describe the history of the concept of smart contracts and its implementation in blockchain networks.
-We then provide the necessary technical background on Ethereum -- a blockchain-based smart contract platform -- and outline the security and privacy challenges it faces.
-
+We then provide the background on Ethereum -- a blockchain-based smart contract platform -- and outline its security and privacy challenges.
 
 \section{History of smart contracts}
 
-A contract is a basic building block of market economy.
+A contract is a fundamental building block of the market economy.
 The foundational mechanics of a contract has not changed in centuries.
-It is usually a written text which is designed to be interpreted by humans.
+A contract is typically a written text interpreted by humans.
 
-Contracts face major challenges in the digital era.
+Financial contracts face major challenges in the digital era.
 First, contacts are becoming more complex.
-It is hard for humans to keep up with the increased speed and complexity of international finance.
+It is hard for humans to keep up with the speed and complexity of international finance.
 Second, contracts must be enforced.
 Usually, the government assumes the responsibility for contract enforcement.
 However, this introduces challenges in the global Internet.
@@ -23,12 +22,11 @@ However, this introduces challenges in the global Internet.
 
 \subsection{Early ideas}
 
-Nick Szabo coined the term \textit{smart contract} in a 1997 essay~\cite{Szabo1997}.
-He argued that "contractual clauses \textelp{} can be embedded in the hardware and software \textelp{} to make breach of contract expensive".
+The term \textit{smart contract} originates from a 1997 essay by Nick Szabo~\cite{Szabo1997}.
+The author argues that "contractual clauses \textelp{} can be embedded in the hardware and software \textelp{} to make breach of contract expensive."
 A vending machine exemplifies a primitive smart contract.
 The machine receives cash and dispenses goods and change according to the listed price.
 The physical properties of the machine make attacking it sufficiently expensive to be unprofitable.
-
 A vending machine contract is automated but still requires trust.
 Moreover, the administrator has privileged access to the money and goods in the machine.
 
@@ -37,55 +35,51 @@ Moreover, the administrator has privileged access to the money and goods in the 
 
 The idea of digital smart contracts remained dormant until the introduction of Bitcoin.
 Bitcoin, for the first time, enabled \textit{trustless} digital contracts.
-The coins can only be unlocked by providing the required arguments to their respective output scripts.
+A user can only spend coins by providing the required arguments to their respective output scripts.
 Not only do Bitcoin scripts execute as programmed, but every user can independently verify this.
-Therefore, after a contract is created, users no longer have to trust the administrator.
+Therefore, after a contract is created, users no longer have to trust any administrator.
 
-This key property of Bitcoin lead to the first attempts at encoding complex contracts in Bitcoin outputs.
+This key property of Bitcoin has lead to the first attempts at encoding complex contracts in Bitcoin outputs.
 Early Bitcoin-based protocols towards this goal include Colored Coins~\cite{Rosenfeld2012}, Counterparty~\cite{Counterparty, Bartoletti2017a}, and Mastercoin~\cite{Willett2016}.
 
 Bitcoin's programming capabilities are too restrictive to encode many types of contracts.
 First, Bitcoin script is not Turing-complete.
 It means, for instance, that it does not support loops.
-Second, Bitcoin contracts lack the ability to access other contracts.
+Second, Bitcoin contracts cannot access other contracts.
 Each transaction is executed in isolation and can either be deemed valid or not.
 It is impossible to branch depending on the results of executing another transaction.
-On the one hand, such limitations limit the potential attack surface and simplify security analysis.
+On the one hand, such constraints limit the potential attack surface and simplify security analysis.
 On the other hand, they make implementing many types of contracts difficult, if not impossible~\cite{Miller2019}.
 
 
 \subsection{Smart contracts in Ethereum}
 
-Ethereum is a blockchain platform that aims to address these limitations.
+Ethereum is a blockchain platform that aims to Bitcoin's limitations regarding programmability.
 It was announced in 2014~\cite{Buterin2014, Wood2014} and launched in 2015.
 
-There are three key differences between Ethereum and Bitcoin.
-
+Ethereum differs from Bitcoin in three major ways.
 First, Ethereum provides a richer programming environment.
 An Ethereum smart contract is written in a Turing-complete programming language and stored at a unique address.
 Contracts can be \textit{called} by users or by other contracts.
-Each transaction can have more complex effects than moving cryptocurrency units, such as changing state variables.
-%In contrast, the result of a Bitcoin transaction is binary: either the UTXOs are spent or not.
+Each transaction can have complex effects in addition to moving cryptocurrency units.
 This interoperability allows for composing contracts.
-
 Second, Ethereum has updatable and addressable \textit{storage}.
 Ethereum maintains consensus on the \textit{state} of all accounts.
-This allows for storing arbitrary data related to contract execution on-chain.
-
+Contracts can permanently store arbitrary data on-chain.
 Third, Ethereum implements an account-based model, as opposed to Bitcoin's UTXO-based model.
-This simplifies the contract logic.
+Explicitly modeling accounts simplifies the contract logic.
 For instance, an Ethereum node can perform a single lookup to find out the current balance of an address, instead of scanning its whole history.
 
 Bitcoin and Ethereum represent different points in the blockchain design space.
 The differences between these two dominant open blockchain networks are often a subject of heated debate.
 Some proponents of Bitcoin are eager to point out the questionable architectural decisions in the core Ethereum protocol and the vulnerabilities discovered in Ethereum smart contracts.
-Members of the Ethereum community emphasize a faster evolution of Ethereum and a wider range of applications it enables.
+Members of the Ethereum community emphasize a faster evolution of Ethereum and a wider range of applications it powers.
 
 Simple systems are usually more secure than complex ones.
-The more interactions parts of the system engage in, the more things can potentially go wrong or be purposefully exploited.
-The rich programming environment of Ethereum leaves more possibilities for programmers to make mistakes.
+The more interactions parts of the system engage in, the more things can break or be exploited.
+Ethereum's rich programming environment leaves more possibilities for programmers to make mistakes.
 Indeed, multiple high-profile smart contracts have been hacked, losing tens of millions of~US~dollars.
-These unfortunate events have shown that secure programming practices are especially important for smart contracts.
+These unfortunate events have shown that secure programming practices are crucial for smart contracts.
 
 
 \section{Ethereum architecture}
@@ -95,11 +89,8 @@ We now provide a short introduction to the architecture of Ethereum.
 \subsection{Accounts}
 
 Ethereum can be thought of as a state machine.
-Ethereum nodes communicate through a peer-to-peer network and maintain a shared view of the global state.
-The state reflects the state of all \textit{accounts}.
-It maps account \textit{addresses} to account \textit{states}.
-
-There are two types of accounts in Ethereum: externally owned accounts and contract accounts.
+Ethereum nodes communicate through a peer-to-peer network and maintain a shared view of the global state, which consists of \textit{accounts} with their respective \textit{states}.
+Accounts belong to one of two types: externally owned accounts and contract accounts.
 An \textit{externally owned account} is controlled by a private key.
 A \textit{contract account} is controlled by a \textit{smart contract}.
 Each account has a \textit{balance} and a \textit{nonce}.
@@ -110,10 +101,8 @@ The nonce is a counter that keeps track of the number of transactions issued fro
 Apart from balance, contract accounts have \textit{code} and \textit{storage}.
 Contract code is a piece of bytecode for the Ethereum virtual machine (EVM).
 Contract storage is a mapping of arbitrary variable names to their values.
-The contract code controls the changes to the balance and storage of the account.\footnote{There are exceptions: the balance of any account can be increased by mining or by transferring the balance of another contract being destroyed with the \texttt{selfdestruct} operation.}
+The contract code controls the changes to the balance and storage of the account.\footnote{The balance of any account can also be increased by mining or by transferring the balance of another contract destroyed with \texttt{selfdestruct}.}
 Internally, account data is stored in Merkle Patricia trees -- radix trees with~$256$-bit keys~\cite{MPTSpec, Buchman14}.
-% The storage of a contract account can be modified (if allowed by its code), but the code itself cannot.
-% "one can use create2 to deploy different bytecode to the same contract: deploy code1 - selfdestruct - deploy code2 - ..."
 
 
 \subsection{Transactions}
@@ -131,12 +120,12 @@ A transaction includes the following fields:
 	\item \emph{v}, \emph{r}, \emph{s} -- signature data.
 \end{itemize}
 
-There are two types of transactions in Ethereum.
+An Ethereum transaction belongs to one of two categories.
 A \textit{message call transaction} executes a function of an existing contract or transfers ether.
 It contains the arguments for the function call in an optional \textit{data} field.
-A smart contract function called by a transaction can in turn call other functions in this or other contracts.
+A smart contract function called by a transaction can, in turn, call other functions in this or other contracts.
 A \textit{contract creation transaction} deploys a new contract.
-It contains an additional \emph{init} field -- a byte array containing the EVM bytecode of the new contract and the initialization code that is executed once on contract creation.
+It contains an \emph{init} field -- a byte array containing the EVM bytecode of the new contract and the initialization code executed once on contract creation.
 
 Transactions incur fees to prevent resource abuse.
 Every computational step in EVM is priced in units of \emph{gas}.
@@ -147,10 +136,10 @@ Therefore, the maximum transaction fee (in ether) equals the gas limit multiplie
 If the execution is successful, the remaining ether is refunded.
 
 EVM executes transactions \textit{atomically}.
-A failed transaction does not affect the state\footnote{It still increases the nonce value for the sender's account and is included in a block.}, but consumes all provided gas.
+A failed transaction does not affect the state\footnote{It still increases the nonce value for the sender's account and is included in a block.} but consumes all provided gas.
 Ethereum specification (the Yellow paper~\cite{Wood2014}) defines gas costs of EVM opcodes.
 Developers occasionally change them in protocol upgrades (implemented as hard forks).
-The market determines the price of a gas unit in ether
+The market determines the price of a gas unit in ether.
 The \textit{block gas limit} bounds the amount of gas consumed in one block.
 Miners can vote to gradually change this limit~\cite{Jnnk15}.
 
@@ -165,22 +154,21 @@ Miners often use GPUs, though ASICs have also been introduced~\cite{OLeary2018}.
 
 Miners are rewarded with transaction fees and block subsidy.
 Initially, Ethereum issued $5$~ether per block.
-The issuance rate decreased to $3$~ether per block in 2017, and to $2$~ether per block in 2019.
-Contrary to Bitcoin, Ethereum issuance rate is not hard-coded into the protocol~\cite{Ethhub2020}.
-Changes in issuance are decided in an informal governance process and implemented by the core developers.
+The block subsidy decreased to $3$~ether in 2017 and $2$~ether in 2019.
+Contrary to Bitcoin, the Ethereum issuance rate is not hard-coded into the protocol~\cite{Ethhub2020}.
+The core developers discuss proposed changes in the issuance schedule within a governance process.
 
 Ethereum aims at a short average interval between blocks: $15$~seconds, compared to $10$~minutes in Bitcoin.
-Without additional countermeasures, short block intervals can lead to a high \textit{orphan rate}.
-An \textit{orphan} is a valid block that did not get accepted in the main chain.
+Without specific countermeasures, short block intervals lead to a high \textit{orphan rate}.
+An \textit{orphan} is a valid block that is not included in the main chain.
 Network delays lead to miners unwillingly generating multiple blocks on the same height.
-Only one of these block is eventually accepted, whereas the hash power spent on others is essentially wasted.
+Only one of these blocks is eventually accepted, whereas the hash power spent on other blocks is essentially wasted.
 In a double-spend attack, the attacker would only have to re-generate the PoW for the main chain, but not for orphan blocks.
-Short time between blocks exacerbates this problem.
+A short time between blocks exacerbates the problem.
 
-To address the issue, Ethereum uses a modification~\cite{Lewenberg2015} of GHOST protocol~\cite{Sompolinsky2013, EthdocsMining}.
-%This blockchain protocol accounts for the weight of orphaned blocks~\cite{Wuille2017, Johnson2017}.
+To address the issue, Ethereum uses the modified~\cite{Lewenberg2015} GHOST protocol~\cite{Sompolinsky2013, EthdocsMining}.
 In Ethereum, orphan blocks are refereed to as \textit{uncle} blocks, or \textit{uncles}.
-Miners include hashes of uncles in block headers to receive additional reward.
+Miners include hashes of uncles in block headers to receive a higher reward.
 The protocol rewards uncles no more than $6$~blocks old.
 No more than $2$~uncles per block are allowed.
 Miners of uncles whose headers get included in the main chain are also rewarded.
@@ -188,7 +176,7 @@ Miners of uncles whose headers get included in the main chain are also rewarded.
 
 \subsection{Contracts}
 
-Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.\footnote{An alternative language which is in earlier stage of development is Vyper~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
+Solidity~\cite{Solidity17} is the most popular high-level language for Ethereum smart contracts.\footnote{Vyper is an alternative language in an earlier stage of development~\cite{Vyper}. Other alternative high-level languages, such as Serpent~\cite{SerpentGithub} and LLL~\cite{Ellison2017}, have been largely abandoned.}
 It is a statically typed language with a Javascript-like syntax.
 Listing~\ref{lst:SolidityExample} provides an example of a program in Solidity.
 
@@ -197,7 +185,7 @@ Users then interact with it by issuing transactions.
 
 Ethereum nodes execute contract bytecode on the \textit{Ethereum virtual machine} (EVM).
 EVM bytecode is a low-level Turing complete stack-based language operating on $256$-bit words.
-The design goals of the EVM differ from those for general-purpose virtual machines such as the Java virtual machine (JVM).
+The EVM's design goals differ from those for general-purpose virtual machines such as the Java virtual machine (JVM).
 For instance, EVM executes deterministically and natively supports relevant cryptographic operations~\cite{Buterin2017}.
 
 \begin{lstlisting}[language=Solidity, label={lst:SolidityExample}, caption=A simple contract in Solidity]
@@ -216,77 +204,74 @@ str = _str;
 
 \subsection{Applications}
 
-Crowdfunding is arguably the first popular applications of smart contracts~\cite{McAdams2017}.
-This was exemplified by the so-called \textit{initial coin offerings} (ICO).
+Crowdfunding is arguably the first widespread application of smart contracts~\cite{McAdams2017}.
+This use case is exemplified by the so-called \textit{initial coin offerings} (ICO).
 A \textit{token} is a unit of new cryptocurrency built on top of Ethereum.
-An ICO is a crowdfunding mechanism whereby a team sells tokens to fund the development of a project that would later use this token.
-A token is usually implemented as a smart contract that maintains a list of the users' current balances.
+An ICO is a crowdfunding mechanism whereby a team sells tokens to fund project development. 
+A token is usually implemented as a smart contract that maintains a list of balances.
 Users can transfer tokens by interacting with the contract.
 ERC20~\cite{Victor2019} is the de-facto standard way to implement a token on Ethereum.
 In 2017, ICOs attracted $1.8$~billion~USD~\cite{CoindeakICOTracker}, surpassing early stage venture capital funding~\cite{Sunnarborg2017}.
 Many ICOs turned out to be dubious or outright scams.
-However, Ethereum proved useful as a global crowdfunding platform.
+However, Ethereum was proven useful as a global crowdfunding platform.
 
 In 2019, another category of Ethereum-based applications known as \textit{decentralized finance} (\textit{DeFi}), gained momentum.
-DeFi projects build financial services, such as loans, in a more trustless way, eliminating the ineffectiveness of traditional intermediaries.
-The basic building block for DeFi is a \textit{stablecoin} -- a token with the value linked to the US~dollar.
+DeFi projects build financial services, such as loans, in a more trustless way, eliminating the traditional intermediaries.
+The basic building block for DeFi is a \textit{stablecoin} -- a token with the value linked to a fiat currency, usually the US~dollar.
 MakerDAO is a prominent \textit{algorithmic} stablecoin project.
-Its price stability is maintained by providing economic incentives to market participants to restore the dollar parity if the exchange rate starts to diverge from it.\footnote{As of 2020, the most widely used stablecoin is Tether (also known as USDT). In contrast to MakerDAO, it is centrally managed. We refer the reader to~\cite{Clark2020,KlagesMundt2020} for an overview of stablecoins.}
+It maintains price stability by providing economic incentives to market participants to restore the dollar parity if the exchange rate starts to diverge from it.\footnote{As of 2020, the most widely used stablecoin is Tether (also known as USDT). In contrast to MakerDAO, it is centrally managed. We refer the reader to~\cite{Clark2020,KlagesMundt2020} for an overview of stablecoins.}
 Other popular DeFi projects include Uniswap (a decentralized exchange) and Compound (a lending platform).
 Applications of Ethereum also include decentralized file storage~\cite{Storj} and computation~\cite{Golem}, name systems~\cite{ENS}, and prediction markets~\cite{Augur, Gnosis}.
 
 
 \section{Challenges for smart contracts}
 
-In 2016, a high-profile Ethereum contract called \textit{The DAO} was compromised~\cite{Sirer2016}.
-An unknown hacker appropriated around $40$~million~USD worth of ether.
-Ethereum developers proposed a non backwards-compatible protocol upgrade to return the funds.
-This was a controversial move, because the EVM behaved correctly.
+In 2016, an unknown hacker exploited a high-profile Ethereum contract called \textit{The DAO}~\cite{Sirer2016} and appropriated around $40$~million~USD worth of ether.
+Ethereum developers proposed a non-backwards-compatible protocol upgrade to return the funds.
+This move sparked controversy because the EVM had behaved correctly.
 It was the logical fault in the contract code that caused the calamity.
 Most community members accepted the proposal.
 A dissident minority continued to support the original chain (Ethereum~Classic~\cite{EthereumClassic}).
-In 2017, an estimated $150$~million~USD were lost as a result of two attacks on the Parity MultiSig contract~\cite{Palladino2017}.
-These and other attacks on smart contracts~\cite{Delmolino2016, Atzei2017} have shown the importance of tools to ensure correctness and security of smart contracts.
+In 2017, an estimated $150$~million~USD were lost in two attacks against the Parity MultiSig contract~\cite{Palladino2017}.
+These and other attacks on smart contracts~\cite{Delmolino2016, Atzei2017} show the importance of tools to ensure the correctness and security of smart contracts.
 Let us list some of the most pressing security challenges in this area.
 
 \paragraph{Code security}
-First of all, smart contracts must precisely reflect the intent of the developers.
-This may not always be the case in practice.
+First of all, smart contracts must precisely reflect the developers' intent, which may not always be the case in practice.
 Smart contract programming languages, such as Solidity, are unfamiliar to developers.
 The execution model of Ethereum differs from centrally managed environments.
-Developers are not used to their code being executed by a global network of anonymous, mutually distrusting, profit-driven actors.
-Some argue that Solidity itself inclines programmers towards unsafe development practices~\cite{ydtm2016}.
-Moreover, the actual Ethereum network executes bytecode, not Solidity code.
+Developers might not be used to their code being executed by a global network of anonymous, mutually distrusting, profit-driven actors.
+Some argue that the Solidity language itself inclines programmers towards unsafe development practices~\cite{ydtm2016}.
+Moreover, the Ethereum network executes bytecode, not Solidity code.
 The security thus depends on the compiler and the EVM runtime environment.
 
-Approaches to smart contract security include systematizing good and bad programming practices~\cite{ConsenSys16, Chen2017}, designing general-purpose~\cite{Hirai2017a, Buterin2017b, Pettersson2016} as well as domain-specific~\cite{EgelundMueller2017} smart contract programming languages, formalizing smart contracts execution model~\cite{Sergey2017}.
+Approaches to smart contract security include systematizing good and bad programming practices~\cite{ConsenSys16, Chen2017}, designing general-purpose~\cite{Hirai2017a, Buterin2017b, Pettersson2016} and domain-specific~\cite{EgelundMueller2017} smart contract programming languages, formalizing smart contracts execution model~\cite{Sergey2017}.
 Multiple tools aim at improving the security and correctness of Ethereum smart contracts~\cite{Bhargavan2016, Luu2016, Hirai2017, Hildenbrandt2018, Tsankov2018, Jiang2018, Slither, Manticore, Mythril, Echidna}.
 See~\cite{Seijas2016} for an overview of approaches to smart contract programming.
 
 \paragraph{Bug-fixing and updates}
-Smart contracts can not be patched.
-This presents an inherent trade-off~\cite{Porru2017}.
+Smart contracts cannot be patched, which presents a trade-off~\cite{Porru2017}.
 On the one hand, smart contracts should guarantee fairness.
-Ideally, after a contract is deployed, nobody should be able modify its code, even its developers.
-This ensures that privileged parties cannot unexpectedly change the rules of the game in their favor.
+Ideally, nobody should be able to change the contract code after deployment.
+This immutability ensures that privileged parties cannot unexpectedly change the rules of the game in their favor.
 On the other hand, smart contracts are experimental software.
 Deployed contracts are likely to contain bugs.
-An adversary can then exploit contract vulnerabilities without restraint.\footnote{This introduces a new dimension into the debate on responsible disclosure~\cite{Schneier2007}. It is ethical to publicly disclose a smart contact vulnerability, if the developers have no technical means to fix it?}
+An adversary can then exploit contract vulnerabilities without restraint.\footnote{Smart contract immutability introduces a new dimension into the debate on responsible disclosure~\cite{Schneier2007}. It is ethical to disclose a smart contact vulnerability publicly, if the developers have no technical means to fix it?}
 Real-world projects often address this issue by encoding an administrator key in their contracts.
 The owner of this key can perform a limited number of actions.
-For example, an administrator might be able to pause withdrawals without the ability to steal users' funds.
+For example, an administrator might be able to pause withdrawals without being able to steal users' funds.
 
 \paragraph{Anonymous attackers}.
 Exploiting smart contracts is attractive compared to other types of cybercrime.
 First, smart contracts store significant amounts of value.
-Second, unlike, for instance, compromised databases, digital assets are more liquid.\footnote{However, the know-your-customer procedure that most exchanges require, as well as blockchain analytics, has made cashing out more difficult.}
+Second, digital assets are more liquid than, e.g.,~data from compromised databases.\footnote{However, the know-your-customer procedure that most exchanges require, and blockchain analytics, has made cashing out more difficult.}
 Third, the risk of punishment is relatively low.
 
 \paragraph{External data sources}
-Some smart contract rely on external data to operate.
-A large portion of potential use cases envisions smart contracts that depend on the data from the "real world", e.g.,~financial quotes.
+Some smart contracts rely on external data to operate.
+Many potential use cases envision smart contracts that depend on the data from the "real world," e.g.,~financial quotes.
 External information can only get into a smart contract from a transaction.
-Centralized data providers (also known as \textit{oracles}) constitute a potential point of failure.
+Centralized data providers (also known as \textit{oracles}) are a potential point of failure.
 This issue is known as the \textit{oracle problem}.
 Multiple designs of trust-minimized oracles have been proposed.
 Mechanisms to ensure data authenticity include TLS-based cryptographic guarantees~\cite{Provable}, trusted hardware~\cite{Zhang2016}, and economic incentives~\cite{Chainlink}.
@@ -294,13 +279,11 @@ Mechanisms to ensure data authenticity include TLS-based cryptographic guarantee
 \paragraph{Front-running and miner influence}
 Miners determine which transactions and in which order are included in a block.
 For certain applications, such as trading, transaction ordering is crucial.
-Miners and other users are incentivized to engage in \textit{front-running}: prioritizing their own transactions at the expense of others.
-It has been shown that automated bots do perform front-running in Ethereum-based decentralized exchanges~\cite{Daian2019}.
+Miners and other users are incentivized to engage in \textit{front-running}: prioritizing their transactions at the expense of others.
+It has been shown that automated bots do perform front-running in Ethereum-based decentralized exchanges~\cite{Daian2019,Robinson2020}.
 
 \paragraph{Privacy}
-Smart contacts introduce new privacy issues.
-Ethereum architecture has good and bad effects on privacy.
-On the one hand, the account-based model inclines users to perceive their Ethereum address as their semi-permanent identity, which harms privacy.
+Smart contacts introduce new privacy challenges.
+On the one hand, an account-based model inclines users to perceive their Ethereum address as their semi-permanent identity, which harms privacy.
 On the other hand, richer programming capabilities enable sophisticated privacy solutions built as Ethereum smart contracts.
-For instance, the possibility to verify zero-knowledge proofs on-chain enabled the development of advanced privacy protocols such as Aztec~\cite{Aztec} and Tornado Cash~\cite{TornadoCash}.
-
+For instance, the possibility to verify zero-knowledge proofs on-chain enabled the development of advanced protocols such as Aztec~\cite{Aztec} and Tornado Cash~\cite{TornadoCash}.

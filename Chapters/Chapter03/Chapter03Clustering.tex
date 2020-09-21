@@ -38,11 +38,12 @@ The attacker cannot connect to such nodes directly and learns about their transa
 Second, cryptocurrencies use \textit{broadcast randomization} methods to break the latter assumption.
 In particular, Bitcoin uses \textit{diffusion}, whereas Zcash uses \textit{trickling} (see Section~\ref{sec:BitcoinP2PProtocol} for details).
 
-Our method overcomes the limitations of the first relayer heuristic.
 Our goal is to divide all transactions into clusters, where each cluster corresponds to one source.
+Compared to~\cite{Koshy2014}, we go beyond the first relayer heuristic by considering multiple IP addresses for each transaction.
 We hypothesize that propagation patterns of transactions issued from the same source are similar because they are announced through the same set of entry nodes.
 To exploit this similarity, we first connect to all nodes and log the timestamps of transaction announcements.
 We then characterize transaction propagation patterns with \textit{weight vectors}.
+This technique distinguishes our method from~\cite{Biryukov2014}, where the attacker correlates transactions with clients based on how many of the transaction's first relayers fall into a known entry set.
 Each element of a vector corresponds to a node\footnote{We identify nodes by their IP~addresses} that announced at least one transaction to us.
 For each transaction, we assign decreasing non-zero weights to the first $N$~nodes that announced it and a zero weight to all others.
 We expect transactions from one source to have a stronger correlation between the weight vectors compared to transactions from different sources.

@@ -1,10 +1,9 @@
-\chapter{Deanonymization of transactions with network analysis} % Main chapter title
+\chapter{Deanonymization of transactions with network analysis}
 
 \label{Chapter03Clustering}
 
 In this Chapter, we describe a novel network-level deanonymization attack on cryptocurrencies.\footnote{This Chapter is based on~\cite{Biryukov2019a, Biryukov2019b}. This work was partially supported by the Zcash Foundation grant 2017Q4-24~\cite{Feher2017}.}
 We show how a global passive adversary can cluster transactions issued from the same node and correlate the clusters with IP addresses.
-Our clustering method may act as a complement to transaction graph analysis.
 
 Our method is based on analyzing the timings of transaction announcements.
 We go beyond the first relayer heuristic~\cite{Biryukov2014, Koshy2014} and consider multiple announcements for each transaction.
@@ -19,6 +18,10 @@ We cluster our own transactions in Bitcoin testnet and Zcash with high levels of
 In particular, we can cluster Zcash transactions that involve both transparent and shielded addresses.
 We estimate the cost of a full-scale attack on the Bitcoin mainnet at hundreds of US~dollars, feasible for a low budget adversary.
 We also prove the applicability of our technique to Dash and Monero.
+
+Our clustering method may act as a complement to transaction graph analysis.
+The network-based analysis may reveal a relationship between transactions with no common public keys used in their inputs and outputs.
+Analogously, transactions sharing some addresses may be announced though different sets of nodes.
 
 
 \section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
@@ -599,7 +602,8 @@ Though the Coinomi transactions do not form a clear cluster, we observe that som
 
 \subsubsection*{Comparison with prior work}
 
-While multiple research works propose deanonymization techniques for cryptocurrencies, few of them quantify their results based on ground truth data, i.e.,~by deanonymizing transactions known to have originated from one source.
+Multiple research works propose deanonymization techniques for cryptocurrencies.
+However, few of them quantify their results based on ground truth data, i.e.,~by deanonymizing transactions known to have originated from one source.
 For instance, one of the earliest papers~\cite{Meiklejohn2013} clusters Bitcoin transactions using transaction graph heuristics and known deanonymized addresses as a starting point.
 However, it does not provide a way to verify how many of the addresses assigned, i.e.,~to the cluster of an exchange, actually belong to it.
 
@@ -689,18 +693,20 @@ All users should avoid sending multiple transactions within a short time frame.
 
 Note that an attacker may leverage external information to increase clustering accuracy, such as known addresses of exchanges and other service providers~\cite{Walletexplorer}.
 
-\paragraph{Dandelion}
-Dandelion is a P2P protocol for cryptocurrencies (see~Section~\ref{sec:Dandelion}).
-It is an effective countermeasure against our attack.\footnote{The authors mention (\cite{Fanti2018}, Section~4.2) that some configurations of the protocol may be prone to transaction correlation attacks.}
+\paragraph{Dandelion and Erlay}
+
 The key property of the current P2P protocols that we exploit is that nodes do not distinguish between incoming and outgoing connections.
 A node announces transactions to a random subset of connections.
 This allows a well-connected listener to receive more information by initiating more connections.
 For instance, by saturating $50\%$~of a node's connection slots, a listener has a $50\%$~chance to be the first to receive a new transaction from it.
 
+Dandelion~\cite{Fanti2018} is a P2P protocol for cryptocurrencies (see~Section~\ref{sec:Dandelion}).
+It is an effective countermeasure against our attack.\footnote{The authors mention (\cite{Fanti2018}, Section~4.2) that some configurations of the protocol may be prone to transaction correlation attacks.}
 In Dandelion, nodes choose neighbors for the stem phase from their outgoing connections only.
 An attacker has no easy way to force a remote peer to initiate a connection.
 Therefore, a malicious node with many outgoing connections does not have an advantage in the stem phase.
 It can only aggregate incoming information while acting as a regular relay, gaining some but not much insight into possible transaction clusters.
+The same applies to Erlay~\cite{Naumenko2019} -- a P2P protocol for a more efficient transaction broadcast in Bitcoin.
 
 
 \section{Conclusion} \label{sec:Ch03Conclusion}

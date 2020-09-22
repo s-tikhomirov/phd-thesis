@@ -216,6 +216,7 @@ Finally, a measurement study~\cite{Wang2017} of Bitcoin's \textit{unreachable} p
 
 
 \subsection{Network-based transaction deanonymization}
+\label{sec:network-analysis}
 
 In \textit{transaction deanonymization} attacks, an adversary is trying to associate the victim's identities used inside and outside of the cryptocurrency protocol.
 A more concrete task towards this goal is to reveal the victim's IP address, which is often linked to their geographical location and real-world identity.
@@ -225,21 +226,19 @@ A related task is transaction clustering, whereby an attacker reveals the hidden
 
 The first work on network-based deanonymization attacks proposes a technique based on transaction propagation~\cite{Koshy2014}.
 An adversary connects to all listening Bitcoin nodes and logs the traffic.
-It then hypothesizes, for each transaction, that one of the IP addresses that relayed it "owns" it.
+It then hypothesizes, for each transaction, that one of the IP addresses that relayed it "owns" it (i.e.,~to possess the corresponding private key).
 The method considers multiple cases of relaying behavior.
-Under normal circumstances, each node relays a transaction at most once.
-More than $90$\%~of transactions confirm to this pattern.
-In that case, the method uses the \textit{first relayer heuristic}: the first IP to relay a transaction is assumed to own (i.e.,~to possess the private key of) its inputs and outputs.
-Note that this correspondence is not guaranteed because of naturally occurring network delays and broadcast randomization.
+More than $90$\%~of transactions conform to the "normal" relaying pattern, where each node relays a transaction at most once.
+In that case, the method uses the \textit{first relayer heuristic}: the first IP to relay a transaction is assumed to own its inputs and outputs.
+This correspondence is not guaranteed due to network delays and broadcast randomization.
 If a transaction is relayed from one IP address only and not re-relayed by anyone else, the single relayer is assumed to be the owner.
-I a single IP addressed relayed the same transaction twice (while many others relayed it once), the single re-relayer is assumed to be the owner.
-This heuristics is explained by the relaying rules in Bitcoin~Core that generally disallow nodes to re-relay transactions, but make an exception for the sender and the receiver.
-Other types of anomalous behavior (i.e.,~multiple re-relayers) are excluded from consideration.
+If a single IP addressed relayed the same transaction twice (while many others relayed it once), the single re-relayer is assumed to be the owner.\footnote{The relaying rules in Bitcoin~Core that generally disallow nodes to re-relay transactions, but make an exception for the sender and the receiver.}
+Other types of anomalous relaying behavior are excluded from consideration.
 
 The data is then converted into the form of \textit{tuples} that include: the transaction identifier, the Bitcoin address, and the IP address assumed to own the transaction.
 A separate tuple is created for each input and each output of each considered transaction.
 Tuples are then interpreted as "votes" in favor of a hypothesis that an IP address owns a Bitcoin address.
-For each Bitcoin address, the authors consider separately the tuples where is appears as an input and as an output.
+For each Bitcoin address, the authors consider separately the tuples where it appears as an input and as an output.
 If the confidence is high for inputs, the IP address is assumed to own the Bitcoin address.
 If the confidence is high for outputs but low for inputs, the relationship cannot be identified.
 If both metrics are low, there is likely no association between the IP address and the Bitcoin address in question.
@@ -247,29 +246,27 @@ If both metrics are low, there is likely no association between the IP address a
 The authors apply the method to $5.6$~million Bitcoin transactions recorded in 2012-2013.
 They only consider $3.9$~million transactions with a single input.
 With highly conservative constraints, they map "between $252$ and $1\,162$ Bitcoin addresses to the IPs that very likely own them."
-However, the paper does not test the method on transactions issued from a known IP address.
-Moreover, the "vast majority" of the final mappings were obtained from observing anomalous relaying behavior.
-Most of the transactions relayed "normally" only yield a (Bitcoin address, IP) pairing with a support count of one.
+The "vast majority" of the final mappings are obtained from anomalous relaying behavior.
+The first relayer heuristic yields poor results on transactions relayed normally.
 The authors provide two explanations.
 First, the users may follow the recommendation to generate a new Bitcoin address for each transaction.
-Second, the first relayer heuristic may be "uneffective at best and invalid at worst."
-This is likely to be at least partially true due to of broadcast randomization.
+Second, the first relayer heuristic itself may be "uneffective at best and invalid at worst."
 
 
 \paragraph{Deanonymization based on entry sets (Biryukov et al.)}
 
 A similar attack~\cite{Biryukov2014} correlates Bitcoin transactions with IP addresses.
-It exploits the fact that each Bitcoin node connects to a random set of \textit{entry nodes}.
-This set is used as a fingerprint.
-This allows to differentiate nodes behind NAT that use the same public IP address.
+It exploits the fact that each Bitcoin node connects to a random set of \textit{entry nodes}, which is used as a fingerprint.
+Entry sets allow the attacker to differentiate nodes behind NAT that use the same public IP address.
 The paper distinguishes between Bitcoin \textit{servers} (nodes that accept incoming connections) and \textit{clients} (nodes that do not).
-Moreover, the authors describe an attack that prevents the victim from using Tor by abusing the Bitcoin's anti-DoS mechanism~\cite{Biryukov2015}.
+The authors also describe an attack that prevents the victim from using Tor by abusing the Bitcoin's anti-DoS mechanism~\cite{Biryukov2015}.
 
 Assuming no usage of Tor, the attack proceeds as follows.
-The attacker is assumed to know the list of IP addresses of Bitcoin clients whose transactions it wants to distinguish.
+The attacker is assumed to know the list of IP addresses of Bitcoin clients whose transactions it wants to deanonymize.
 First, the attacker establishes multiple \textit{parallel} connections to all nodes that accept incoming connections.
-Then, the attacker learns the entry nodes of the victim clients from the \texttt{addr} messages they advertise upon connecting.\footnote{Note that the method assumes that the attacker is capturing the traffic when the victim is connecting to the network, and that addresses are only announced when new nodes join.}
-Finally, for each new transaction, the attacker considers the first $10$~IP addresses that relayed it and estimates the probability that the transaction originates from each of the clients based on the intersection with the estimated entry sets.
+Then, the attacker learns the entry nodes of the victim clients from the \texttt{addr} messages they advertise upon connecting.\footnote{Note that the method assumes that the attacker is capturing the traffic when the victim is connecting to the network.}
+Finally, for each new transaction, the attacker considers the first $10$~IP addresses that relayed it.
+Based on this set's intersection with known entry sets, the attacker estimates the probability that the transaction originates from a given victim node.
 
 
 \paragraph{Combining blockchain analysis with network analysis (Neudecker et al.)}
@@ -277,9 +274,9 @@ Finally, for each new transaction, the attacker considers the first $10$~IP addr
 Another attack~\cite{Neudecker2017} clusters Bitcoin addresses and associates them with IP addresses by combining transaction graph analysis and network analysis.
 The attacker determines the transaction originator using the first relayer heuristic.
 The attacker uses two listening nodes and applies multiple heuristics to discard the "obviously false mappings" between transactions and their first relayers.
-The authors show that the majority of clusters obtained through blockchain analysis cannot be directly associated with a single IP address.
+The authors show that most clusters obtained through blockchain analysis cannot be directly associated with a single IP address.
 Likewise, most IP addresses cannot be associated with one cluster.
-However, a small number of participants exhibit correlations that makes them prone to the attacks of this type.
+However, a small number of participants exhibit correlations that make them prone to such attacks.
 
 
 \paragraph{Network-level attacks on privacy-focused cryptocurrencies}

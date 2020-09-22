@@ -597,6 +597,34 @@ The second experiment considers Zcash and Coinomi wallet.
 Though the Coinomi transactions do not form a clear cluster, we observe that some of them (in the second cluster) are quickly announced from the same IP (\texttt{5.79.123.194}), which, we assume, is one of the Coinomi's nodes.
 
 
+\subsubsection*{Comparison with prior work}
+
+While multiple research works propose deanonymization techniques for cryptocurrencies, few of them quantify their results based on ground truth data, i.e.,~by deanonymizing transactions known to have originated from one source.
+For instance, one of the earliest papers~\cite{Meiklejohn2013} clusters Bitcoin transactions using transaction graph heuristics and known deanonymized addresses as a starting point.
+However, it does not provide a way to verify how many of the addresses assigned, i.e.,~to the cluster of an exchange, actually belong to it.
+
+The same is mostly true for related work on network analysis.
+As outlined in Section~\ref{sec:network-analysis}, the most closely related prior work is~\cite{Koshy2014, Biryukov2014, Neudecker2017}.
+In~\cite{Koshy2014}, the first relayer heuristic is used.
+However, after refining the results to eliminate likely false positives, the authors conclude that most results are based on anomalous propagation and have only limited applicability.
+
+In~\cite{Neudecker2017}, two clustering methods are compared: based on transaction graph analysis and networking analysis (first relayer heuristic with optimizations).
+The authors find little correlation between the two types of clusters.
+Less than $8$\% of clusters from transaction graph analysis correspond to a single IP address.
+No evaluation based on the ground truth has been performed.
+
+Only in~\cite{Biryukov2014} do the authors estimate the success using their own transactions, in addition to theoretical calculations.
+They achieve a success rate of nearly $60$\% on the Bitcoin testnet.
+This means that $60$\% of the testnet transaction issued from a given entry set are correctly identified as such.
+
+Our method achieves better results on the Bitcoin testnet (Figure~\ref{fig:bitcoin-testnet-combined}).
+Out of $30$~control set transactions, $24$~are assigned to one cluster.
+Additionally, $7$~transactions not from the control set have been put into this cluster.
+Therefore, we achieve a false negative rate of $20$\% and a false positive rate of $23$\%.
+This corresponds to the success rate of $80$\%, which is higher than $60$\% reported in~\cite{Biryukov2014}.
+
+
+
 \section{Attack cost estimation}
 
 We now estimate the resources required for a full-scale attack on the Bitcoin mainnet.

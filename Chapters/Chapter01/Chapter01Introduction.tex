@@ -654,13 +654,13 @@ Non-fungible currency fails to act as a unit of account.
 Merchants may instigate blacklisting of currency units with a "bad" transaction history.
 This practice incurs a tax on everyone as receivers start discounting incoming transactions based on which particular currency units they contain.
 
-Bitcoins are not entirely fungible~\cite{Reid2011,Androulaki2013}.
+Bitcoins are not entirely fungible.
 Each coin has a unique history that can be tracked up until its creation as a miner reward.
 (Note that such histories have multiple threads because values are split and merged in transactions.)
 Multiple companies provide the service of blockchain analytics to enable blacklisting "tainted" coins~\cite{Elliptic, Chainalysis}.
 
 We can classify privacy attacks on cryptocurrencies into \textit{transaction graph analysis} and \textit{network analysis}.
-In transaction graph analysis, the attacker studies the graph built from the publicly available blockchain data~\cite{Meiklejohn2013, Ober2013, Ron2013}.
+In transaction graph analysis, the attacker studies the graph built from the publicly available blockchain data~\cite{Reid2011, Androulaki2013, Meiklejohn2013, Ober2013, Ron2013}.
 The simplest countermeasure is to generate a new address for each transaction.\footnote{This complicates a widespread use case -- collecting donations to a static Bitcoin address published on a website or a social network page. A safer way to receive donations would be to deterministically generate a new address for each donation from a master key.}
 However, this is insufficient to protect against modern blockchain analysis methods.
 \textit{Mixing} is a more involved technique.

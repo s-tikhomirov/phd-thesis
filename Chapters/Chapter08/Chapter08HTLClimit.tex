@@ -195,6 +195,11 @@ While an HTLC requires a digital signature, hash value, and a timelock, AMHL onl
 This countermeasure would reduce the number of bytes required per in-flight payment and increase the number of payments handled concurrently.
 While not removing the limitation on the number of concurrent payments, this countermeasure raises this limit, reducing its harmful effect.
 
+Another countermeasure is implementing payments across multiple channels with small \textit{packetized payments} that are not secured by HTLCs~\cite{Robinson2019}.
+Instead, this mechanism relies on economic incentives: if a counterparty misbehaves, an honest party stops the interaction and only loses a negligible value.
+
+Firewall-like solutions have been proposed to protect Lightning nodes against HTLC-based DoS attempts~\cite{Jager2020}.
+
 
 \section{Conclusion}
 

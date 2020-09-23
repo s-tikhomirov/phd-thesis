@@ -6,7 +6,7 @@ In this Section, we describe an inherent limitation on the number of concurrent 
 Due to the size limitations on Bitcoin transactions, a payment channel can hold only a certain number of concurrent unresolved HTLCs.
 An attacker can create unresolved payments between two nodes under their control.
 This attack blocks the capacity of channels along the route by depleting their "HTLC slots."
-This effect may be critical for micro-payment applications -- a significant use case for the LN.
+This effect may be critical for micro-payment applications -- a significant use case for the LN\@.
 This limitation has been pointed out~\cite{EmelyanenkoK2017} but never quantitatively analyzed.
 
 We study the management of concurrent payments in the LN and quantify its negative effect on scalability.

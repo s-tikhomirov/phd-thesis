@@ -222,7 +222,7 @@ In \textit{transaction deanonymization} attacks, an adversary is trying to assoc
 A more concrete task towards this goal is to reveal the victim's IP address, which is often linked to their geographical location and real-world identity.
 A related task is transaction clustering, whereby an attacker reveals the hidden relationships between transactions.
 
-\paragraph{Heuristics based on relaying behavior (Koshy et al.)}
+\paragraph{Heuristics based on relaying behavior}
 
 The first work on network-based deanonymization attacks proposes a technique based on transaction propagation~\cite{Koshy2014}.
 An adversary connects to all listening Bitcoin nodes and logs the traffic.
@@ -253,7 +253,7 @@ First, the users may follow the recommendation to generate a new Bitcoin address
 Second, the first relayer heuristic itself may be "uneffective at best and invalid at worst."
 
 
-\paragraph{Deanonymization based on entry sets (Biryukov et al.)}
+\paragraph{Deanonymization based on entry sets}
 
 A similar attack~\cite{Biryukov2014} correlates Bitcoin transactions with IP addresses.
 It exploits the fact that each Bitcoin node connects to a random set of \textit{entry nodes}, which is used as a fingerprint.
@@ -269,7 +269,7 @@ Finally, for each new transaction, the attacker considers the first $10$~IP addr
 Based on this set's intersection with known entry sets, the attacker estimates the probability that the transaction originates from a given victim node.
 
 
-\paragraph{Combining blockchain analysis with network analysis (Neudecker et al.)}
+\paragraph{Combining blockchain analysis with network analysis}
 
 Another attack~\cite{Neudecker2017} clusters Bitcoin addresses and associates them with IP addresses by combining transaction graph analysis and network analysis.
 The attacker determines the transaction originator using the first relayer heuristic.

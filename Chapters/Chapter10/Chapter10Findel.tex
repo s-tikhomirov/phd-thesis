@@ -30,7 +30,7 @@ We refer the reader to~\cite{Hvitved2010, Schiller2013} for a review of financia
 \section{Findel contracts} \label{sec:Ch10FindelSyntax}
 
 \begin{definition} \label{def:Ch10FindelFindelContract}
-	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and~$O$ is the \textbf{owner} (collectively called parties). 
+	A \textbf{Findel contract}\footnote{We may refer to Findel contracts simply as contracts, when the distinction between them and Ethereum smart contracts is clear from the context.} $C$ is a tuple $(D,I,O)$, where $D$ is the \textbf{description}, $I$ is the \textbf{issuer}, and~$O$ is the \textbf{owner} (collectively called parties).
 \end{definition}
 
 \begin{definition} \label{def:Ch10FindelDescription}
@@ -283,7 +283,7 @@ A gateway connects to an external data source and stores the latest value observ
 We do not specify the form of proof a gateway provides.
 Possible options include Provable~\cite{Provable}, TLSNotary~\cite{TLSNotary}, and Realio~\cite{Realitio}.
 
-The marketplace queries a gateway at execution time, if necessary. 
+The marketplace queries a gateway at execution time, if necessary.
 If the value is fresh and the proof is valid, the execution proceeds, otherwise it is aborted, and all changes are reverted.
 Since a Findel contract may use multiple gateways, the owner is advised to \texttt{update} them all shortly before the execution.
 

@@ -361,7 +361,7 @@ First, we consider the distribution of probing times for various route lengths (
 Nearly all probes sent along the routes of $3$~hops and shorter return within $10$~seconds.
 The median of the $8\,256$~probes is at $3.36$~seconds.
 Recall that $15.25\%$~of the probes time out or return an error that we cannot interpret within our algorithm.
-The corrected median without the timed out and erring probes is $3.93$~seconds. 
+The corrected median without the timed out and erring probes is $3.93$~seconds.
 We conclude that the cutoff at $10$~seconds presents an acceptable trade-off.
 The diameter of the strongly connected component on the LN is~$3$.\footnote{It is not always possible to use the shortest route, as it may not have sufficient balances in all channels.}
 
@@ -471,8 +471,8 @@ Now we discuss the limitations of our approach and potential ways to improve it.
 
 \paragraph{Private channels}
 
-LN nodes do not have ao announce their channels.
-For example, casual users using mobile devices are not supposed to do so
+LN nodes do not have to announce their channels.
+For example, casual users using mobile devices are not supposed to do so.
 According to a 2020 study~\cite{BitMEXPrivateChannels}, $28\%$~of LN~channels are unannounced.\footnote{Unannounced channels are also called \textit{private}.}
 Unannounced channels are not prone to our probing methodology.
 The sender does not know the private channel endpoint's identifier and cannot construct a route to it.
@@ -534,7 +534,7 @@ However, most \textit{node pairs} have at most one channel, which thus can be pr
 \section{Countermeasures}
 
 The simplest countermeasure that does not require protocol changes can be implemented as part of a node routing policy.
-Note that all our probing payments fail (either due to insufficient balance or unknown hash preimage). 
+Note that all our probing payments fail (either due to insufficient balance or unknown hash preimage).
 Intermediary nodes know whether a payment they are a part of succeeds or fails.
 Therefore, an intermediary node observing a flood of failing payments from the same channel may suspect a probing, especially if the amounts follow the binary search pattern.
 An intermediary node can then close the channel or otherwise limit the flow of failing payments from the node in question.

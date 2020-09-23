@@ -176,7 +176,7 @@ Address reuse threatens privacy: an adversary can link the user's transactions u
 
 \paragraph{Our approach}
 We use cryptographic techniques to design a privacy-preserving KYC solution.
-In KYCE, the KYC contract stores a \textbf{cryptographic accumulator} of the whitelisted addresses. 
+In KYCE, the KYC contract stores a \textbf{cryptographic accumulator} of the whitelisted addresses.
 
 A cryptographic accumulator~$A$ absorbs certain algebraic objects and provides an interface to generate and verify zero-knowledge proofs that a given value has been accumulated.
 In our construction, to generate a proof for value~$x\in A$, one needs a \textit{witness} that depends on~$A$ and~$x$.
@@ -202,7 +202,7 @@ The accumulator is constructed as follows.
 We assume a bilinear pairing~$e:\,G\times G\rightarrow G_T$, where $G,G_T$ are groups of order~$q$.
 The KYC provider selects a generator~$g$ and a secret value $\gamma\overset{\$}{\leftarrow} \mathbb{Z}_q$.
 It also selects $L$ as an upper bound of users enabled for KYC and computes $z = e(g,g)^{\gamma^{L+1}}$.
-It initialized the accumulator value~$\mathrm{A}$ by $1$. 
+It initialized the accumulator value~$\mathrm{A}$ by $1$.
 
 Let us denote $g_i = g^{\gamma^i}$.
 The provider publishes $\mathrm{A},\{g_i\}_{1\leq i\leq L, \,L+2\leq i \leq 2L}$, the set of registered KYC indices $V=\emptyset$, and the parameters $g,z$ needed for verification.
@@ -304,7 +304,7 @@ EU member states impose further restrictions for large transactions, e.g.,~excee
 Either the exchange contract or the token contract can perform such checks by storing the following mappings:
 \begin{itemize}
 	\item address $=>$ accumulated transaction volume in the current period (day, month, year);
-	\item address $=>$ timestamp of the latest transaction. 
+	\item address $=>$ timestamp of the latest transaction.
 \end{itemize}
 
 

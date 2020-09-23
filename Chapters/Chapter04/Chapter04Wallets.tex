@@ -353,7 +353,7 @@ Connections between Electrum servers, unlike the Bitcoin protocol, are encrypted
 Bitcoin wallet and Dash wallet, in addition to their respective P2P protocols, use Electrum servers for querying the balance when sweeping a paper wallet.
 Bither defines HTTP URLs of its own API (\url{bither.net}) and a block explorer \url{blockchain.info} (class \texttt{BitherUrl}), which can lead to displaying incorrect balances or fake transactions in case of a man-in-the-middle attack.
 Simple Bitcoin uses five hard-coded URLs to query current fees.
-One of them\footnote{\url{http://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
+One of them\footnote{\url{https://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
 A man-in-the-middle attack of a fee estimator may lead to a denial of service attack (transactions with low fees may never be confirmed), though this scenario requires four other APIs served over HTTPS to fail simultaneously.
 
 \paragraph{Leak into logs}

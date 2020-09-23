@@ -185,7 +185,7 @@ On the other hand, it gets harder for a global attacker to distinguish users tha
 
 \section{Network-level privacy in cryptocurrencies}
 
-We now outline various types of network-level attacks on privacy of cryptocurrency users.
+We now outline the types of network-level attacks on privacy of cryptocurrency users.
 
 First, an adversary can perform a \textit{denial-of-service} attack by flooding the network with messages overwhelm honest nodes.
 The Bitcoin's P2P protocol addresses this threat: peers do not re-broadcast the same message and ban peers that send invalid data or exhibit other unexpected behavior.
@@ -224,7 +224,7 @@ A related task is transaction clustering, whereby an attacker reveals the hidden
 
 \paragraph{Heuristics based on relaying behavior}
 
-The first work on network-based deanonymization attacks proposes a technique based on transaction propagation~\cite{Koshy2014}.
+The first work on deanonymization based on network analysis~\cite{Koshy2014} proposes the following technique.
 An adversary connects to all listening Bitcoin nodes and logs the traffic.
 It then hypothesizes, for each transaction, that one of the IP addresses that relayed it "owns" it (i.e.,~to possess the corresponding private key).
 The method considers multiple cases of relaying behavior.

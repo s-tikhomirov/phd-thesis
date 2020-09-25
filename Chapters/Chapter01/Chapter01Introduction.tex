@@ -36,7 +36,7 @@ Bitcoin provides an alternative.
 Announced in~2008 and launched in~2009, it is the first system of its kind.
 Based on decades of research in cryptography and distributed systems, it models scarcity without a trusted party.
 Bitcoin's security relies on a combination of cryptographic algorithms and economic incentives.
-We describe the architecture of Bitcoin in mode detail in Section~\ref{sec:Bitcoin}.
+We describe the architecture of Bitcoin in more detail in Section~\ref{sec:Bitcoin}.
 
 Bitcoin has spawned a new field of study at the intersection of computer science and economics.
 Thousands of alternative cryptocurrencies are exploring various points in the design space.
@@ -64,9 +64,9 @@ Each pair of hosts used a dedicated connection throughout the session.
 Internet protocols use another approach -- packet switching.
 The sender splits the message into pieces (packets) that travel through the network independently.
 The receiver reconstructs the message from the packets.
-The sender re-transmitted lost or malformed packets.
+The sender re-transmits lost or malformed packets.
 Packet switching is less reliable but simpler than circuit switching.
-It proved indispensable in connecting heterogeneous networks into the global Internet.
+It has proved indispensable in connecting heterogeneous networks into the global Internet.
 
 Early computer networks lacked security.
 Protocol designers prioritized simplicity over data confidentiality and integrity.
@@ -75,7 +75,7 @@ Perhaps more importantly, no cryptographic algorithms were suited for the Intern
 
 Cryptography studies methods to control information flows.
 For hundreds of years, its primary task was hiding information using \textit{symmetric} encryption.
-Imagine Alice wants to send a confidential message (the \textit{plaintext}) to Bob.
+In a classical setting, Alice wants to send a confidential message (the \textit{plaintext}) to Bob.
 She \textit{encrypts} the plaintext using a secret \textit{key} and transfers the resulting \textit{ciphertext} to Bob.
 Bob uses the same key to \textit{decrypt} the ciphertext into the original plaintext.
 An adversary may intercept the ciphertext but cannot decrypt it without the key.
@@ -83,20 +83,20 @@ An adversary may intercept the ciphertext but cannot decrypt it without the key.
 Note that the parties use the same key.
 Key establishment is a weak spot of symmetric encryption.
 An adversary who intercepts the key can decrypt all messages.
-Before the 1970s, two parties could only establish a shared secret by meeting physically or using a physically protected \textit{secure channel}.
+Before the 1970s, two parties could only establish a shared secret by meeting in person or using a physically protected \textit{secure channel}.
 Both options are expensive and scale poorly.
 
 Moreover, authentication also depended on a shared key.
-It was impossible to convince the counterparty that the message was authentic without giving them the power to sign messages themselves, which was unacceptable for many Internet use cases.
+It was impossible to convince the counterparty that the message was authentic without giving them the power to sign messages themselves, which is unacceptable for many Internet use cases.
 For instance, a company would have to share the signing key with all readers to convince them of the authenticity of a press release.
 It immediately follows that all subsequent messages signed by this key cannot be trusted.
 
 Whitfield Diffie and Martin Hellman solved both problems.
 In their breakthrough 1976~paper "New directions in cryptography"~\cite{Diffie1976}, they proposed two novel algorithms.
 First, they introduced a \textit{key establishment} protocol over an insecure channel.
-This algorithm allowed two parties to securely generate a shared secret even if an eavesdropper intercepts all their messages.
+This algorithm allows two parties to securely generate a shared secret even if an eavesdropper intercepts all their messages.
 Second, they described the first \textit{digital signature} algorithm.
-A digital signature allowed a sender to prove the authenticity of their messages without sharing the signing key.
+A digital signature allows a sender to prove the authenticity of their messages without sharing the signing key.
 A new field of cryptography -- \textit{asymmetric} cryptography -- was born.
 
 Asymmetric cryptography enabled the widespread deployment and commercialization of the Internet.
@@ -128,7 +128,7 @@ As digital communication now influences most areas of life, Internet giants play
 
 Peer-to-peer file-sharing, which became widespread in the 1990s, foreshadowed cryptocurrencies.
 At that time, the Internet was gaining adoption in the developed world.
-Increased bandwidth allowed to distribute large files over the Internet.
+Increased bandwidth allowed users to distribute large files over the Internet.
 P2P file-sharing networks were first to satisfy the demand for fast and convenient content sharing.\footnote{Client-server file-sharing predates P2P file-sharing by at least two decades: the File Transfer Protocol (FTP) was introduced in~1971.}
 
 File-sharing networks and cryptocurrencies share two crucial attributes.
@@ -158,22 +158,22 @@ This approach proved to be resilient and efficient.
 A DHT randomly distributes content among nodes.
 A searching node forwards the query to the node "closest" to the required file.
 DHT allows for efficient querying and minimal network restructuring when nodes leave or join.
-Kademlia~\cite{Maymounkov2002} is a popular implementation DHT.
+Kademlia~\cite{Maymounkov2002} is a popular DHT implementation.
 
 BitTorrent~\cite{Pouwelse2005}, launched in~2001, is arguably the most successful file-sharing protocol.
 It strikes a balance between efficiency and resilience by allowing users to locate files via either specialized websites (\textit{torrent trackers}) or a Kademlia-like DHT.
 
-File-sharing networks demonstrated the importance of economic incentives -- the central tenet of cryptocurrencies.
+File-sharing networks demonstrate the importance of economic incentives -- the central tenet of cryptocurrencies.
 Users of file-sharing networks download content from other users' computers.
 A protocol without an identity system cannot force users to upload content.
 What motivates uploaders to provide the files for free?
 
-BitTorrent implemented measures against free-riding.
+BitTorrent implements measures against free-riding.
 First, downloaders receive file chunks from peers who do not have the full file.
 In turn, they upload parts of the file back while waiting for their download to complete.
 On top of the protocol-based measures, some torrent trackers also account for how much their users upload and download.
-The combination of these measures made BitTorrent sufficiently reliable but not too difficult to use.
-The ecosystem attracted both altruistic~\cite{Rehn2004} and profit-driven~\cite{Rumin2010} content distributors.
+The combination of these measures makes BitTorrent sufficiently reliable but not too difficult to use.
+The file-sharing ecosystem has attracted both altruistic~\cite{Rehn2004} and profit-driven~\cite{Rumin2010} content distributors.
 
 In~2010s, file-sharing declined in popularity.
 However, it applied intense competitive pressure on the entertainment industry.
@@ -211,7 +211,7 @@ The currency exchange rates are now determined by supply and demand.
 Governments and central banks strongly influence the market.
 They change interest rates, perform market interventions, and enforce capital controls.
 
-The transition deprived money of its fundamental property -- trustlessness.
+This transition has deprived money of its fundamental property -- trustlessness.
 Gold is a \textit{bearer asset}.
 It is not anyone's liability.
 In contrast, a gold certificate holder must trust the issuer to exchange it to gold, and a holder of fiat money must trust the issuer not to dilute its value with excessive issuance.
@@ -228,11 +228,11 @@ One can argue that without legal restrictions (such as the need to pay taxes in 
 
 The effects of centralization induced by network effects are especially adverse in monetary networks.
 For example, censorship has more severe consequences: a frozen bank account causes more problems than a blocked social media account.
-The issue is even more concerning in the world without physical cash.
+The issue is even more concerning if physical cash is unavailable.
 In many developed countries, such as Sweden and the Netherlands, banks are phasing out cash to combat money laundering.
 Without cash, a person banned from the banking system cannot buy necessities.
 Money administrators can also change the rules on short notice.
-A recent example is India's demonetization in~2016.
+A recent example is the 2016~demonetization in India.
 High-denomination banknotes were declared invalid in an attempt to fight black markets.
 This sudden move caused severe economic disruption throughout the world's second-most populous country.
 
@@ -241,15 +241,15 @@ Financial administrators may abuse this property and print themselves money -- a
 A social network administrator can push their writings into everyone's news feeds or inflate the reported number of views but cannot make people perceive their content as universally valuable.\footnote{For example, as of 2020, "only" $116$~million out of $2.5$~billion users of Facebook follow its creator Mark Zuckerberg.}
 
 Switching monetary systems is hard.
-People cannot easily "vote with their feet" if the administrators abuse their position.
+People cannot easily "vote with their feet", especially if the administrators abuse their position.
 First, it is not always apparent that abuse takes place.
 For instance, moderate money printing can long go unnoticed, slowly diluting savings.
 Second, it is hard to coordinate which another system to switch to.
 Uncoordinated exodus destroys the benefits of network effects.
-Finally, monetary administrators deliberately impede exit by legal action.
+Finally, monetary administrators deliberately impede exit with legal action.
 Multiple independent centralized payment systems were shut down.
 Examples include Liberty~Reserve, Liberty~Dollar, and e-gold~\cite{White2014, Trautman2014}.
-Others, such as PayPal, were forced to give up its initial vision and merge with the existing system~\cite{Jackson2017}.
+Others, such as PayPal, were forced to give up their initial vision and merge with the existing financial system~\cite{Jackson2017}.
 This state of affairs inclines rational actors to accept the corrupt status quo.
 
 
@@ -260,9 +260,9 @@ Why did designing a decentralized digital currency take so long?
 
 Digital signatures provide only a part of the solution.
 Senders sign transactions to reliably prove their intent to spend their money.
-The receiver can verify the signature without relying on any authority.
+The receiver can verify the signature without relying on any authority.\footnote{Assuming that the receiver knows the sender's public key.}
 However, asymmetric cryptography is not sufficient.
-Two crucial challenges hindered the deployment of early digital cash protocols.
+Two crucial challenges have been hindering the deployment of digital cash protocols for decades.
 
 \paragraph{Double-spending}
 
@@ -276,7 +276,7 @@ Balances must be stored on multiple computers to mitigate centralization risks.
 However, it is unclear how to ensure consistency.
 If two computers report different balances for the same account, how to agree on the right one?
 
-Voting is questionable in this context.
+Voting is a questionable solution in this context.
 Without an \textit{identity management} system, an adversary can launch a \textit{Sybil attack} and vote multiple times.
 One way to combat Sybils implies maintaining a list of all voters and only allowing each of them to vote once.\footnote{This class of problems is called \textit{Byzantine fault tolerant} consensus.
 A prominent protocol of this class is \textit{Practical Byzantine fault tolerance} (PBFT)~\cite{Castro2002}.
@@ -284,7 +284,7 @@ Cryptocurrencies such as Ripple~\cite{Chase2018} and Stellar~\cite{Mazieres2014}
 Nevertheless, contrary to the design goals, a party who controls the voter list becomes the central point of control.
 To prevent censorship, the network must allow new users to join unconditionally.
 
-How can a network defend against Sybil attacks while allowing free access?
+How can a network defend against Sybil attacks while providing free access?
 
 
 \paragraph{Fair emission}
@@ -316,7 +316,7 @@ Ecash users would exchange digital coins issued by a bank.
 A receiver would consult the bank to verify that the incoming coins had not been spent.
 However, the participants' identities would remain hidden from the bank due to \textit{blind signatures}.
 In~1989, Chaum founded a company called Digicash to commercialize his invention.
-While gaining some traction in mid-1990s\footnote{For instance, the authorities in the Netherlands considered using Digicash for road toll payments~\cite{Chaum2019}.}, the company declared bankruptcy in~1998.
+While gaining some traction in mid-1990s\footnote{For instance, the Dutch authorities considered using Digicash for road toll payments~\cite{Chaum2019}.}, the company declared bankruptcy in~1998.
 
 In~1998, Wei Dai proposed \textit{b-money}~\cite{Dai1998}.
 B-money, predating Bitcoin by a decade, was in many ways similar to it.
@@ -347,7 +347,7 @@ The solutions to such puzzles would be linked in a chain using multiple timestam
 \label{sec:Bitcoin}
 
 Bitcoin was the first decentralized digital currency to solve the double-spending problem without a trusted third party.
-An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto might have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US\@. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in~1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation.}
+An unknown person under a pseudonym Satoshi Nakamoto announced Bitcoin in October~2008.\footnote{Nakamoto might have deliberately chosen dates with a symbolic meaning while constructing their pseudonymous identity. For instance, Nakamoto claimed to have been born on 5~April~1975. The Executive Order 6102, issued on 5~April~1933, banned private gold ownership in the US\@. The ban was repealed on 31~December~1974. The date for the first public announcement of Bitcoin -- 31~October -- may have also been chosen deliberately. On that day in~1517, Martin Luther nailed his Ninety-five Theses on the door of a church in Wittenberg, starting the European Reformation. It has been argued that Bitcoin may lead to similarly wide-reaching societal shifts~\cite{Demeester2019}.}
 Shortly after, he published the source code.
 The original code repository was later renamed to \textit{Bitcoin~Core} -- the Bitcoin's \textit{reference implementation}.
 Bitcoin launched on 3~January~2009 and started slowly gaining traction in the technology community.
@@ -359,7 +359,7 @@ All the necessary ingredients had already been proposed, but never connected in 
 \subsection{Bitcoin architecture}
 
 Let us now briefly describe the architecture of Bitcoin.
-We refer the reader to~\cite{Narayanan2017} for a historical review of Bitcoin's building blocks, to~\cite{Bonneau2015} and~\cite{Tschorsch2016} for the overview of the field, and to~\cite{Narayanan2016} and~\cite{Antonopoulos2014} for a comprehensive technical introduction.
+We refer the reader to~\cite{Narayanan2017} for a historical review of Bitcoin's building blocks, to~\cite{Bonneau2015} and~\cite{Tschorsch2016} for an overview of the field, and to~\cite{Narayanan2016} and~\cite{Antonopoulos2014} for a comprehensive technical introduction.
 
 \paragraph{Nodes and P2P network}
 
@@ -373,7 +373,7 @@ Each node maintains a database of all transactions that have ever taken place.
 Transactions are grouped into blocks.
 Each block contains a hash of the previous block.
 Hence, the blocks form a chain (the \textit{blockchain}).
-A node that validates and stores all blocks is called a \textit{full node}.
+A node that validates all blocks is called a \textit{full node}.
 
 \paragraph{Keys and transactions}
 
@@ -387,7 +387,7 @@ Internally, Bitcoin represents the state of the system as \textit{unspent transa
 Each UTXO specifies the amount of coins and their spending conditions.
 A Bitcoin transaction \textit{consumes} UTXOs as \textit{inputs} and creates new UTXOs.
 To spend a UTXO, the sender must provide a valid signature.\footnote{To give more detail, spending conditions are defined in Bitcoin script -- a Forth-like stack-based non-Turing-complete language.
-Spending a UTXO requires submitting the arguments such that the script evaluates to \texttt{true}, which usually implies providing digital signatures.}
+Spending a UTXO requires submitting the arguments such that the script evaluates to \texttt{true}, which usually involves providing digital signatures.}
 The sum of the outputs must be less than the sum of the inputs.
 The difference is the fee (paid to \textit{miners}).
 
@@ -418,7 +418,7 @@ The \textit{heaviest} branch is considered valid.
 This objective criterion allows nodes to converge on a single chain without a central authority.
 
 Bitcoin assumes that no more than half of the mining power is under adversarial control.
-Otherwise, a colluding majority can perform a \textit{51\% attack}, which allows to re-write blocks and potentially double-spend coins.
+Otherwise, a colluding majority can perform a \textit{51\% attack}, which allows the adversary to re-write blocks and potentially double-spend coins.
 
 Bitcoin's PoW solves the double-spending problem in a Sybil-resistant way.
 Miners are not inclined to include conflicting transactions in the same blockchain branch.
@@ -426,7 +426,7 @@ An invalid block would make the branch invalid and nullify miners' rewards.\foot
 Including a conflicting transaction in another branch requires controlling more hash power then the rest of the network combined.
 If the attacker does not control the majority of hash power, the honest branch would accumulate more work and be deemed valid according to the fork choice rule.
 In any case, Sybil attacks on Bitcoin are expensive.
-An attacker can only increase their influence in the network by committing more scarce \textit{physical} resources -- hardware and energy.
+An attacker can only increase their influence in the network by committing more \textit{physical} resources -- hardware and energy.
 
 Bitcoin's emission mechanism also elegantly solves the fair emission problem.
 Coins only come into existence as miners' rewards.
@@ -440,7 +440,7 @@ Bitcoins "percolate" to non-mining users, which stimulates adoption and prevents
 \subsection{Is proof-of-work wasteful?}
 
 A standard critique of PoW is that it is "wasteful."
-Arrays of computers burning energy to solve a seemingly arbitrary mathematical equation may indeed look wasteful.
+Arrays of computers burning energy to solve a seemingly arbitrary mathematical equation may indeed look uneconomical.
 However, we believe this assessment is not accurate.
 
 Markets show that Bitcoin provides value to some people.
@@ -455,7 +455,7 @@ Bitcoin mining does consume a significant amount of energy ($64$~TWh annualized 
 However, miners rarely compete for energy with other forms of human activity.
 Electricity price is the most critical competition factor for miners.
 Thus they move to places with the cheapest energy.
-Low prices often suggest that the energy would otherwise have been wasted.
+Low prices often indicate that the energy would otherwise have been wasted.
 For instance, the output of hydroelectric power plants is seasonal.
 In high season, it may be uneconomical to transfer the excess energy to population centers.
 Bitcoin utilizes this otherwise wasted power.
@@ -485,9 +485,9 @@ A miner should get roughly $x\%$~more solutions for $x\%$~more energy spent.
 
 SHA256 produces a uniformly distributed output in the range from $0$~to $H_{max} = 2^{256}-1$.\footnote{This is a \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
 A solution is valid if the hash is smaller than the target $t$.
-For every $t$~in the range from $0$~to $H_{max}$, and for a random value $r$, the probability $P(SHA-256(r) < t) = \frac{t}{H_{max}}$.
+For every $t$~in the range from $0$~to $H_{max}$, and for a random value $r$, the probability $P({SHA-256}(r) < t) = \frac{t}{H_{max}}$.
 Therefore, the probability of finding a solution is proportional to the number of guesses.
-This property of cryptographic hash functions allows fine-tuning the difficulty of PoW.
+This property of cryptographic hash functions allows for fine-tuning the difficulty of PoW.
 
 In contrast, no one knows the distribution of solutions to most real-world problems.
 As an example, consider protein folding.
@@ -502,7 +502,7 @@ Therefore, we cannot parameterize the folding-based puzzle to make it $X$~times 
 
 Bitcoin mining has evolved into a highly specialized industry.
 As mentioned earlier, Bitcoin miners search for partial collisions of SHA-256 -- a general-purpose cryptographic hash function.
-They iterate over nonce values in block headers until the hash of the header is below the target.
+They iterate over nonce values\footnote{Due to high mining difficulty, miners also modify other parts of a candidate block.} in block headers until the hash of the header is below the target.
 Mining is a perfectly parallelizable task because candidate nonces are hashed independently.
 
 Satoshi Nakamoto originally envisioned a network where every node could generate coins.
@@ -563,7 +563,7 @@ It is not clear if a cryptocurrency can retain ASIC-resistance in the long run.
 An economic argument suggests that mining will be professionalized for any PoW, given sufficient incentives.
 ASICs have been developed for memory-hard hash functions used in prominent cryptocurrencies such as Ethereum~\cite{OLeary2018} and Zcash~\cite{Floyd2018}.
 
-Cryptocurrency developers can counteract ASIC development by regularly and unpredictably changing the PoW hash function.
+Cryptocurrency developers can discourage ASIC manufacturing by regularly and unpredictably changing the PoW hash function.
 This countermeasure is based on the assumption that specialized hardware takes at least a few months to develop, manufacture, and deploy.
 The developers of Monero, a privacy-focused cryptocurrency, used to change its hash function every six~months~\cite{Kim2019}.\footnote{In~2019, Monero changed the strategy and switched to a new hash function without plans for further modifications~\cite{dEBRUYNE2019}.}
 Ethereum developers consider a similar strategy known as ProgPoW~\cite{OLeary2019}.
@@ -626,11 +626,10 @@ Tweaking constants for scalability is an interim solution at best.\footnote{Not 
 Another approach is \textit{sharding}~\cite{Gencer2016, Luu2016a}.
 This term is borrowed from database design, where transactions are split between parts of a database (\textit{shards}).
 The key challenge in blockchain sharding is \textit{cross-shard communication}: nodes in one shard must ensure that transactions in other shards are valid.
-The upcoming Ethereum~2.0 is built on a sharded architecture~\cite{ShardingFAQ} (though the developers repeatedly shifted the launch date.)
+The upcoming\footnote{Note though that the developers repeatedly shifted the launch date.} Ethereum~2.0 is built on a sharded architecture~\cite{ShardingFAQ}.
 
-Finally, \textit{off-chain protocols}, also known as \textit{layer two} (\textit{L2}) protocols, remove the bulk of the transactions off the blockchain.
-In an off-chain protocol, users exchange signed transactions without submitting them to the blockchain.
-They can resolve disputes on the underlying protocol (referred to in this context as \textit{layer one}, or \textit{L1}).
+Finally, \textit{off-chain protocols}, also known as \textit{layer two} (\textit{L2}) protocols, move the bulk of the transactions off the blockchain.
+In an off-chain protocol, users exchange signed transactions without submitting them to the blockchain but resolve disputes using the underlying blockchain protocol (referred to in this context as \textit{layer one}, or \textit{L1}).
 Bitcoin's Lightning Network~\cite{Poon2016} takes this approach.
 Ethereum-based L2 protocols include state channels~\cite{Dziembowski2017, RaidenWebsite, Miller2019, }, refereed computation protocols~\cite{Teutsch2017, Kalodner2018}, Plasma~\cite{Poon2017}, and rollups~\cite{Floersch2019, Gluchowski2019}.
 We refer the reader to~\cite{Gudgeon2019} for a comprehensive overview of off-chain protocols.
@@ -649,10 +648,10 @@ The concentration of power over money in the hands of governments and corporatio
 Eradication of cash exacerbates the issue~\cite{Brito2019}.
 
 From a technical standpoint, a digital currency should be \textit{fungible}.
-Fungibility means that units of a currency are indistinguishable and have equal value.
+Fungibility means that units of a currency of equal value are indistinguishable.
 Non-fungible currency fails to act as a unit of account.
 Merchants may instigate blacklisting of currency units with a "bad" transaction history.
-This practice incurs a tax on everyone as receivers start discounting incoming transactions based on which particular currency units they contain.
+This practice incurs a tax on everyone as merchants start discounting incoming transactions based on which particular currency units they contain.
 
 Bitcoins are not entirely fungible.
 Each coin has a unique history that can be tracked up until its creation as a miner reward.
@@ -669,7 +668,7 @@ Each user gets the same amount of coins as they put in, minus fee.
 The links between the inputs and the outputs of the same user are entangled.
 The key challenge is trustless mixing coordination.
 Multiple mixing protocols have been proposed~\cite{Maxwell2013, Bonneau2014, Ruffing2014, Valenta2015}.
-In network analysis, the attacker participates in the cryptocurrency P2P network to track or influence transaction propagation.
+In network analysis, the attacker participates in the cryptocurrency P2P network to track or influence data propagation.
 Network-level attacks include eclipse attacks~\cite{Marcus2018, Henningsen2019}, global network disruption~\cite{Apostolaki2017}, and transaction deanonymization~\cite{Biryukov2014}.
 
 
@@ -678,7 +677,7 @@ Network-level attacks include eclipse attacks~\cite{Marcus2018, Henningsen2019},
 Multiple privacy-focused cryptocurrencies have been developed.
 Dash~\cite{Dash} coordinates mixing using a network of \textit{masternodes}.
 Monero~\cite{Monero} implements the CryptoNote protocol~\cite{Saberhagen2013}.
-It uses ring signatures to entangle the transaction graph, and Bulletproofs~\cite{Buenz2018} to hide transaction amounts.
+It uses ring signatures to entangle the transaction graph and Bulletproofs~\cite{Buenz2018} to hide transaction amounts.
 Zcash~\cite{Zcash} implements the Zerocash protocol~\cite{BenSasson2014, Hopwood2020} -- an improvement of an earlier Zerocoin protocol~\cite{Miers2013}.
 It uses zk-SNARKs~\cite{BenSasson2014a} to hide transaction data.\footnote{Zero-knowledge proofs are also used to improve blockchain scalability~\cite{Bonneau2020}.}
 Grin~\cite{Grin} and BEAM~\cite{Beam} implement the MimbleWimble protocol~\cite{Jedusor2016}.
@@ -705,36 +704,36 @@ This thesis is structured as follows.
 
 \begin{itemize}
 	\item 
-	In Part~\ref{Part1Privacy}, we study the privacy of Bitcoin and privacy-focused cryptocurrencies.
+	Part~\ref{Part1Privacy} focuses on the privacy of Bitcoin and privacy-focused cryptocurrencies.
 	\begin{itemize}
 		\item
-	In Chapter~\ref{Chapter02IntroP2P}, we provide an introduction to P2P networking in cryptocurrencies.
+	In Chapter~\ref{Chapter02IntroP2P}, we introduce P2P networking in cryptocurrencies.
 		\item
 	In Chapter~\ref{Chapter03Clustering}, we describe and evaluate a network-level privacy attack on Bitcoin and three privacy-focused cryptocurrencies.
-	We show that propagation timings leak the relationships between transactions issued from the same node.
+	We describe a method that allows an adversary to link transactions issued from the same node based on propagation timings.
 		\item
 	In Chapter~\ref{Chapter04Wallets}, we study the privacy of mobile cryptocurrency wallets.
 	We show that few wallets satisfy our minimal privacy criteria.
 	\end{itemize}
 
 	\item
-	Part~\ref{Part2Lightning} is dedicated to security and privacy of the \textit{Lightning Network} (LN) -- a Bitcoin-based off-chain protocol.
+	Part~\ref{Part2Lightning} is dedicated to security and privacy of the \textit{Lightning Network} (LN) -- a~Bitcoin-based off-chain protocol.
 	\begin{itemize}
 		\item 
-	In Chapter~\ref{Chapter05IntroLightning}, we outline the history of layer-two protocols in Bitcoin and provide a technical introduction to the Lightning Network architecture.
+	In Chapter~\ref{Chapter05IntroLightning}, we outline the history of layer-two protocols in Bitcoin and provide a technical introduction to the Lightning Network.
 		\item
-	In Chapter~\ref{Chapter06LNprobing}, we introduce a \textit{probing} attack on LN\@.
-	Our method lets an adversary accurately reveal LN users' balances, assumed to be private.
+	In Chapter~\ref{Chapter06LNprobing}, we introduce a \textit{probing} attack on the LN\@.
+	Our method lets an adversary accurately reveal users' balances, assumed to be private.
 	We implement and evaluate the attack on the Bitcoin testnet.
 		\item
-	In Chapter~\ref{Chapter07LNattacks}, we quantitatively assess the probability of three privacy attacks on the Lightning Network.
+	In Chapter~\ref{Chapter07LNattacks}, we quantitatively assess the probability of three privacy attacks on the LN\@.
 	From a simulation based on an LN snapshot, we conclude that compromising a few influential nodes significantly raises the attack success rates.
 		\item
-	In Chapter~\ref{Chapter08HTLClimit}, we quantify how a known limitation on concurrent payments in the LN affects its throughput.
+	In Chapter~\ref{Chapter08HTLClimit}, we quantify the effects of a known limitation on concurrent payments in the LN on its throughput.
 	\end{itemize}
 
 	\item
-	Finally, Part~\ref{Part3Ethereum} is dedicated to security and privacy of Ethereum smart contracts.
+	Finally, Part~\ref{Part3Ethereum} explores the security and privacy of Ethereum smart contracts.
 	\begin{itemize}
 		\item 
 	In Chapter~\ref{Chapter09Introcontracts}, we provide the necessary background on Ethereum.

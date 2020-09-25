@@ -91,7 +91,7 @@ As expected, the HTLC limit becomes a more pressing issue with smaller payment a
 We also observe that the share of affected channels has been increasing in the early months of the LN's existence and has remained stable since mid-2019.
 
 We finally study how the \textit{borderline amount} has changed over time.
-As~\cref{fig:historic-borderline-amount} shows, the HTLC limit finds its inflection point in payment amount at approximately $2\,500$~satoshis, with the borderline amount stabilizing in mid-2019, after the initial growth.
+As~\cref{fig:historic-borderline-amount} shows, the HTLC limit finds its inflection point at payment amounts of approximately $2\,500$~satoshis, with the borderline amount stabilizing in mid-2019, after the initial growth.
 
 \begin{figure}[tb]
 	\centering
@@ -173,12 +173,12 @@ We infer, e.g.,~that the attacker needs to block $4\,670$~channels ($13\%$~of al
 Our simplistic model does not fully reflect all the details of payment handling.
 In particular, we do not account for multi-hop payments and payments that try multiple paths before succeeding.
 We do not reflect the unequal forwarding ability of a unit of capacity at a well-connected node, as opposed to a poorly connected one.
-We also do not account for non-public channels, which may account for $28\%$~of all channels~\cite{BitMEXPrivateChannels}.
+We also do not account for unannounced channels, which may account for $28\%$~of all channels~\cite{BitMEXPrivateChannels}.
 Nevertheless, our approach allows us to calculate the effect of the HTLC limit, as we derive both estimations (capacity-based limit and HTLC limit)  under the same assumptions.
 
 The negative effect of the HTLC limit manifests itself at low payment amounts.
 This threatens potential LN applications involving micro-payments, such as paying for online content~\cite{Poon2016}.
-Our calculations show that for payments of~$1\,000$~satoshis ($0.01$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
+Our calculations show that for payments of~$1\,000$~satoshis ($0.1$~USD), the network-wide rate of concurrent channel updates is $60\%$~lower than it could have been based solely on capacity limitations.
 
 The low value for the default minimum payment amount and the reduced number of in-flight payments open a DoS attack vector with a moderate cost for the adversary.
 Note that the capital in the attacker's channels will be recouped after the HTLCs time out.

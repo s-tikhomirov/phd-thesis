@@ -136,7 +136,7 @@ We now study these wallets in more detail.
 \paragraph{Independent installation}
 Users usually install Android applications from the Play Store, which requires a Google account.
 A privacy-conscious user may want to avoid linking their cryptocurrency activity with their Google profile.
-They may use F-Droid (an independent application store for free and open-source applications~\cite{FDroid}) or install the application manually from an APK file.
+They may use \mbox{F-Droid} (an independent application store for free and open-source applications~\cite{FDroid}) or install the application manually from an APK file.
 Out of the seven~wallets we considered, three are available in F-Droid, and five~can be installed from an APK file (see Table~\ref{tab:installation}).
 
 \begin{table*}
@@ -167,7 +167,7 @@ Wallets vary in the number and importance of permissions they require (Table~\re
 Airbitz requires the highest number of permissions ($15$).
 Two applications require access to coarse and fine location (Airbitz, BRD) and sending SMS (BRD, Samourai).
 Electrum requests the lowest number of permissions -- four (three of them dangerous).
-All wallets require at least one dangerous permission -- camera access, required to scan cryptocurrency addresses presented as QR codes.
+All wallets require at least one dangerous permission -- camera access, required to scan cryptocurrency addresses presented as QR~codes.
 
 \begin{table*}
 	\normalsize
@@ -327,12 +327,12 @@ FlowDroid detected potential data leaks in $8$~out of~$14$~applications (see Tab
 \subsubsection*{SmartDec Scanner}
 We scan the wallets with a proprietary static analysis tool SmartDec~Scanner~\cite{SmartDec2018}.
 We manually inspect the results and summarize the most prevalent privacy-related issues, in a roughly decreasing order of potential threat.
-Note that these issues do not directly lead to an exploit.
+Note that these issues do not directly lead to exploits.
 
 \paragraph{Leak to external storage}
 Android provides internal and external storage.\footnote{Historically, external storage was assumed to be on a removable memory card, which now may not be the case.}
 An application can only access its own directory in the internal storage.
-External storage is available for other applications.
+External storage is available to other applications.
 
 Sensitive data should only be kept in internal storage.
 Android automatically backs up data and settings of applications that did not opt out.\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}
@@ -353,7 +353,7 @@ Connections between Electrum servers, unlike the Bitcoin protocol, are encrypted
 Bitcoin wallet and Dash wallet, in addition to their respective P2P protocols, use Electrum servers for querying the balance when sweeping a paper wallet.
 Bither defines HTTP URLs of its own API (\url{bither.net}) and a block explorer \url{blockchain.info} (class \texttt{BitherUrl}), which can lead to displaying incorrect balances or fake transactions in case of a man-in-the-middle attack.
 Simple Bitcoin uses five hard-coded URLs to query current fees.
-One of them\footnote{\url{https://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
+One of them\footnote{\url{http://api.blockcypher.com/v1/btc/main}.} uses an unencrypted connection.
 A man-in-the-middle attack of a fee estimator may lead to a denial of service attack (transactions with low fees may never be confirmed), though this scenario requires four other APIs served over HTTPS to fail simultaneously.
 
 \paragraph{Leak into logs}

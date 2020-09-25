@@ -483,9 +483,9 @@ The network cannot measure energy expenditures directly.
 For PoW solutions act as a proxy, the committed amount of energy, as estimated from the PoW solutions, should predictably depend on the real committed energy.
 A miner should get roughly $x\%$~more solutions for $x\%$~more energy spent.
 
-SHA256 produces a uniformly distributed output in the range from $0$~to $H_{max} = 2^{256}-1$.\footnote{This is a \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
+SHA-256 produces a uniformly distributed output in the range from $0$~to $H_{max} = 2^{256}-1$.\footnote{This is a \textit{cryptographic assumption}. It cannot be proved rigorously. No attacks have \textit{severely} contradicted the cryptographic properties of SHA-256.}
 A solution is valid if the hash is smaller than the target $t$.
-For every $t$~in the range from $0$~to $H_{max}$, and for a random value $r$, the probability $P({SHA-256}(r) < t) = \frac{t}{H_{max}}$.
+For every $t$~in the range from $0$~to $H_{max}$, and for a random value $r$, the probability $P(h(r) < t) = \frac{t}{H_{max}}$.
 Therefore, the probability of finding a solution is proportional to the number of guesses.
 This property of cryptographic hash functions allows for fine-tuning the difficulty of PoW.
 

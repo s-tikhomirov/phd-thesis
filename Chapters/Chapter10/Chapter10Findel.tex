@@ -144,7 +144,7 @@ Findel contracts have the following lifecycle:
 	\begin{enumerate}
 		\item Let the root node of the contract's description be the current node.
 		\item If the current node is either \texttt{Or} or \texttt{Timebound} with~$t_0 > now$, postpone the execution: issue a new Findel contract with the same parties and the current node as root. The owner can later demand its execution.
-		\item Otherwise, execute all sub-nodes recursively\footnote{In case of \texttt{Or}, execute exactly one of the sub-nodes, according to the owner-submitted value indicating the choice; delete the other one. It is the only primitive that requires a user-supplied argument for execution.}.
+		\item Otherwise, execute all sub-nodes recursively.\footnote{In case of \texttt{Or}, execute exactly one of the sub-nodes, according to the owner-submitted value indicating the choice; delete the other one. It is the only primitive that requires a user-supplied argument for execution.}
 		\item Delete the contract.
 	\end{enumerate}
 \end{enumerate}
@@ -299,7 +299,7 @@ Gateways without publicly available source code should not be trusted.
 \subsection{Execution} \label{sec:Ch10FindelExecutionImplementation}
 
 The \texttt{executeRecursively} function implements the execution logic defined in Section~\ref{sec:Ch10FindelExecutionModel} and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
-The execution of an expired contract ($t_1 < now$) returns \texttt{true} unconditionally\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\).} and deletes the contract\footnote{An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}.
+The execution of an expired contract ($t_1 < now$) returns \texttt{true} unconditionally.\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\).} and deletes the contract\footnote{An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}
 Every step in the lifecycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
 
 Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
@@ -426,7 +426,7 @@ Functional languages for Ethereum~\cite{FpEthereum2017} are in an early stage of
 
 \paragraph{A limited type system}
 The type system in Solidity is limited.
-Ethereum supports neither decimal nor floating-point types\footnote{A likely rationale: rounding issues break consensus.}, which often model amounts of money and currency exchange rates, respectively.
+Ethereum supports neither decimal nor floating-point types,\footnote{A likely rationale: rounding issues break consensus.} which often model amounts of money and currency exchange rates, respectively.
 The only numeric data types in Solidity are integers of various bit lengths.
 Moreover, Solidity lacks generic types, which could be useful for Gateways (i.e.,~\texttt{Gateway<int>}).
 

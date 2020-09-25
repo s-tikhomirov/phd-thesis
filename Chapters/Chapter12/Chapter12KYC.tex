@@ -187,7 +187,7 @@ The KYC workflow is as follows.
 The KYC provider publishes a smart contract and initializes it with an empty accumulator.
 The User interacts with the KYC provider physically or online and provides the credentials needed to pass the verification.
 The User also generates their own master secret~$m$ and during the authenticated session, gives the provider a Pedersen commitment~$g_1^m\cdot g_2^r$ to it.
-$g_1$ and~$g_2$ are certain group generators\footnote{Here and in the further text all multiplications take place in the pre-selected group of prime order~$q$, typically an elliptic-curve group.}, and~$r$ is random.
+$g_1$ and~$g_2$ are certain group generators,\footnote{Here and in the further text all multiplications take place in the pre-selected group of prime order~$q$, typically an elliptic-curve group.} and~$r$ is random.
 If the User passes the procedure, the provider updates the accumulator with user-dependent data and gives the User a witness.
 In every subsequent Ethereum transaction to KYCE, the User provides a proof that they have been registered in the accumulator, that this right has not been revoked, and that the proof owner and the transaction sender are one person.
 KYCE verifies the last statement.
@@ -345,7 +345,7 @@ Their proposal can be summarized as follows:
 	\item the home bank stores hashes of the user's documents in a smart contract in a permissioned blockchain;
 	\item when a user signs a contract with another bank it obtains the user's documents from the database and looks up the hash to ensure that the user has been KYC-approved;
 	\item the identity of the home bank is not revealed;
-	\item a cost-sharing mechanism for banks allows to proportionally share the cost of the initial KYC approval.
+	\item a cost-sharing mechanism for banks allows them to proportionally share the cost of the initial KYC approval.
 \end{itemize}
 In this design, all banks store users' private data -- contrary to our solution, where it is stored only with the KYC provider.
 The authors also propose a more decentralized design but claim it to be of lesser practical relevance.

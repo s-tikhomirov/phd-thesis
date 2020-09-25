@@ -79,7 +79,7 @@ Most of SmartCheck's FNs are found manually (not by other tools).
 SmartCheck detects a critical issue in one of the contracts.
 The vulnerability is as follows.
 An attacker can create an unlimited number of internal entities and block the contract's normal operation.
-A public function (i.e.,~such that any Ethereum user can call it) allows adding an element to an internal array (Listing~\ref{AddingGroup}).
+A public function (i.e.,~such that any Ethereum user can call it) adds an element to an internal array (Listing~\ref{AddingGroup}).
 Several critical functions then iterate through this array (e.g.,~Listing~\ref{Iterating}).
 An attacker can make those functions permanently fail, as the function call would require more gas than the block gas limit.
 
@@ -206,7 +206,7 @@ Contracts have from $1$~to $2\,525$~lines of code, with an average of~$334$~line
 \let\letcs\etoolboxletcs
 
 SmartCheck analyzed the dataset in approximately $2$~hours and~$7$~minutes.\footnote{$7\,644$~seconds ($437$~lines per second) on Intel~Core~i5-4210M @ 2.60~GHz, 12~GB RAM, Windows~8.1 64~bit.}
-As per SmartCheck, $99.9\%$~of contracts have issues, $63.2\%$~of contracts have critical vulnerabilities\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}.
+As per SmartCheck, $99.9\%$~of contracts have issues, $63.2\%$~of contracts have critical vulnerabilities.\footnote{The issues found by SmartCheck in the big dataset were not manually verified.}
 The findings are presented in Table~\ref{MassiveTestingTable} and Figure~\ref{MassiveTestingFigure} (colors denote severity levels: black -- high, dark gray -- medium, light gray -- low).
 The most prevalent issue, \textbf{\let\letcs\texapiletcs \usevalue SolidityVisibility:name \let\letcs\etoolboxletcs} (detected~{\let\letcs\texapiletcs \usevalue SolidityVisibility:occurWord \let\letcs\etoolboxletcs} times, which accounts for $67.30\%$~of all findings), is excluded from the figure for clarity.
 

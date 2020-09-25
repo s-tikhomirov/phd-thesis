@@ -117,7 +117,7 @@ We close all the connections after this step, except for the connections to our 
 
 \paragraph{Heuristic 2: Pre-probing}
 To further optimize probing, we introduce a pre-probing step.
-We send a probe of~$1\,000$~satoshis to every channel marked as active in the gossip data\footnote{We use the same probing function as for the main probing.}.
+We send a probe of~$1\,000$~satoshis to every channel marked as active in the gossip data.\footnote{We use the same probing function as for the main probing.}
 If we get no response, we consider the channel dead and do not consider it in the main probing step.
 For the first round of probing, we consider all channels classified as live by either the first or the second heuristic.
 
@@ -321,14 +321,14 @@ This approach may be improved with custom route generation.
 
 Another trade-off we have to address is the maximum route length.
 The LN protocol limits the length of a route to $20$~channels.
-Longer routes allow collecting more information per probe but increase the probability of failure at intermediary channels.
+Longer routes allow for collecting more information per probe but increase the probability of failure at intermediary channels.
 For our experiment, we limit the length of routes to $10$~channels.
 
 \paragraph{Hanging HTLCs}
 Our method assumes that an error is returned quickly (within seconds, as Figure~\ref{fig:route-length-timings} shows).
 If some intermediary hop does not return an error, our entry channels are left with an unresolved in-flight HTLC that we call \textit{hanging}.
 Hanging HTLCs occupy our channels' capacity, preventing us from issuing large probes from the affected channel.
-The protocol does not allow canceling HTLCs unilaterally, and closing a channel involves long timeouts until the funds are available and can be committed to a new channel.
+The protocol does not allow us to cancel HTLCs unilaterally, and closing a channel involves long timeouts until the funds are available and can be committed to a new channel.
 Therefore, we use multiple entry channels to be able to tolerate some hanging HTLCs.
 This issue is related to the attack presented in Chapter~\ref{Chapter08HTLClimit} and the one described in~\cite{Mizrahi2020}.
 
@@ -496,12 +496,12 @@ In the initial version of our algorithm, we do not do it for simplicity.
 
 Recall that our method cannot fully probe large channels because of the limitation on the HTLC amount.
 Lightning implementations impose a limit on the maximal amount transferred in one HTLC\@.
-This limit is approximately $0.043$~BTC\footnote{4294967295 millisatoshis.}.
+This limit is approximately $0.043$~BTC.\footnote{4294967295 millisatoshis.}
 Therefore, we can only fully probe channels where the local balance of one of the channel parties is below $0.043$~BTC\@.
 
 A possible way to overcome this limitation would be to probe large channels with multiple HTLCs concurrently.
 The goal of concurrent probing is to temporarily block the capacity of the attacked channel.
-Our current method does not allow concurrent probing because we only control the sender, not the receiver.
+Our current method does not support concurrent probing because we only control the sender, not the receiver.
 An honest receiver quickly returns an error and unblocks the capacity.
 Concurrent probing would involve a malicious node acting as the receiver of all our probes.
 The malicious receiver would deliberately delay the response, thus temporarily blocking funds along the route.
@@ -521,13 +521,13 @@ However, the LN specification only guarantees that the payment follows the chose
 A pair of nodes may share multiple channels (\textit{parallel channels}).
 A forwarding node is free to choose a channel from all parallel channels to the next node.
 This practice is known as \textit{non-strict forwarding} and provides flexibility in addressing local balance restrictions.
-While the LN specification allows non-strict forwarding, c-lightning does not allow opening multiple channels to the same node.
+While the LN specification allows non-strict forwarding, c-lightning cannot open multiple channels to the same node.
 The other two popular implementations, LND and Eclair, support parallel channels.
 Therefore, we cannot ensure that an intermediary node uses a given channel.
 It may forward our probe through a parallel channel instead.
 We accept this issue as a limitation of our approach.
 
-As seen from our LN snapshot dated 25~February~2020, the mainnet LN contained $1\,438$~parallel channels ($17.64\%$~of all channels), which indicates that the effects on the probing precision could be significant on mainnet\footnote{Unannounced parallel channels may also influence our results.}.
+As seen from our LN snapshot dated 25~February~2020, the mainnet LN contained $1\,438$~parallel channels ($17.64\%$~of all channels), which indicates that the effects on the probing precision could be significant on mainnet.\footnote{Unannounced parallel channels may also influence our results.}
 However, most \textit{node pairs} have at most one channel, which thus can be probed using our method.
 
 

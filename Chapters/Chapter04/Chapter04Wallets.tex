@@ -26,7 +26,7 @@ We check the third and the fourth criteria based on the official documentation a
 
 We compile a list of wallets recommended on the official websites of the considered cryptocurrencies: Bitcoin, Dash, Monero, and Zcash.
 We also consider the most popular wallets (based on the publicly available approximate number of Play~Store downloads).
-The following wallets satisfy these criteria (Bitcoin unless specified): Bitcoin wallet, Bither, BRD, Dash wallet (Dash), Electrum\footnote{Electrum is originally a desktop application; the official GitHub repository gives instructions on how to generate an APK file using Kivy GUI\@. Electrum wallet relies on an independent network of nodes (Electrum servers) to receive blockchain data and broadcast transactions. Though Electrum servers are not genuine cryptocurrency P2P nodes, we consider Electrum satisfy the P2P criteria, as a user can technically choose which Electrum servers to connect to, including their own trusted server.}, Monerujo (Monero), Simple Bitcoin (marked in bold in Table~\ref{tab:minimal-criteria}).
+The following wallets satisfy these criteria (Bitcoin unless specified): Bitcoin wallet, Bither, BRD, Dash wallet (Dash), Electrum,\footnote{Electrum is originally a desktop application; the official GitHub repository gives instructions on how to generate an APK file using Kivy GUI\@. Electrum wallet relies on an independent network of nodes (Electrum servers) to receive blockchain data and broadcast transactions. Though Electrum servers are not genuine cryptocurrency P2P nodes, we consider Electrum satisfy the P2P criteria, as a user can technically choose which Electrum servers to connect to, including their own trusted server.} Monerujo (Monero), Simple Bitcoin (marked in bold in Table~\ref{tab:minimal-criteria}).
 No multi-currency wallets and no Zcash wallets satisfy these criteria.
 
 \begin{table*}
@@ -160,7 +160,7 @@ Out of the seven~wallets we considered, three are available in F-Droid, and five
 \paragraph{Permissions}
 Android \textit{permissions} restrict access to sensitive user information and device functionality.
 Application developers declare the necessary permissions in the application's \textit{manifest file}.
-The user grants permissions at installation time or runtime\footnote{Starting from Android~6.0.}.
+The user grants permissions at installation time or runtime.\footnote{Starting from Android~6.0.}
 Permissions that give access to critical functionality or personal information are referred to as \textit{dangerous}~\cite{Android}.
 
 Wallets vary in the number and importance of permissions they require (Table~\ref{tab:permissions}, dangerous permissions in bold).
@@ -330,12 +330,12 @@ We manually inspect the results and summarize the most prevalent privacy-related
 Note that these issues do not directly lead to an exploit.
 
 \paragraph{Leak to external storage}
-Android provides internal and external storage\footnote{Historically, external storage was assumed to be on a removable memory card, which now may not be the case.}.
+Android provides internal and external storage.\footnote{Historically, external storage was assumed to be on a removable memory card, which now may not be the case.}
 An application can only access its own directory in the internal storage.
 External storage is available for other applications.
 
 Sensitive data should only be kept in internal storage.
-Android automatically backs up data and settings of applications that did not opt out\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}.
+Android automatically backs up data and settings of applications that did not opt out.\footnote{By setting \texttt{android:allowBackup="false"} in the Manifest file.}
 Automatic backups should be disabled for privacy-critical applications.
 
 \paragraph{XSS attacks via Javascript in WebView}

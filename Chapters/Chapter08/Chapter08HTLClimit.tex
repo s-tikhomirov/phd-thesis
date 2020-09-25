@@ -13,7 +13,7 @@ We study the management of concurrent payments in the LN and quantify its negati
 We observe that for micropayments, the forwarding capability of up to $50\%$~of channels is under-utilized.
 This phenomenon not only hinders scalability but also opens the door for DoS attacks.
 We estimate that a network-wide DoS attack costs within $1.64M$~USD, while isolating the biggest community from the rest of the network costs only $250k$~USD\@.
-We also evaluate the evolution of this phenomenon over the two years of LN existence, based on the historical data.
+We also evaluate the evolution of this phenomenon over the two years of the LN's existence, based on the historical data.
 We finally discuss potential countermeasures.
 
 
@@ -26,7 +26,7 @@ An LN channel cannot contain more than $966$~unsettled HTLCs~\cite{BOLT2Rational
 This limit ensures that both counterparties can close the channel using one standard Bitcoin transaction.
 We call this limitation the \textit{HTLC limit}.
 
-Despite the perceived focus on micropayments, LN does not fully support payments of very small value.
+Despite the perceived focus on micropayments, the LN does not fully support payments of very small value.
 Every HTLC increases the weight of a potential closing transaction and therefore increases the on-chain fees.
 Redeeming very small outputs on-chain can be more expensive than their value.
 Therefore, BOLT specifications prescribe that nodes negotiate the \textit{dust limit} before opening a channel.
@@ -116,7 +116,7 @@ After $966$~HTLCs are added, the channel loses its ability to forward payments u
 The attacker can thereby deplete a channel, making it unusable.
 
 The cost of this attack depends on the minimum payment amount.
-We assume it equal to the dust limit of~$546$~satoshis (the default value in 2 out of 3 major LN implementations).
+We assume it equal to the dust limit of~$546$~satoshis (the default value in two out of three major LN implementations).
 
 We calculate the total capital requirements for an attacker to block the LN completely.
 To block all $31\,084$~channels, the attacker would send, in the worst case, $966$~payments of~$546$~satoshi to each channel.

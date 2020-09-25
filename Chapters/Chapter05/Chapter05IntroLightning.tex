@@ -110,7 +110,7 @@ Though all intermediate states are represented by valid Bitcoin transactions, br
 The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, followed by several implementation teams.
 The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
 Implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
-As of September 2020,~LN facilitates the off-chain exchange of more than $1\,000$~BTC\@.
+As of September 2020,~the LN facilitates the off-chain exchange of more than $1\,000$~BTC\@.
 A separate Lightning Network operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency similar to Bitcoin.
 
 Lightning takes advantage of two relatively recent updates in Bitcoin: \textit{relative timelocks} and \textit{segregated witness}.
@@ -268,7 +268,7 @@ However, the parties must be online to notice potential malicious channel closur
 LN users may outsource this function to \textit{watchtowers} -- entities that watch the blockchain for malicious channel closures and dispute them on the user's behalf.
 Implementing effective, economically incentivized, and privacy-preserving watchtowers in an active area of research~\cite{McCorry2019}.
 
-LN's revocation technique has proved useful as deterrence against malicious channel closures.
+The LN's revocation technique has proved useful as deterrence against malicious channel closures.
 As of July~2019, only $241$~channel closures have been followed by a justice transaction.
 This constitutes only $0.7\%$~of channels at that time~\cite{BitMEXLN3}.\footnote{The research is based on the LN's on-chain footprint and may not show the full picture. A non-cooperative closure followed by a justice transaction may also happen without malicious intent, for example, if a channel is incorrectly restored from backup (where Alice's node "forgets" about the latest state and broadcasts an earlier state assuming it is the latest one).}
 

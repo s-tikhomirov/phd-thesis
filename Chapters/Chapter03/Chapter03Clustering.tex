@@ -14,7 +14,7 @@ This technique allows us to cluster such transactions with high accuracy.
 We also unpack address advertisement messages (\texttt{addr}), which may help link transaction clusters to IP addresses of the corresponding nodes under certain assumptions.
 
 We test our method on Bitcoin and three privacy-focused cryptocurrencies.
-We cluster our own transactions in Bitcoin testnet and Zcash with high levels of precision and recall.
+We cluster our own transactions in the Bitcoin testnet and Zcash with high levels of precision and recall.
 In particular, we can cluster Zcash transactions that involve both transparent and shielded addresses.
 We estimate the cost of a full-scale attack on the Bitcoin mainnet at hundreds of US~dollars, feasible for a low budget adversary.
 We also prove the applicability of our technique to Dash and Monero.
@@ -26,8 +26,8 @@ Analogously, transactions sharing some addresses may be announced though differe
 
 \section{Transaction clustering with timing analysis}  \label{sec:Ch03Ourapproach}
 
-Each transaction is initially introduced by a single node -- the \textit{source}.
-The source node first announces a transaction to its immediate neighbors (\textit{entry nodes}).
+Each transaction is initially introduced by a single peer -- the \textit{source}.
+The source first announces a transaction to its immediate neighbors (\textit{entry nodes}).
 They, in turn, announce the transaction to their neighbors, and so forth.
 
 Each peer is typically receiving announcements for the same transaction from multiple neighbors.
@@ -47,9 +47,9 @@ We hypothesize that propagation patterns of transactions issued from the same so
 To exploit this similarity, we first connect to all nodes and log the timestamps of transaction announcements.
 We then characterize transaction propagation patterns with \textit{weight vectors}.
 This technique distinguishes our method from~\cite{Biryukov2014}, where the attacker correlates transactions with clients based on how many of the transaction's first relayers fall into a known entry set.
-Each element of a vector corresponds to a node\footnote{We identify nodes by their IP~addresses} that announced at least one transaction to us.
-For each transaction, we assign decreasing non-zero weights to the first $N$~nodes that announced it and a zero weight to all others.
-We expect transactions from one source to have a stronger correlation between the weight vectors compared to transactions from different sources.
+Each element of a vector corresponds to a node\footnote{We identify nodes by their IP~addresses} that has announced at least one transaction to us.
+For each transaction, we assign decreasing non-zero weights to the first $N$~nodes that have announced it and a zero weight to all others.
+We expect transactions from the same source to have a stronger correlation between the weight vectors compared to transactions from different sources.
 
 As an example, consider a source that announces three transactions $tx_1$, $tx_2$, and~$tx_3$ via eight entry nodes $p_1, \dots, p_8$.
 If all transactions are broadcast via the same subset of the entry nodes, for instance, $p_1$, $p_2$, and~$p_3$, the transactions would be easy to correlate: their weight vectors would have non-zero elements at positions $1$, $2$, and~$3$.
@@ -63,10 +63,10 @@ In that case, a cluster represents transactions from multiple clients connected 
 \subsection{Weight functions and clustering}
 
 Let $tx$ be a transaction.
-Let $p^{tx} = [p^{tx}_1, p^{tx}_2, \dots, p^{tx}_N]$ be the first $N$~IP addresses that announced $tx$ to us.
+Let $p^{tx} = [p^{tx}_1, p^{tx}_2, \dots, p^{tx}_N]$ be the first $N$~IP addresses that have announced $tx$ to us.
 Let $t^{tx} = [t^{tx}_1, t^{tx}_2, \dots, t^{tx}_N]$ be the vector of the corresponding \textit{relative} announcement timestamps.
 A \textit{relative} timestamp is defined as $t = t^{abs}_i - t^{abs}_0$, where $t_{abs}^i$ is the Unix timestamp of the announcement of $tx_i$.
-In other words, we subtract the timestamp of the first announcement of each transaction from all its announcements.
+In other words, we subtract the timestamp of the first announcement of each transaction from the timestamps of all its announcements.
 For each $p^{tx}_i \in p^{tx}$, we assign a parameterized weight:
 
 \[
@@ -74,7 +74,7 @@ w_k(p^{tx}_i) = e^{-(t^{tx}_i/k)^2}
 \]
 
 The weight function reflects the decreasing importance of every next announcement.
-$p_1$ is assigned the maximum weight of~$1.0$, other nodes receive lower weights.
+$p_1$ is assigned the maximum weight of~$1$, other nodes receive lower weights.
 Our experiments show that this function family yields better clustering (compared to $1/(kt)$ and~$e^{-kt}$).
 The intuition is that it gives greater weights to a certain window depending on $k$, while exponentially decreasing outside of it.
 Moreover, the window size is adjusted for each vector.
@@ -102,14 +102,14 @@ w^{tx} = w_{k^{tx}_{opt}}(t^{tx})
 \]
 
 Let $X$ be the set of all transactions we consider.
-Let $P$ be the set of IP addresses of nodes that appeared in at least one of~$p$ vectors in $X$:
+Let $P$ be the set of IP addresses of nodes that appear in at least one of~$p$ vectors in $X$:
 
 \[
 P = \bigcup\limits_{tx \in X} p^{tx}
 \]
 
 We define an extended weight vector $v_{tx}$ for each~$tx$ by setting the weight of nodes in $P \backslash p^{tx}$ to zero and sorting the values in the weight vectors w.~r.~t.~the alphabetical order of~$P$.
-We then calculate a matrix where an element in $i$-th row and~$j$-th column is the Pearson correlation of the extended weight vectors $v_{tx_i}$ and~$v_{tx_j}$.
+We then calculate a matrix where an element in \mbox{$i$-th} row and~\mbox{$j$-th} column is the Pearson correlation of the extended weight vectors $v_{tx_i}$ and~$v_{tx_j}$.
 This matrix can supposedly be transformed into a block-diagonal matrix with blocks (clusters) corresponding to transaction sources.
 To reveal the clusters, we use spectral co-clustering~\cite{Dhillon2001} implemented in the Python \texttt{sklearn.cluster.bicluster} module~\cite{scikit-learn, scikitlearn2018}.
 Given an input matrix $A$, the algorithm forms $A_n$ as follows:
@@ -118,7 +118,7 @@ Given an input matrix $A$, the algorithm forms $A_n$ as follows:
 A_n = R^{-1/2}AC^{-1/2}
 \]
 
-Where $R$ is the diagonal matrix with entry $i$ equal to $\sum_{j} A_{ij}$, and~$C$ is the diagonal matrix with entry $j$ equal to $\sum_{i} A_{ij}$.
+$R$ is the diagonal matrix with entry $i$ equal to $\sum_{j} A_{ij}$, and~$C$ is the diagonal matrix with entry $j$ equal to $\sum_{i} A_{ij}$.
 This defines the singular value decomposition (SVD) of the normalized matrix $A_n$.
 The $l$ = $\lceil \log_2 k \rceil$ singular vectors $u_2,\dots,u_{l+1}$ and $v_2,\dots,v_{l+1}$ of $A_n$ may be used to solve a real approximation of the minimal cut problem.
 Let $U$ be a matrix with columns $u_2,\dots,u_{l+1}$, and similarly for $V$ and $v_2,\dots,v_{l+1}$.
@@ -138,7 +138,7 @@ The rows of~$Z$ are then clustered using the k-means algorithm to obtain the des
 \subsection{Measuring clustering quality}
 
 We use the Rand score as an external metric of clustering quality (see~\cite{Amigo2009}, Section~4.2).
-A clustering algorithm decides for each pair of elements, whether to put it in the same cluster.
+A clustering algorithm decides for each pair of elements, whether to put it in the same cluster or different clusters.
 Let $SS$,~$SD$,~$DS$, and~$DD$ be the numbers of transaction pairs defined as follows:
 \begin{itemize}
 	\item SS: same cluster, same category\footnote{Here we consider two categories: "our" and "foreign" transactions.} (our transactions in one cluster);
@@ -147,7 +147,7 @@ Let $SS$,~$SD$,~$DS$, and~$DD$ be the numbers of transaction pairs defined as fo
 	\item DD: different cluster, different category (our and foreign transactions in different clusters).
 \end{itemize}
 
-The Rand score reflects the proportion of right decisions:
+The Rand score reflects the proportion of correct decisions:
 
 \[
 R = \frac{SS + DD}{SS + SD + DS + DD}
@@ -157,7 +157,7 @@ Note that this assessment only considers clusters with "our" transactions, becau
 
 We parameterize this metric with the minimal number of our transactions in a cluster required to consider this cluster in the calculation.
 In our experiments, we only consider clusters with at least two of our transactions.
-With no such threshold, large clusters with one of our transactions disproportionately increase $DD$ and bring the score close to $1.0$, which does not reflect the subjective amount of information an adversary acquires.
+With no such threshold, large clusters with one of our transactions disproportionately increase $DD$ and bring the score close to $1$, which does not reflect the subjective amount of information an adversary acquires.
 
 
 \subsection{Measuring the degree of deanonymization}
@@ -188,9 +188,9 @@ The anonymity degree is defined as:
 d = \frac{H}{H_{max}}
 \]
 
-Our goal is to put transactions that originate from one target source $S_{control}$ to one cluster.
+Our goal is to put transactions that originate from one target source $S_{control}$ into one cluster.
 Out of~$K$~captured transactions, $k$ are issued from~$S_{control}$.
-For each transaction~$i$, the a priori probability of having originated from~$S_{control}$ is $p_i = k / K$.
+For each transaction~$i$, the a priori probability of it having originated from~$S_{control}$ is $p_i = k / K$.
 
 We then divide all transactions into clusters.
 However, multiple clusters may correspond to~$S_{control}$.
@@ -225,7 +225,7 @@ We re-compile \texttt{bcclient} with modified constants (port numbers, protocol 
 For Monero, which is not based on the Bitcoin~Core codebase, we modify the reference implementation (\texttt{monerod}).
 We add the required logging and disable the built-in limits on the total bandwidth and artificial delays between network requests.
 
-For each transaction announcement, we log the transaction hash, the IP that announced it, and the timestamp of this event.
+For each transaction announcement, we log the transaction hash, the IP that has announced it, and the timestamp of this event.
 We only log \texttt{inv} messages, and never continue with the \texttt{getdata} -- \texttt{tx} exchange.
 For selected experiments on the Bitcoin testnet, we also log \texttt{addr} messages.
 Address announcements allow us to infer the set of most probable IP addresses that correspond to each transaction cluster.
@@ -255,7 +255,7 @@ The outline of our experiment is as follows:
 
 We visualize the results with heatmaps.
 We assign a color to each element of the correlation matrix.
-A darker color at the intersection of the~$i$-th row and~$j$-th column represents a stronger correlation of weight vectors of~$i$-th and~$j$-th transactions.
+A darker color at the intersection of the~\mbox{$i$-th} row and~\mbox{$j$-th} column represents a stronger correlation of weight vectors of~\mbox{$i$-th} and~\mbox{$j$-th} transactions.
 The heatmap is diagonally symmetric by definition: each vector is perfectly correlated with itself.
 We permute rows and columns such that the highly correlated elements are close to the main diagonal.
 We expect such permutation to reveal the block-diagonal structure of the matrix.
@@ -266,8 +266,8 @@ We expect such permutation to reveal the block-diagonal structure of the matrix.
 We evaluate our method by clustering our own transactions in Bitcoin (testnet and mainnet) and Zcash.
 For these experiments, we log the traffic for $15$~minutes.
 For Dash and Monero, we run the clustering algorithm without calculating the anonymity degree.
-We obtain clearly visible clusters, which indicated that our approach is applicable to these cryptocurrencies as well.
-The experiments on the Bitcoin mainnet deliberately do not attempt to occupy all connection slots and operate only on a subset of~$1\,000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
+We obtain clearly visible clusters, which indicates that our approach is applicable to these cryptocurrencies as well.
+In the experiments on the Bitcoin mainnet, we deliberately do not attempt to occupy all connection slots and operate only on a subset of~$1\,000$~nodes (out of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}).
 In this section, we refer to the node that logs the incoming messages as the \textit{listener}.
 Following the terminology of~\cite{Biryukov2014}, \textit{servers} are peers that accept incoming connections.
 
@@ -360,11 +360,11 @@ This allows the listener to capture the \texttt{addr} messages issued by the iss
 Address messages propagate through the network more slowly than transactions and are periodically re-broadcast.
 A listener can distinguish between \texttt{addr} messages of recently joined nodes and re-broadcasts of older \texttt{addr} messages.
 If only one or two nodes announce an IP address, we assume it is a re-broadcast.
-If more nodes announce an IP address, we assume that the node has just joined the network or is re-advertising its IP.
+If more nodes announce an IP address, we assume that the node has just joined the network or is re-advertising its IP address.
 
 We leverage the \texttt{addr} messages as follows.
 For each cluster, we determine the IPs of the most "important" nodes, i.e.,~nodes we assume might be the source or its entry nodes.
-For each transaction in the cluster, we sum up the weights of all IPs that relayed it to us.
+For each transaction in the cluster, we sum up the weights of all IPs that have relayed it to us.
 We assume the top $10\%$~of most weighted IPs to be the entry nodes.
 The intuition is that the entry nodes are among the first to relay \texttt{addr} messages from the source.
 Therefore, we assume that an \texttt{addr} message relayed by a set of IPs that substantially intersects with the entry nodes contains the IP address of the source of the cluster.
@@ -381,7 +381,7 @@ The learning and control sets consist of~$20$~transactions each.
 Five transactions from the control set are assumed "known" for anonymity degree calculation.
 
 The results are presented in Table~\ref{tab:results} and Figures~\ref{fig:bitcoin-mainnet} and~\ref{fig:zcash}.
-The correlation matrix also exhibits the "clustering" behavior, though the anonymity loss is smaller than in for Bitcoin testnet and Zcash.
+The correlation matrix also exhibits the "clustering" behavior, though the anonymity loss is smaller than for the Bitcoin testnet and Zcash.
 We explain these weaker results by multiple factors.
 First, the Bitcoin mainnet is substantially larger than other networks that we consider.
 More transactions in Bitcoin constitute a larger anonymity set.
@@ -422,8 +422,8 @@ T-to-z transactions from the control set are marked with longer ticks.
 Note that our method clusters transactions involving both transparent and shielded addresses.
 
 %The Zcash network is much smaller than the Bitcoin testnet.
-We notice that Zcash peers offer far fewer connection slots on average: $36$~compared to $64$~on Bitcoin testnet (Figures~\ref{fig:free-slots-bitcoin} and~\ref{fig:free-slots-zcash}).
-Many servers only allow fewer than ten connections.
+We notice that Zcash peers offer far fewer connection slots on average: $36$~compared to $64$~on the Bitcoin testnet (Figures~\ref{fig:free-slots-bitcoin} and~\ref{fig:free-slots-zcash}).
+Many servers only accept fewer than ten connections.
 These results may reflect a larger share of \textit{protected} nodes in Zcash.
 Protected nodes use firewalls or other network-level mechanisms to limit the number of connections from each IP\@.
 However, an adversary can overcome this limitation by purchasing IP addresses from a cloud provider.
@@ -505,7 +505,7 @@ We connect to $200$~nodes and receive $124$~transactions in a $38$~minute window
 	\label{fig:monero}
 \end{figure}
 
-We explain a less clear picture compared to Bitcoin testnet as follows.
+We explain a less clear picture compared to the Bitcoin testnet as follows.
 First, we connect to only~$200$ out of $1\,700$--$1\,800$ nodes (as of the time of the experiment~\cite{MoneroHash}).
 Second, Monero does not use the three-step transaction propagation (\texttt{inv} -- \texttt{getdata} -- \texttt{tx}), which may have opposite effects on clustering quality.
 On the one hand, relaying a transaction unconditionally to all neighbors increases the probability that we receive a new transaction from a node other than the source of one of its entry nodes.
@@ -525,7 +525,7 @@ Most mobile wallets connect to the P2P network via a trusted server maintained b
 We refer to wallets that connect to the P2P network directly as \textit{P2P wallets}.
 Most P2P wallets rely on the BitcoinJ library for networking.
 None of them uses broadcast randomization.
-Unlike Bitcoin~Core, BitcoinJ sends \texttt{tx} unconditionally\footnote{Note that in this case, a full node receiving a \texttt{tx} message from an SPV node can be sure that the transaction originated at that SPV node, whereas receiving an \texttt{inv} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}.
+Unlike Bitcoin~Core, BitcoinJ sends \texttt{tx} unconditionally.\footnote{Note that in this case a full node receiving a \texttt{tx} message from an SPV node can be sure that the transaction originates at that SPV node, whereas receiving an \texttt{inv} announcement from a full node may also be a re-broadcast. This demonstrates the privacy enhancement of exclusively connecting to a trusted node for SPV.}
 The BitcoinJ developers acknowledge that the three-step \texttt{inv} -- \texttt{getdata} -- \texttt{tx} exchange in Bitcoin~Core improves privacy, but argue that since SPV nodes have a weaker privacy model, the three-step broadcast would only decrease efficiency.
 
 We choose a diverse selection of mobile wallets for our experiments: Bitcoin-only and multi-coin, with centralized and P2P networking.
@@ -535,7 +535,7 @@ Coinomi and Mycelium use centralized broadcast.
 For wallets with centralized broadcast, we only issue one set of transactions, using it as a "label" for a presumed wallet cluster.
 If our transactions form a visible cluster, we inspect the IP addresses of nodes among the first ones to broadcast them.
 Thus we infer the IP addresses of nodes likely to be used for transaction broadcasts for this wallet.
-This information allows us to associate transactions in the network with popular wallets later.
+This information allows us to associate subsequent transactions with popular wallets.
 
 \begin{figure}
 	\centering
@@ -596,7 +596,7 @@ A reverse DNS lookup service \url{robtex.com} suggests that one of these IP addr
 Both IP addresses belong to Hetzner (a cloud provider) and host Bitcoin nodes with a latency of~$25$~ms~\cite{Bitnodes}.
 We estimate that each of these nodes offers more than $700$~connection slots in a separate experiment.
 The second experiment considers Zcash and Coinomi wallet.
-Though the Coinomi transactions do not form a clear cluster, we observe that some of them (in the second cluster) are quickly announced from the same IP (\texttt{5.79.123.194}), which, we assume, is one of the Coinomi's nodes.
+Though the Coinomi transactions do not form a clear cluster, we observe that some of them (in the second cluster) are quickly announced from the same IP (\texttt{5.79.123.194}), which, we assume, is one of Coinomi's nodes.
 
 
 \subsubsection*{Comparison with prior work}
@@ -604,12 +604,12 @@ Though the Coinomi transactions do not form a clear cluster, we observe that som
 Multiple research works propose deanonymization techniques for cryptocurrencies.
 However, few of them quantify their results based on ground truth data, i.e.,~by deanonymizing transactions known to have originated from one source.
 For instance, one of the earliest papers~\cite{Meiklejohn2013} clusters Bitcoin transactions using transaction graph heuristics and known deanonymized addresses as a starting point.
-However, it does not provide a way to verify how many of the addresses assigned, i.e.,~to the cluster of an exchange, actually belong to it.
+However, it does not provide a way to verify how many of the addresses assigned, for example, to the cluster of an exchange, actually belong to it.
 
 The same is mostly true for related work on network analysis.
 As outlined in Section~\ref{sec:network-analysis}, the most closely related prior work is~\cite{Koshy2014, Biryukov2014, Neudecker2017}.
 In~\cite{Koshy2014}, the first relayer heuristic is used.
-However, after refining the results to eliminate likely false positives, the authors conclude that most results are based on anomalous propagation and have only limited applicability.
+However, after refining the results to eliminate likely false positives, the authors conclude that most results are based on anomalous propagation and have limited applicability.
 
 In~\cite{Neudecker2017}, two clustering methods are compared: based on transaction graph analysis and networking analysis (first relayer heuristic with optimizations).
 The authors find little correlation between the two types of clusters.
@@ -623,7 +623,7 @@ This means that $60$\% of the testnet transaction issued from a given entry set 
 Our method achieves better results on the Bitcoin testnet (Figure~\ref{fig:bitcoin-testnet-combined}).
 Out of $30$~control set transactions, $24$~are assigned to one cluster.
 Additionally, $7$~transactions not from the control set have been put into this cluster.
-Therefore, we achieve a false negative rate of $20$\% and a false positive rate of $23$\%.
+Therefore, we achieve a false positive rate of $23$\% and a false negative rate of $20$\%.
 This corresponds to the success rate of $80$\%, which is higher than $60$\% reported in~\cite{Biryukov2014}.
 
 
@@ -632,12 +632,12 @@ This corresponds to the success rate of $80$\%, which is higher than $60$\% repo
 
 We now estimate the resources required for a full-scale attack on the Bitcoin mainnet.
 The Bitcoin mainnet consists of approximately $10\,000$~nodes reachable at any given time~\cite{Bitnodes}.
-Bitcoin nodes to provide $43$~connections slots on average (measured on $1\,000$~random nodes).
+Bitcoin nodes provide $43$~connections slots on average (measured on $1\,000$~random nodes).
 The size of an \texttt{inv} message is "36x + const for message with x objects"~\cite{BitcoinWiki}.
 We assume that an \texttt{inv} for a single transaction requires $40$~bytes.
 Bitcoin processes around $250\,000$~transactions per day (as of November~2018), or $2.89$~transactions per second.
 Assuming each connection eventually relays each transaction, we arrive at the required bandwidth for one connection slot: $2.89 \times 40 = 115.6$~B/s.
-A full-scale attack on Bitcoin mainnet would require maintaining an average of~$43$~connections to $10\,000$~nodes, i.e.,~a total bandwidth of~$115.6 \times 10\,000 \times 43 = 49\,708\,000$~B/s = $47.4$~MB/s = $379$~Mbit/s.
+A full-scale attack on the Bitcoin mainnet would require maintaining an average of~$43$~connections to $10\,000$~nodes, i.e.,~a total bandwidth of~$115.6 \times 10\,000 \times 43 = 49\,708\,000$~B/s = $47.4$~MB/s = $379$~Mbit/s.
 An hour-long attack at this bandwidth will require receiving approximately $167$~GB of incoming traffic.
 
 We estimate the attack cost based on the cost of running a full Bitcoin node.
@@ -649,7 +649,7 @@ Considering that one month ($30$-days) is $720$~hours, we conclude that an estim
 That leads to an estimation of bandwidth costs between $20$~and~$150$~USD\@.
 The total cost of the attack is on the order of hundreds of US~dollars (taking into account the cost of computation and storage).
 We conclude that the attack is well within reach of even low-budget adversaries.
-All our experiments on Bitcoin testnet and Zcash mainnet cost $35$~USD, which can likely be decreased by optimizing the scripts and storing data locally.
+All our experiments on the Bitcoin testnet and Zcash mainnet cost $35$~USD, which can likely be decreased by optimizing the scripts and storing data locally.
 
 
 \section{Discussion and countermeasures}
@@ -694,7 +694,7 @@ Note that an attacker may leverage external information to increase clustering a
 
 \paragraph{Dandelion and Erlay}
 
-The key property of the current P2P protocols that we exploit is that nodes do not distinguish between incoming and outgoing connections.
+The key property of the currently used cryptocurrency P2P protocols that we exploit is that nodes do not distinguish between incoming and outgoing connections.
 A node announces transactions to a random subset of connections.
 This allows a well-connected listener to receive more information by initiating more connections.
 For instance, by saturating $50\%$~of a node's connection slots, a listener has a $50\%$~chance to be the first to receive a new transaction from it.

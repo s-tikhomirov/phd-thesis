@@ -6,23 +6,23 @@ Bitcoin's security model assumes that every node must be able to validate every 
 \textit{Layer-two}, or \textit{off-chain} protocols provide a solution.
 They allow the participants to exchange value without broadcasting every transaction to the blockchain.
 Conflicts can be resolved on the blockchain, preserving some of its security guarantees.
-Moving most transactions off the blockchain increases the throughput without weakening the modifying the base protocol (also referred to as \textit{layer-one} in this context).
+Moving most transactions off the blockchain increases the throughput without modifying the base protocol (also referred to as \textit{layer-one} in this context).
 
 Most Bitcoin-based layer-two protocols implement on the concept of \textit{payment channels}.
-This Chapter provides the background on the evolution of payment channels and its most prominent implementation -- the Lightning Network.
+A \textit{payment channel} is a protocol for off-chain payments.\footnote{We follow the terminology of~\cite{Antonopoulos2020}: a transaction is a data structure that records the transfer of control over bitcoins, whereas a payment is a process of moving value across one or multiple LN channels. Each LN payment implies signing and exchanging multiple Bitcoin transactions.}
+It allows two parties to continuously update the distribution of the initially committed funds.
+This Chapter provides the background on the evolution of payment channels and the most prominent implementation of this idea -- the Lightning Network.
 
 
 \section{Evolution of payment channels in Bitcoin}
 
-A \textit{payment channel} is a protocol for off-chain payments.\footnote{We follow the terminology of~\cite{Antonopoulos2020}: a transaction is a data structure that records the transfer of control over bitcoins, whereas a payment is a process of moving value across one or multiple LN channels. Each LN payment implies signing and exchanging multiple Bitcoin transactions.}
-It allows two parties to continuously update the distribution of the initially committed funds.
 To put our work in a historical context, we now describe the evolution of Bitcoin-based payment channels.\footnote{See~\cite{McCorry2016} for an overview of Bitcoin payment channel designs.}
 
 \subsection{Transaction replacement with sequence numbers}
 
-The first protocol for re-negotiating unconfirmed transactions, proposed by Satoshi Nakamoto~\cite{Hearn2013}, uses two transaction fields: sequence number (\texttt{nSequence}) and time lock (\texttt{nLockTime}).
+The first protocol for re-negotiating unconfirmed transactions, proposed by Satoshi Nakamoto~\cite{Hearn2013}, uses two transaction fields: sequence number (\texttt{nSequence}) and timelock (\texttt{nLockTime}).
 \texttt{nSequence} acts as a counter.
-\texttt{nLockTime}) mandates a time before which a transaction cannot be included in a block.
+\texttt{nLockTime} mandates a time before which a transaction cannot be included in a block.
 In the transaction replacement protocol, two parties sign a series of transactions with increasing sequence numbers and a timelock set to a point in the future.
 The final state is confirmed after the timelock expires.
 The major drawback of this approach is that sequence numbers are not enforceable.
@@ -61,9 +61,9 @@ Thus, she owns $10$~coins, and Bob has none.
 Alice sends $2$~coins to Bob by signing a new transaction that spends the multi-signature output and sends this transaction to Bob.
 The update distributes the coins as follows: $8$~coins to Alice, $2$~coins to Bob.
 However, Bob cannot send $1$~coin back to Alice.
-Imagine Bob sign a new transaction that assigns $1$~coin to him and $9$~coins to Alice.
-Alice would not accept this because she knows that Bob has another valid transaction that gives him $2$~coins.
-Therefore, Bob can fraudulently broadcast that older transaction and effectively cancel his payment.
+If he signs a new transaction that assigns $1$~coin to him and $9$~coins to Alice, she would not accept it.
+She knows that Bob has another valid transaction that gives him $2$~coins.
+Therefore, he can fraudulently broadcast that older transaction and effectively cancel his payment.
 
 This issue is called the \textit{state replacement} problem and is the key challenge in payment channel design.
 On the one hand, each channel state transition should be represented with signed Bitcoin transactions.
@@ -80,7 +80,7 @@ Bi-directional channels require other state replacement mechanisms.
 Bidirectional channels can be implemented using timelocks.
 The two parties exchange a series of transactions.
 Each of them becomes valid at a point in time closer to the present than the previous transaction.
-The transaction with the lowest time lock represents the latest state.
+The transaction with the lowest timelock represents the latest state.
 Any channel party can close the channel by submitting the latest state to the blockchain before other states become valid.
 This protocol has two shortcomings.
 First, similar to BitcoinJ's unidirectional channels, timelock-based bidirectional channels have a limited lifetime.
@@ -108,7 +108,7 @@ Each payment in a channel \textit{invalidates} the previous one.
 Though all intermediate states are represented by valid Bitcoin transactions, broadcasting any of them except the latest one leads to economic loss: the other party can then withdraw \textit{all} funds from the channel, punishing the cheater.
 
 The development of the LN is guided by a set of documents called "Basics of Lightning Technology" (BOLTs)~\cite{BOLT}, followed by several implementation teams.
-The three most advanced implementations available in 2020 are LND~\cite{LND} (implemented in go), c-lightning~\cite{clightning} (implemented in C), and Eclair~\cite{Eclair} (implemented in Scala).
+The three most advanced implementations available in 2020 are LND~\cite{LND} (written in go), c-lightning~\cite{clightning} (written in C), and Eclair~\cite{Eclair} (written in Scala).
 Implementations at earlier stages of development include Electrum~\cite{ElectrumWebsite, ElectrumLightningAnnounce}, lit~\cite{lit}, lpd~\cite{lpd}, ptarmigan~\cite{ptarmigan}, and rust-lightning~\cite{rustlightning}.
 As of September 2020,~the LN facilitates the off-chain exchange of more than $1\,000$~BTC\@.
 A separate Lightning Network operates on top of Litecoin~\cite{1MLLitecoin} -- a cryptocurrency similar to Bitcoin.
@@ -180,7 +180,7 @@ The capacity of the channel stays constant during its lifetime.
 \subsubsection*{Channel updates}
 
 An \textit{LN payment} is an atomic update of one or multiple channels.
-In single-channel updates, two users agree on an updated balance.
+In single-channel payments, two users agree on an updated balance.
 In multi-hop payments, the balances of several channels forming a path are simultaneously updated.
 
 \paragraph{Single-channel payments}
@@ -191,16 +191,16 @@ A commitment transaction spends the output of the funding transaction and re-dis
 
 More precisely, each channel state is encoded in a \textit{pair} of commitment transactions: one for Alice and one for Bob.
 These transactions are symmetric: they enforce a timelock on the party that holds the transaction.
-In particular, Alice's version of commitment transactions allows her to redeem her output only after a timeout.
+In particular, Alice's version of a commitment transaction allows her to redeem her output only after a timeout.
 Bob's version imposes analogous restrictions on his output.
 The timelocks allow the counterparty to dispute an incorrect channel closure.
 This mechanism provides economic security guarantees to LN channels, assuming the parties are watching the blockchain sufficiently often.
 
-Outputs of commitment transactions are called \textit{Hash time-locked contracts} (\textit{HTLC}s).
+Outputs of commitment transactions are called \textit{hash time-locked contracts} (\textit{HTLC}s).
 An HTLC allows a node ($u_1$) to lock $x$~coins in a channel between $u_1$~and~$u_2$ and release them according to the encoded conditions.
-The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$~of coins, and a timeout $t$, as follows: 
-(i) If $u_2$~reveals a value $r$~such that $H(r) = y$~before $t$~expires, $u_1$~pays $x$~to $u_2$; 
-(ii) if $t$~expires, $u_1$~receives $x$~back.
+The terms for the HTLC($u_1, u_2, y, x, t$) are defined with a hash value $y := H(r)$, an amount $x$~of coins, and a timeout $t$, as follows.
+If $u_2$~reveals a value $r$~such that $H(r) = y$~before $t$~expires, $u_1$~pays $x$~to $u_2$.
+If $t$~expires, $u_1$~receives $x$~back.
 
 A simple LN payment proceeds as follows.
 If Alice wants to send $x$~coins to Bob, she first asks him for a \textit{payment hash}.
@@ -229,7 +229,7 @@ If the receiver reveals $r$, all channels are updated.
 Otherwise, none of them are.
 
 An illustrative example of an HTLC-based payment is depicted in~\cref{fig:htlc}.
-Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$~and~$u_4$~as intermediaries.
+Here, the user $u_1$~transfers $1$~coin to $u_5$~using $u_2$, $u_3$, and~$u_4$~as intermediaries.
 For that, $u_5$~locally chooses a value $r$~uniformly at random, computes the cryptographic challenge for the HTLC as $y := H(r)$, and sends $y$~to the sender in an \textit{invoice} (step 1).
 Then, the payment starts with a commit phase (steps 2-5) where every pair of nodes, starting from the sender, establishes an HTLC using $y$.
 After the commit phase is finished, the payment enters the release phase.
@@ -259,7 +259,7 @@ Channel closure may happen in one of three ways:
 \begin{itemize}
 	\item Collaborative closure. Alice signals the intent to close the channel, and Bob cooperates in signing the transaction that reflects the latest channel state. Collaborative closure results in one on-chain transaction and imposes no delays. Both parties must be online and cooperating.
 	\item Non-cooperative closure without breach. Alice signals the intent to close the channel, but Bob does not respond. In this case, Alice publishes the latest commitment transaction on the blockchain. Bob can redeem his output immediately, but Alice has to wait until a timeout expires. This safety measure allows Bob to broadcast a \textit{justice transaction} if Alice were trying to broadcast an old commitment transaction.
-	\item Non-cooperative closure with a breach. Alice broadcasts an old commitment transaction, thus potentially stealing from Bob. If Bob does not react before the timelock on Alice's output expires, Alice can redeem her output, and the channel is closed.\footnote{From the on-chain point of view, a non-disputed non-cooperative close is indistinguishable from a non-cooperative close without a breach. Layer-one does not know whether a commitment transaction is the last one, unless this fact is disputed.} If Bob is online and notices the breach before the timeout, he broadcasts the latest commitment transaction, which allows Bob to spend Alice's output before she can, punishing her for the cheating attempt.
+	\item Non-cooperative closure with a breach. Alice broadcasts an old commitment transaction, thus potentially stealing from Bob. If Bob does not react before the timelock on Alice's output expires, Alice can redeem her output, and the channel is closed.\footnote{From the on-chain point of view, a non-disputed non-cooperative close is indistinguishable from a non-cooperative close without a breach. Layer-one does not know whether a commitment transaction is the last one, unless this fact is disputed.} If Bob is online and notices the breach before the timeout, he broadcasts the justice transaction that closes the channel and spends Alice's output before she can spend it, punishing her for the cheating attempt.
 \end{itemize}
 
 This state replacement mechanism makes Lightning superior to earlier payment channel designs.
@@ -297,7 +297,7 @@ The process repeats until the payment succeeds.
 
 \subsection{The future of Lightning}
 
-The future of Lightning depends in part on the planned modifications in the Bitcoin protocol.
+The future of the LN depends in part on the planned modifications in the Bitcoin protocol.
 Such changes usually take years to implement, test, and roll out.
 Let us outline some of the directions for future developments of Lightning.
 

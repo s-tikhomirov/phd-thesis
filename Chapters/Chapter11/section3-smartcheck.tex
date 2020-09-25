@@ -4,7 +4,7 @@ The two major approaches to code analysis are \textit{dynamic} analysis and \tex
 Dynamic analysis runs the program, while static analysis considers the program code without running it.
 Static analysis usually includes three stages:
 \begin{enumerate}
-	\item building an intermediate representation (IR), such as abstract syntax tree or three-address code, for a deeper analysis, compared to analyzing text;
+	\item building an intermediate representation (IR), such as abstract syntax tree (AST) or three-address code, for a deeper analysis, compared to analyzing text;
 	\item enriching the IR with more information~\cite{Woegerer2005} using algorithms such as control- and dataflow analysis (synonym, constant, and type propagation~\cite{Aho1986}), taint analysis~\cite{Tripp2009}, symbolic execution, abstract interpretation;
 	\item vulnerability detection w.r.t.~a database of patterns that define vulnerability criteria in IR terms.
 \end{enumerate}
@@ -20,7 +20,7 @@ IR attributes can be enriched with more information, as new analysis methods are
 The tool can be extended to support other smart contact languages by adding the corresponding ANTLR grammar and a pattern database.
 The IR-level algorithms remain unchanged.
 
-As an example, consider the Balance equality issue~(\ref{SolidityBalanceEquality}).
+As an example, consider the Balance equality issue (Section~\ref{SolidityBalanceEquality}).
 We aim to detect constructions that test the contract balance for equality, for instance:
 
 \begin{minipage}{\linewidth}
@@ -57,7 +57,7 @@ The parse tree of this construction is shown in Figure~\ref{ParseTree}, and the 
 
 In this case, we do not expect false positives, as we can precisely describe the target construction in XPath.\footnote{Assuming that ANTLR builds the AST correctly based on the Solidity grammar.}
 More complex rules cannot be precisely described with XPath, which leads to false positives.
-Consider the Re-entrancy issue~(\ref{SolidityReentrancyExternalCall}).
+Consider the Re-entrancy issue (Section~\ref{SolidityReentrancyExternalCall}).
 SmartCheck reports violations of the Checks-Effects-Interactions (CEI) pattern, which do not always lead to re-entrancy (Listing~\ref{ReentrancyListing}).
 
 \begin{lstlisting}[caption={Violation of CEI not leading to re-entrancy.},label={ReentrancyListing},language=Solidity]

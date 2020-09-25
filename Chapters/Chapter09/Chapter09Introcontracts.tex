@@ -54,7 +54,7 @@ On the other hand, they make implementing many types of contracts difficult, if 
 
 \subsection{Smart contracts in Ethereum}
 
-Ethereum is a blockchain platform that aims to Bitcoin's limitations regarding programmability.
+Ethereum is a blockchain platform that aims to address Bitcoin's limitations regarding programmability.
 It was announced in 2014~\cite{Buterin2014, Wood2014} and launched in 2015.
 
 Ethereum differs from Bitcoin in three major ways.
@@ -138,7 +138,7 @@ If the execution is successful, the remaining ether is refunded.
 EVM executes transactions \textit{atomically}.
 A failed transaction does not affect the state\footnote{It still increases the nonce value for the sender's account and is included in a block.} but consumes all provided gas.
 Ethereum specification (the Yellow paper~\cite{Wood2014}) defines gas costs of EVM opcodes.
-Developers occasionally change them in protocol upgrades (implemented as hard forks).
+Developers occasionally change them in protocol upgrades.
 The market determines the price of a gas unit in ether.
 The \textit{block gas limit} bounds the amount of gas consumed in one block.
 Miners can vote to gradually change this limit~\cite{Jnnk15}.
@@ -261,7 +261,7 @@ Real-world projects often address this issue by encoding an administrator key in
 The owner of this key can perform a limited number of actions.
 For example, an administrator might be able to pause withdrawals without being able to steal users' funds.
 
-\paragraph{Anonymous attackers}.
+\paragraph{Anonymous attackers}
 Exploiting smart contracts is attractive compared to other types of cybercrime.
 First, smart contracts store significant amounts of value.
 Second, digital assets are more liquid than, e.g.,~data from compromised databases.\footnote{However, the know-your-customer procedure that most exchanges require, and blockchain analytics, has made cashing out more difficult.}

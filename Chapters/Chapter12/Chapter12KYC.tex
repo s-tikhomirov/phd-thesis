@@ -22,7 +22,7 @@ Regulations in most jurisdictions demand that banks obtain proof of identity fro
 
 Modern KYC practices weaken users' control over their personal information and threaten their privacy.
 Financial institutions store sensitive information in private databases, which become a target for corrupt employees or external hackers.
-Implement KYC/AML implementations lead to high compliance cost and multiplies the risk of identity theft.
+Independent KYC/AML implementations lead to high compliance cost and multiply the risk of identity theft.
 
 Open blockchains like Ethereum take a more decentralized approach to identity management.
 Users join these networks without any identification.
@@ -42,7 +42,7 @@ We then discuss possible use cases and implementation challenges.
 \subsection{Centralized identity}
 
 In terms of asymmetric cryptography, identity~$I$ of user~$U$ is a public-private key pair~$(pub_U, priv_U)$.
-The public key~$pub_U$ authenticates the user (or, equivalently, links the current action to some past actions).
+The public key~$pub_U$ authenticates the user (or, equivalently, links their current action to some past actions).
 Public identifiers like username or address are derived from~$pub_U$.
 The private key~$priv_U$ allows $U$ to sign messages on behalf of~$I$.
 For the system, $U$ is whoever possesses $priv_U$.
@@ -55,7 +55,7 @@ Moreover, users' data is stored by a centralized entity, providing incentives fo
 Finally, users have to create a new identity for each website they wish to register with.
 As a result, they adhere to a risky practice of reusing passwords.
 Third-party login protocols such as OAuth and OpenID~\cite{Dodanduwa2018} partially address this issue ("login with").
-In this scheme, a website queries the website that holds the user's existing identity (e.g.,~Google) and asks for permission to access a subset of the user's data (e.g.,~name and email).
+In this scheme, a website queries the service that holds the user's existing identity (e.g.,~Google) and asks for permission to access a subset of the user's data (e.g.,~name and email).
 This approach alleviates the password management problem but increases the impact of potential identity theft.
 
 Though users can revoke access at any time, the "login with" scheme is still privacy-violating.
@@ -126,14 +126,14 @@ The details of the KYC procedure do not affect our design.
 \subsection{Tokens and exchanges}
 
 Our KYC solution can be applied for any service.
-For concreteness, consider a token exchange as an example of an exchange.
+For concreteness, consider a token exchange as an example.
 
 \begin{definition}
 	A \textbf{token} is a transferable fungible unit of value maintained by a smart contract.
 \end{definition}
 
 ERC20~\cite{Victor2019} is the de-facto standard API for implementing token contracts in Ethereum.
-A token contract keeps track of users' token balances and enables them to transfer tokens using the following functions:
+A token contract keeps track of users' token balances and allows them to transfer tokens using the following functions:
 
 \begin{itemize}
 	\item \texttt{transfer} sends a given amount of tokens to a given address;
@@ -142,10 +142,10 @@ A token contract keeps track of users' token balances and enables them to transf
 \end{itemize}
 
 \begin{definition}
-	An \textbf{exchange} is a service that enables users to exchange tokens.
+	An \textbf{exchange} is a service that allows users to exchange tokens.
 \end{definition}
 
-Centralized exchanges, implemented as a regular web service, are the most prevalent.
+Centralized exchanges, implemented as regular web services, are the most prevalent.
 We are mostly interested in decentralized, or on-chain exchanges, implemented as smart contracts.
 
 An exchange without KYC support may be used as follows.
@@ -169,7 +169,7 @@ A KYC provider (a governmental entity or company in charge of customer onboardin
 
 A simple approach to implementing a KYC check with a separate contract would be the following.
 The KYC contract stores the whitelist of approved addresses.
-On every \texttt{transfer}, token contracts check if the address belongs to the whitelist.
+On every \texttt{transfer}, the token contract checks if the address belongs to the whitelist.
 This design has a fundamental privacy flaw: the contract stores all whitelisted addresses on-chain in plaintext.
 Moreover, users must use the same addresses they have registered with the KYC provider.
 Address reuse threatens privacy: an adversary can link the user's transactions using public blockchain data.
@@ -195,7 +195,7 @@ The KYC contract verifies the rest against the current accumulator value.
 If the checks pass, KYCE executes the requested action.
 
 \paragraph{Details on the accumulator construction}
-We construct an accumulator based on a pairing function~$e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}.
+We construct an accumulator based on a pairing function~$e(\cdot,\cdot)$ in some pairing setting.\footnote{The original paper~\cite{Camenisch2009} uses type-1 pairings, but type-3 pairings can be adopted as well.}
 The accumulator contains the serial numbers, possibly consecutive integers.\footnote{It is possible to store public keys, but it would be less efficient.}
 
 The accumulator is constructed as follows.
@@ -260,7 +260,7 @@ If the proof is correct, the order is executed.
 
 \subsection{Use cases}
 
-Either the exchange contract or the token contract must be KYC-compliant -- i.e.,~check eligibility of transacting parties using the introduced cryptographic scheme using the KYC contract.
+Either the exchange contract or the token contract must be KYC-compliant -- i.e.,~check the eligibility of transacting parties using the introduced cryptographic scheme using the KYC contract.
 
 \paragraph{KYC-compliant exchange}
 
@@ -310,7 +310,7 @@ Either the exchange contract or the token contract can perform such checks by st
 
 \section{Implementation details}
 
-We created an initial (not privacy-preserving) implementation of the proposed design.
+We have created an initial (not privacy-preserving) implementation of the proposed design.
 Our project consists of two smart contracts written in Solidity: KycProvider and KyceToken.
 KycProvider maintains a 2-dimensional boolean array that stores the eligibility status across users and tokens.
 On initialization, the address that deploys the contract is appointed as the \textit{owner}, allowing it to add and remove users from the whitelist.
@@ -331,7 +331,7 @@ If \texttt{isEligible} returns \texttt{false}, the execution stops.
 If it returns \texttt{true}, the corresponding function of the superclass is invoked.
 
 The implementation of the proposed scheme requires certain cryptographic primitives.
-Some of them are already partially available in Ethereum as pre-compiled contracts (namely, elliptic curve addition, scalar multiplication, and pairing checks).
+Some of them are partially available in Ethereum as pre-compiled contracts (elliptic curve addition, scalar multiplication, and pairing checks).
 For the proposed scheme to be fully implemented, pairing evaluation is also required.\footnote{As of 2020, Ethereum does not support pairing evaluation.}
 
 
@@ -341,9 +341,9 @@ Jos{\'{e}} Parra Moyano and Omri Ross use distributed ledgers to improve the KYC
 Their proposal can be summarized as follows:
 \begin{itemize}
 	\item the regulator maintains a database with all users' private data;
-	\item the users signs a contract with their first bank (the\textit{home bank});
+	\item the user signs a contract with their first bank (the \textit{home bank});
 	\item the home bank stores hashes of the user's documents in a smart contract in a permissioned blockchain;
-	\item when a user signs a contract with another bank it obtains the user's documents from the database and looks up the hash to ensure that the user has been KYC-approved;
+	\item when the user signs a contract with another bank it obtains the user's documents from the database and looks up the hash to ensure that the user has been KYC-approved;
 	\item the identity of the home bank is not revealed;
 	\item a cost-sharing mechanism for banks allows them to proportionally share the cost of the initial KYC approval.
 \end{itemize}
@@ -354,11 +354,11 @@ Clare Sullivan and Eric Burger investigate possible implications of further deve
 E-residency of Estonia is a governmental program that provides applicants with a digital identity that can be used, e.g.,~to register a company and open a bank account.
 Estonian e-residency disconnects a digital identity from citizenship or physical residence.
 Within the e-residency program, Estonia collaborates with a blockchain project Bitnation~\cite{Bitnation15, Estonia15}.
-Provable (previously known as Oraclize) implemented a connector that lets Ethereum contracts handle e-residency identities~\cite{Provable}.
+Provable (previously known as Oraclize) offers a connector that lets Ethereum contracts handle e-residency identities~\cite{Provable}.
 
 A project~\cite{Ohtamaa2016} similar to ours implements a KYC scheme using Ethereum, but stores the KYC status on-chain in plaintext.
 Multiple projects aim at easing customer onboarding for banks~\cite{CambridgeBlockchain, KycChain, SnapSwap, Tradle}.
-Blockchain consortium R3 developed a proof-of-concept implementation of a shared KYC between ten banks based on its blockchain platform Corda~\cite{Allison2016}.
+Blockchain consortium R3 has developed a proof-of-concept implementation of a shared KYC between ten banks based on its blockchain platform Corda~\cite{Allison2016}.
 Multiple Ethereum-based identity projects have been proposed~\cite{Mesropyan2017, Sovrin, Uport}.
 
 

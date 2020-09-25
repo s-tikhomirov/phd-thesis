@@ -366,8 +366,8 @@ The pattern detects the environmental variable \texttt{tx.origin}.
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityCallValue:name \let\letcs\etoolboxletcs} \label{SolidityCallValue}
 
 Solidity provides many ways to transfer ether (see Section~\ref{SoliditySend}).
-\texttt{addr.call.value(x)()} transfers \texttt{x} ether and forwards all gas to \texttt{addr}, potentially leading to vulnerabilities like re-entrancy (see Section~\ref{SolidityReentrancyExternalCall}).
-The recommended way to transfer ether is \texttt{addr.transfer(x)}, which only provides the callee with a "stipend" of 2300 gas.
+The function \texttt{addr.call.value(x)()} transfers \texttt{x} ether and forwards all gas to \texttt{addr}, potentially leading to vulnerabilities like re-entrancy (see Section~\ref{SolidityReentrancyExternalCall}).
+The recommended way to transfer ether is \texttt{addr.transfer(x)}, which only provides the callee with a "stipend" of $2\,300$~gas units.
 The pattern detects functions whose name is \texttt{call.value} and whose argument list is empty.
 
 \paragraph{2020 update}
@@ -394,7 +394,7 @@ The pattern detects division (\texttt{/}) where the numerator and the denominato
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityLockedMoney:name \let\letcs\etoolboxletcs} \label{SolidityLockedMoney}
 
 Contracts programmed to receive ether should implement a way to withdraw it, i.e.,~call \texttt{transfer}, \texttt{send}, or \texttt{call.value} at least once.
-The pattern detects contracts that contain a \texttt{payable} function but contain neither of the withdraw-enabling functions.
+The pattern detects contracts that contain a \texttt{payable} function but contain none of the withdraw functions.
 
 \paragraph{2020 update}
 In Solidity 0.5.0, the address type has been split into \texttt{address} and \texttt{address payable}~\cite{Solidity050}.
@@ -406,10 +406,10 @@ It is still possible to write a contract that receives money but cannot send it 
 %% SOLIDITY_UNCHECKED_MATH
 \subsubsection{\let\letcs\texapiletcs \usevalue SolidityUncheckedMath:name \let\letcs\etoolboxletcs} \label{SolidityUncheckedMath}
 
-Solidity is prone to integer over- and underflow\footnote{Referred to as overflow for brevity.}.
+Solidity is prone to integer over- and underflow.\footnote{Referred to as overflow for brevity.}
 Overflow leads to unexpected effects and can lead to loss of funds if exploited by a malicious account.
 Use the SafeMath library\footnote{See Section~\ref{SolidityMaliciousLibraries} for advice on library usage.} that checks for overflows~\cite{OpenZeppelin2017}.
-The pattern detects arithmetic operations \texttt{+}, \texttt{-}, \texttt{*} not inside a conditional statement.
+The pattern detects arithmetic operations \texttt{+}, \texttt{-}, \texttt{*} that are not inside a conditional statement.
 This rule has been muted for testing (Section~\ref{SectionResults}) due to a high false positive rate.
 
 
@@ -438,7 +438,7 @@ for (var i = 0; i < array.length; i++) { /*...*/ }
 \end{lstlisting}
 
 The type of \texttt{i} is inferred to \texttt{uint8}.
-If \texttt{array.length} is bigger than \texttt{256}, an overflow will occur.
+If \texttt{array.length} is bigger than \texttt{256}, an overflow occurs.
 Explicitly define the type when declaring integer variables:
 
 \begin{lstlisting}[language=Solidity]
@@ -498,7 +498,7 @@ returns (bool success) {
 }
 \end{lstlisting}
 
-The pattern detects a contract inherited from a contract with a name including the word "token," which may throw exceptions from inside one of the named functions.
+The pattern detects a contract inherited from a contract with a name including the word "token," which may throw exceptions from one of the named functions.
 
 %% SOLIDITY_PRAGMAS_VERSION
 \subsubsection{\usevalue SolidityPragmasVersion:name } \label{SolidityPragmasVersion}
@@ -534,7 +534,7 @@ The pattern detects the described construction (only if the \texttt{pragma} dire
 %% SOLIDITY_STYLE_GUIDE_VIOLATION
 \subsubsection{\usevalue SolidityStyleGuideViolation:name } \label{SolidityStyleGuideViolation}
 
-In Solidity, function\footnote{Except for constructors: they must share the name with the contract and usually start with an uppercase letter.} and event names usually start with a lower- and uppercase letter respectively:
+In Solidity, function names usually start with a lowercase letter\footnote{Except for constructors: they must share the name with the contract and usually start with an uppercase letter.} and event names start with an uppercase letter:
 \begin{lstlisting}[language=Solidity]
 function Foo(); // bad
 event logFoo(); // bad
@@ -555,7 +555,7 @@ function foo() public { /*...*/ } // good
 function bar() private { /*...*/ } // good
 \end{lstlisting}
 
-The pattern detects function and variable definitions without a visibility modifier.
+The pattern detects function and variable definitions with no visibility modifier.
 
 \paragraph{2020 update}
 Since Solidity 0.5.0, a visibility modifier is mandatory for all functions~\cite{Solidity050}.

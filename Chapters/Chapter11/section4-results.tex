@@ -1,6 +1,6 @@
 \section{Experimental results} \label{SectionResults}
 
-We compare SmartCheck with the results of manual audit (Section~\ref{ManualAudit}) and the three freely available vulnerability detection tools -- Oyente, Remix, and Securify (Section~\ref{MassiveTesting}).\footnote{For Securify, we only consider partial results from the publicly available version of the tool.}
+We evaluate SmartCheck in comparison to the results of manual audit (Section~\ref{ManualAudit}) and the three freely available vulnerability detection tools -- Oyente, Remix, and Securify (Section~\ref{MassiveTesting}).\footnote{For Securify, we only consider partial results from the publicly available version of the tool.}
 
 
 \subsection{Definitions}
@@ -22,7 +22,7 @@ False negative rate (FNR) is the number of FNs for this tool divided by the numb
 \subsection{Case studies} \label{ManualAudit}
 
 We consider three contracts: Genesis ("the platform for the private trust management market"~\cite{Genesis}, source code~\cite{GenesisGithub}, analyzed at commit \texttt{1ecf99d}), Hive ("the first crypto currency [sic] invoice financing platform"~\cite{Hive}, source code~\cite{HiveGithub}, analyzed at commit \texttt{0d54699}), and Populous ("an online platform that matchmakes invoice sellers to invoice buyers hosted on the blockchain"~\cite{Populous}, source code~\cite{PopulousGithub}, analyzed at commit \texttt{10de4ae}).
-The FDR and FNR for each tool (in \% and absolute numbers) are presented in Table~\ref{CaseStudyTable}.
+The FDR and FNR for each tool (in absolute numbers and as percentages) are presented in Table~\ref{CaseStudyTable}.
 
 \begin{table*}[t]
 	\centering
@@ -66,18 +66,17 @@ The FDR and FNR for each tool (in \% and absolute numbers) are presented in Tabl
 Oyente and Securify show no TPs on these three contracts.
 Remix detects TPs only in the Populous contract.
 Remix and SmartCheck show an overall FDR of~$97\%$ and~$69\%$ and an overall FNR of~$92\%$ and~$47\%$, respectively.
-Overall, SmartCheck reported $87$~issues in the three contracts.
+Overall, SmartCheck reports $87$~issues in the three contracts.
 
 Requirements for code analysis tools differ across platforms and domains.
 Due to special security requirements in smart contract programming, a low FN rate is crucial (a missed vulnerability can be disastrous), whereas a relatively high FP rate is tolerable.
-Most contracts contain only a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
+Most contracts contain a few hundreds of lines of code (see~Section~\ref{MassiveTesting}) and can be audited manually.
 
-Though SmartCheck's FDR of~$69\%$~may seem pretty high, it is not a serious issue in this domain.
+Though SmartCheck's FDR of~$69\%$~may seem high, it is not a serious issue in this domain.
 $47\%$~is a reasonable level of FNR since many vulnerabilities in smart contracts are related to business logic and cannot be detected automatically.
 Most of SmartCheck's FNs are found manually (not by other tools).
 
 SmartCheck detects a critical issue in one of the contracts.
-The vulnerability is as follows.
 An attacker can create an unlimited number of internal entities and block the contract's normal operation.
 A public function (i.e.,~such that any Ethereum user can call it) adds an element to an internal array (Listing~\ref{AddingGroup}).
 Several critical functions then iterate through this array (e.g.,~Listing~\ref{Iterating}).
@@ -126,8 +125,8 @@ A \textit{blockchain explorer} is a website that displays information about bloc
 Etherscan~\cite{EtherscanVerified} is a popular Ethereum blockchain explorer.
 Among other information, it offers \textit{contract verification} as a service.
 A contract developer uploads the source code to Etherscan, which checks whether the deployed bytecode corresponds to the provided source code.
-We downloaded the source code of~$4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
-We then ran SmartCheck on this dataset.
+We download the source code of~$4\,600$~verified contracts ($1\,537\,954$~lines of code) from Etherscan as of 4~October~2017 using a Java library JSoup~\cite{JSoup}.
+We then run SmartCheck on this dataset.
 
 % https://tex.stackexchange.com/a/99834/142924
 % $X$ causes errors

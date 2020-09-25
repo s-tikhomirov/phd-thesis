@@ -292,14 +292,14 @@ Multiple data points would allow for more straightforward modeling of certain de
 
 We assume that the original data sources (e.g.,~feeds of reputable financial media) are trustworthy.
 An extra safety catch would be to query multiple sources, exclude outliers, and return an aggregated value.
-A secure connection (e.g.,~TLS) and the existing public key infrastructure (PKI) guarantee the authenticity of data sources.\footnote{See~\cite{Fromknecht2014} and~\cite{Lewison2016} for a discussion on blockchain-based PKI architectures}.
+A secure connection (e.g.,~TLS) and the existing public key infrastructure (PKI) guarantee the authenticity of data sources.\footnote{See~\cite{Fromknecht2014} and~\cite{Lewison2016} for a discussion on blockchain-based PKI architectures.}
 Gateways without publicly available source code should not be trusted.
 
 
 \subsection{Execution} \label{sec:Ch10FindelExecutionImplementation}
 
-The \texttt{executeRecursively} function implements the execution logic defined in Section~\ref{sec:Ch10FindelExecutionModel} and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
-The execution of an expired contract ($t_1 < now$) returns \texttt{true} unconditionally.\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\).} and deletes the contract\footnote{An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}
+The \texttt{executeRecursively} function implements the execution logic (see Section~\ref{sec:Ch10FindelExecutionModel}) and returns \texttt{true} if executed completely (without creating new contracts) and \texttt{false} otherwise.
+The execution of an expired contract ($t_1 < now$) returns \texttt{true} unconditionally and deletes the contract.\footnote{By definition, an expired contract is equivalent to \(\mathrm{Zero}\). An expired contract should also be deleted even if its owner is offline forever. Our current implementation does not handle the latter case, though it may be considered an attack vector due to increasing storage usage. A possible approach is for a marketplace to offer rewards for keeping track of expired contracts and triggering their deletion.}
 Every step in the lifecycle of a Findel contract issues a system-wide notification (\texttt{Event}), allowing users to keep track of contracts they are interested in.
 
 Our implementation deviates from the model (Section~\ref{sec:Ch10FindelSyntax}) in that the execution of contracts is not guaranteed.
@@ -367,7 +367,7 @@ This system is useful for hedging against price volatility of cryptocurrencies a
 
 \subsection{Modeling balances with Tokens}
 
-A more refined approach to modeling users' balances is to use ERC20 tokens.
+A more refined approach to modeling users' balances implies using ERC20 tokens.
 We assume that tokens can be freely exchanged to any currency the marketplace operates with.
 Given the address $\mathcal{T}$ of the Ethereum token contract, any Ethereum contract can query the balance of any user $U$, and transfer its tokens (if it has any) to an arbitrary address.
 Suppose Alice and Bob are token holders.
@@ -409,7 +409,7 @@ Besides communicating with the Ethereum network, it might also implement other f
 \section{Platform limitations}
 
 A Turing-complete programming language does not mean that all algorithms can be implemented inside an Ethereum contract.
-Apart from gas costs, the Ethereum network architecture implies other limitations.
+Apart from gas costs, the Ethereum network architecture imposes other limitations.
 
 \paragraph{Lack of precise clock}
 Almost all financial contracts contain temporal clauses.
@@ -510,14 +510,14 @@ That brings the cost of a typical Findel contract operation ($10^5$ -- $10^6$~ga
 As of September~2020, the cost of execution in Ethereum increased significantly.
 The average gas price is around~$100$~Gwei ($10^{-7}$~ether) per unit of gas~\cite{EGS}.
 The price of ether is around $360$~USD\@.
-Assuming the same gas costs, an operation with a Findel contract would now cost between $3.6$ and~$36$~USD\@.
+Assuming the same gas costs, an operation with a Findel contract in 2020 would cost between $3.6$ and~$36$~USD\@.
 
 
 \section{Conclusion}
 
 Smart contracts in public blockchain networks seem to be a perfect environment for implementing financial agreements.
 The unique value proposition of blockchains is trustless execution, which reduces counterparty risks.
-We have introduced Findel -- a declarative financial DSL built upon ideas from previous research in financial engineering.
+We have introduced Findel -- a declarative financial DSL built upon ideas from prior research in financial engineering.
 Formalizing contract clauses using Findel makes them unambiguous and machine-readable.
 We prove Ethereum to be a suitable platform for trading and executing Findel contracts.
 

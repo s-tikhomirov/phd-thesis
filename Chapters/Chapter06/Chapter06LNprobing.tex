@@ -52,25 +52,25 @@ To be suitable for probing, the channel must be \textit{active} (available for r
 We assume that nodes follow the BOLT specification (in particular, they return errors as prescribed).
 
 \paragraph{Error interpretation}
-We use two types of errors, which have a broader semantics than our method is aware of.
-A node returns a \texttt{temporary\_channel\_failure} (\texttt{UPDATE|7}) error is it "was unable to handle this HTLC, but may be able to handle it, or others, later."
-We interpret this error as "insufficient balance," though there may be other reasons for temporary channel unavailability.
-A node returns \texttt{incorrect\_or\_unknown\_payment\_details} (\texttt{PERM|15}) if "[t]he payment\_hash is unknown to the final node, the payment\_secret doesn't match the payment\_hash, the amount for that payment\_hash is incorrect or the CLTV expiry of the HTLC is too close to the current block height for safe handling".
+The types of errors that we use have broader semantics than our method is aware of.
+A node returns a \texttt{temporary\_channel\_failure} (\texttt{UPDATE|7}) if it is "unable to handle this HTLC, but may be able to handle it, or others, later."
+We interpret this error as "insufficient balance," though a channel may be unavailable for other reasons.
+A node returns \texttt{incorrect\_or\_unknown\_payment\_details} (\texttt{PERM|15}) if "[t]he payment\_hash is unknown to the final node, the payment\_secret doesn't match the payment\_hash, the amount for that payment\_hash is incorrect or the CLTV expiry of the HTLC is too close to the current block height for safe handling."
 We interpret this error as only the first of the listed conditions.
-The payment hash is unknown to the receiving node, as we generated it randomly.
+The payment hash is unknown to the receiving node, as we have generated it randomly.
 Other conditions should not hold: the amount and the HTLC expiry date should be consistent, as we rely on the standard functionality of c-lightning to construct payments.
 We assume it to be compliant with the specification and well-tested.
-Experiments on our own channels showed that c-lightning indeed returns these errors under the conditions relevant to our experiment.
+Experiments on our own channels show that c-lightning indeed returns these errors under the conditions relevant to our experiment.
 
 \paragraph{A note on probing directions}
-Our probing algorithm is agnostic to the direction of probing payments.
+Our probing algorithm is agnostic to the direction of probing.
 For instance, sending a probe via a route ending in "Alice -- Bob" theoretically gives the same information as a probe via a route ending in "Bob -- Alice."
 However, channel directions may have different properties in practice.
 Each channel party controls the routing policy in its channel direction.
 Alice may allow routing to Bob without Bob allowing routing to Alice.
 To extract the maximum amount of information, we probe channels in both directions.
 Doing so also helps us overcome the technical issue with large channels.
-Due to the limitation on the LN payment amount, we cannot probe large channels.
+Due to the limitation on the LN payment amount, we cannot fully probe large channels.
 However, if a large channel's capacity is skewed, we can successfully probe it from the "smaller" instead of the "larger" end.
 For clarity, we omit this implementation detail from the algorithm description.
 
@@ -118,7 +118,7 @@ We close all the connections after this step, except for the connections to our 
 \paragraph{Heuristic 2: Pre-probing}
 To further optimize probing, we introduce a pre-probing step.
 We send a probe of~$1\,000$~satoshis to every channel marked as active in the gossip data.\footnote{We use the same probing function as for the main probing.}
-If we get no response, we consider the channel dead and do not consider it in the main probing step.
+If we get no response, we mark the channel as dead and do not probe it in the main probing step.
 For the first round of probing, we consider all channels classified as live by either the first or the second heuristic.
 
 \paragraph{Heuristic 3: Liveness detected during probing}
@@ -232,7 +232,7 @@ The algorithm for all channels selected for probing is presented in Algorithm~\r
 For each probe for a chosen \textit{target channel}, we select routes towards it based on the following criteria:
 \begin{itemize}
 	\item the target channel is the last channel in the route;
-	\item all previous channels in the route have sufficient balances (to the best of our current knowledge) to forward the probe.
+	\item all previous channels in the route have sufficient balances to forward the probe (to the best of our current knowledge).
 \end{itemize}
 
 The route generation algorithm is presented in Algorithm~\ref{alg:find-route}.
@@ -452,13 +452,13 @@ The adversary only needs to maintain a few TCP connections during the main phase
 (We also open and immediately close connections to all nodes to check their liveness; this process can be parallelized.)
 Note that running an LN node implies running a fully synchronized Bitcoin node, which requires hundreds of gigabytes of storage ($265$~GB at the time of our experiments in February~2020).
 
-With our current approach, the maximum probing amount is the protocol's HTLC limit of~$0.167$~BTC\@.
+With our current approach, the maximum probing amount is the protocol's limit of~$0.043$~BTC\@.
 This is the minimal amount the attacker has to commit to theoretically be able to probe all "small" channels fully.
 Our experience shows that it is beneficial to open multiple channels to decrease the negative effect of hanging HTLCs.
 In our experiments, we use five~entry channels.
 
-Note that since all the probing payments fail, the attacker pays no fees.
-If no HLTCs are left unresolved after the probing, the attacker can close the entry channels collaboratively and withdraw the committed funds immediately.
+Note that since all probing payments fail, the attacker pays no fees.
+If no HLTCs are left unresolved after the probing, the attacker can close the entry channels collaboratively and immediately withdraw the committed funds.
 If some HTLCs are left unresolved, or the attacker's channel partners are offline or unwilling to cooperate on channel closure, the attacker would have to wait for the agreed-upon timeout (usually on the order of days) before withdrawing the funds.
 In any case, no coins are irrevocably lost.
 However, the attacker still bears the opportunity cost: the coins committed to the attack could have been invested elsewhere.
@@ -469,7 +469,7 @@ However, the attacker still bears the opportunity cost: the coins committed to t
 
 Now we discuss the limitations of our approach and potential ways to improve it.
 
-\paragraph{Private channels}
+\paragraph{Unannounced channels}
 
 LN nodes do not have to announce their channels.
 For example, casual users using mobile devices are not supposed to do so.
@@ -503,7 +503,7 @@ A possible way to overcome this limitation would be to probe large channels with
 The goal of concurrent probing is to temporarily block the capacity of the attacked channel.
 Our current method does not support concurrent probing because we only control the sender, not the receiver.
 An honest receiver quickly returns an error and unblocks the capacity.
-Concurrent probing would involve a malicious node acting as the receiver of all our probes.
+Concurrent probing would involve another malicious node acting as the receiver of all our probes.
 The malicious receiver would deliberately delay the response, thus temporarily blocking funds along the route.
 
 Concurrent probing could also decrease the probing time, bringing the results closer to an instant network snapshot.
@@ -518,7 +518,7 @@ The obtained information may be a business secret of the node operator.
 
 Our method is based on the assumption that the probe is forwarded through the \textit{channels} determined by the sender.
 However, the LN specification only guarantees that the payment follows the chosen sequence of \textit{nodes}.
-A pair of nodes may share multiple channels (\textit{parallel channels}).
+A pair of nodes may share multiple \textit{parallel} channels.
 A forwarding node is free to choose a channel from all parallel channels to the next node.
 This practice is known as \textit{non-strict forwarding} and provides flexibility in addressing local balance restrictions.
 While the LN specification allows non-strict forwarding, c-lightning cannot open multiple channels to the same node.
@@ -535,7 +535,7 @@ However, most \textit{node pairs} have at most one channel, which thus can be pr
 
 The simplest countermeasure that does not require protocol changes can be implemented as part of a node routing policy.
 Note that all our probing payments fail (either due to insufficient balance or unknown hash preimage).
-Intermediary nodes know whether a payment they are a part of succeeds or fails.
+Intermediary nodes know whether a payment they participate in succeeds or fails.
 Therefore, an intermediary node observing a flood of failing payments from the same channel may suspect a probing, especially if the amounts follow the binary search pattern.
 An intermediary node can then close the channel or otherwise limit the flow of failing payments from the node in question.
 Of course, the adversary can trick such detection techniques, for example, by connecting to Bob via Alice and making Bob think that Alice is performing the probing.
@@ -558,14 +558,14 @@ When a payment fails, the sender receives an error message.
 Depending on the cause of the error, these messages differ in two ways.
 They have different error codes and originate from different nodes.
 In particular, if the target channel has insufficient balance, the error is returned by the \textit{previous} node.
-If the target channel has enough balance, then the \textit{final recipient} reports incorrect payment details.
+If the target channel has enough balance, then the \textit{final} recipient reports incorrect payment details.
 We propose a change to error handling in the LN that would prevent the sender from knowing where the payment has failed.
 In particular, each node in a route changes the error it sends back as if it has originated from its own channel.
 We also suggest merging the two error types ("incorrect or unknown payment details" and "temporary channel failure").
 A similar countermeasure has already been implemented (see note about error types $16$~and~$17$~in BOLT4~\cite{Bolt4OnionRouting}).
 The drawback of this method is a decrease in payment reliability.
 The sender can no longer exclude the failing channel from the subsequent route search.
-However, the payment reliability problem may become less pressing with \textit{multi-part payments} (MPP) that split a large payment into small parts and thus increase routing efficiency.
+However, the payment reliability problem may become less pressing with \textit{multi-part payments} (MPP) that split a large payment into small parts that are sent along different routes and thus increase routing efficiency.
 
 \paragraph{Added loops}
 Another potential countermeasure would be for intermediary nodes to add extra hops to the route.
@@ -573,11 +573,11 @@ Currently, the sender chooses the route.
 The order of nodes in the route is enforced with onion routing.
 If this scheme is modified, an intermediary node could instead forward the payment to the next node in the route through an added random sub-route.
 Added loops would blur the picture for the sender, as the sender would not know which path the payment has taken.
-One drawback of this approach is the requirement to substantially change the onion routing protocol, which, as~\cite{Malavolta2019} argues, is necessary for LN security.
+One drawback of this approach is the requirement to substantially change the onion routing protocol, which, as argued in~\cite{Malavolta2019}, is necessary for LN security.
 The fee structure would also have to be more complex.
 
 \paragraph{JIT routing}
-Just In Time Routing (JIT routing) algorithm ha been originally proposed to improve payment reliability~\cite{Pickhardt2019, Pickhardt2019a}.
+Just In Time Routing (JIT routing) algorithm has been originally proposed to improve payment reliability~\cite{Pickhardt2019, Pickhardt2019a}.
 JIT routing works as follows.
 If a forwarding node lacks the balance to forward a payment, it sends a circular payment to itself to add more funds to the necessary channel.
 This process is called \textit{channel rebalancing}.\footnote{Another research paper~\cite{Conoscenti2019} analyzes the influence of hubs on the LN and proposes a channel rebalancing algorithm.}

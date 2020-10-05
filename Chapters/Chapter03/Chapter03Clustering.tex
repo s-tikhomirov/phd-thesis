@@ -6,7 +6,7 @@ In this Chapter, we describe a novel network-level deanonymization attack on cry
 We show how a global passive adversary can cluster transactions issued from the same node and correlate the clusters with IP addresses.
 
 Our method is based on analyzing the timings of transaction announcements.
-We go beyond the first relayer heuristic~\cite{Biryukov2014, Koshy2014} and consider multiple announcements for each transaction.
+We, as the authors of~\cite{Biryukov2014}, go beyond the first relayer heuristic~\cite{Koshy2014} and consider multiple announcements for each transaction.
 First, we collect the data using geographically distributed listening nodes.
 We then apply carefully chosen weight functions to transaction announcement timestamps.
 We observe that the weight vectors of transactions issued from the same node exhibit stronger correlations.
@@ -32,7 +32,7 @@ They, in turn, announce the transaction to their neighbors, and so forth.
 
 Each peer is typically receiving announcements for the same transaction from multiple neighbors.
 Intuitively, the first peer to announce a given transaction is likely to be close to its source.
-Earlier network-based deanonymization attacks~\cite{Biryukov2014, Koshy2014} are based on the \textit{first relayer heuristic} -- an assumption that the first peer to announce a transaction \textit{is} the source.
+Earlier network-based deanonymization attacks~\cite{Koshy2014} are based on the \textit{first relayer heuristic} -- an assumption that the first peer to announce a transaction \textit{is} the source.
 An attacker connects to all nodes and derives the correspondence between transactions and their first relayer' IP addresses.
 This heuristic assumes that the attacker establishes connections to all nodes and that all nodes announce a new transaction to all neighbors as soon as they become aware of it.
 Both assumptions do not fully hold in practice.
@@ -47,7 +47,7 @@ We hypothesize that propagation patterns of transactions issued from the same so
 To exploit this similarity, we first connect to all nodes and log the timestamps of transaction announcements.
 We then characterize transaction propagation patterns with \textit{weight vectors}.
 This technique distinguishes our method from~\cite{Biryukov2014}, where the attacker correlates transactions with clients based on how many of the transaction's first relayers fall into a known entry set.
-Each element of a vector corresponds to a node\footnote{We identify nodes by their IP~addresses} that has announced at least one transaction to us.
+Each element of a vector corresponds to a node\footnote{We identify nodes by their IP~addresses.} that has announced at least one transaction to us.
 For each transaction, we assign decreasing non-zero weights to the first $N$~nodes that have announced it and a zero weight to all others.
 We expect transactions from the same source to have a stronger correlation between the weight vectors compared to transactions from different sources.
 
@@ -225,11 +225,38 @@ We re-compile \texttt{bcclient} with modified constants (port numbers, protocol 
 For Monero, which is not based on the Bitcoin~Core codebase, we modify the reference implementation (\texttt{monerod}).
 We add the required logging and disable the built-in limits on the total bandwidth and artificial delays between network requests.
 
+First, we collect a fresh snapshot of the network.
+We start by resolving the bootstrapping DNS seeds.
+We try to connect to all known peers and ask them for peers they know using \texttt{getaddr} command.
+We recursively repeat the process three times.
+
 For each transaction announcement, we log the transaction hash, the IP that has announced it, and the timestamp of this event.
 We only log \texttt{inv} messages, and never continue with the \texttt{getdata} -- \texttt{tx} exchange.
 For selected experiments on the Bitcoin testnet, we also log \texttt{addr} messages.
 Address announcements allow us to infer the set of most probable IP addresses that correspond to each transaction cluster.
-We use Python scripts to process the log, save the data in a more compact JSON format, analyze it, and visualize the results.
+
+We use additional Python scripts to issue series of transactions from two different nodes.
+For each transaction set (learning set and control set) for each experiment, we emit a series of transactions to our own newly generated addresses.
+We use the command line interface of the underlying full node (such as \texttt{bitcoind} for Bitcoin).
+To send a transaction, we use \texttt{sendtoaddress} command.
+We generate a new address for each transaction with \texttt{getnewaddress}.
+The payment amounts are generated uniformly at random from an interval between the minimum and the maximum allowed amount.
+The maximum amount is $10$~times higher than the minimum amount.
+The minimum amounts for Bitcoin and Zcash are $0.00001$~BTC and $0.0005$~ZEC, respectively.
+
+Experiments on the cryptocurrencies based on the Bitcoin~Core codebase are implemented similarly.
+For Zcash, we issue both transactions that involve shielded addresses (we call such transactions shielded for short) and transactions between transparent addresses (i.e.,~transparent transactions).
+Issuing transparent transactions is similar to issuing transactions in Bitcoin.
+For shielded transactions, we use \texttt{z_getnewaddress} to generate a new address and \texttt{z_sendmany} to send a transaction.
+
+We use Python scripts to process the log.
+We parse the log, extract the relevant information (transaction hashed and timestamps), and save the data in a more compact JSON format.
+We then analyze the data, perform the clustering, and visualize the results.
+
+The number of transactions we issue per experiment is limited due to the behavior of Bitcoin~Core when spending unconfirmed UTXOs.
+It does not allow creating chains of unconfirmed transactions of length~$25$~or more.
+Therefore, issuing more transactions within a short time frame (shorter than the block generation interval) demands creating multiple confirmed UTXOs in advance at both issuing nodes, which would require additional time and effort during the setup phase of each experiment.
+Splitting the transactions in multiple chains and increasing the length of the experiment would lead to difficulties in parsing and processing the logs.
 
 
 \section{Experimental evaluation}
@@ -421,7 +448,6 @@ The results are presented in Figures~\ref{fig:bitcoin-mainnet} and~\ref{fig:zcas
 T-to-z transactions from the control set are marked with longer ticks.
 Note that our method clusters transactions involving both transparent and shielded addresses.
 
-%The Zcash network is much smaller than the Bitcoin testnet.
 We notice that Zcash peers offer far fewer connection slots on average: $36$~compared to $64$~on the Bitcoin testnet (Figures~\ref{fig:free-slots-bitcoin} and~\ref{fig:free-slots-zcash}).
 Many servers only accept fewer than ten connections.
 These results may reflect a larger share of \textit{protected} nodes in Zcash.
@@ -617,15 +643,16 @@ Less than $8$\% of clusters from transaction graph analysis correspond to a sing
 No evaluation based on the ground truth has been performed.
 
 Only in~\cite{Biryukov2014} do the authors estimate the success using their own transactions, in addition to theoretical calculations.
-They achieve a success rate of nearly $60$\% on the Bitcoin testnet.
+They achieve a success rate of nearly $60$\% on the Bitcoin testnet, over a set of $424$~transactions.\footnote{The experiments described in~\cite{Biryukov2014} were conducted in 2014. Since then, Bitcoin Core implemented stricter rules on chains of unconfirmed transactions. The length of such chains is now restricted to $25$ by default~\cite{Daftuar2015, Morcos2015, Maxwell2016}. This limits our ability to emit a large number of transactions during one experiment. This issue does not apply to Zcash, as its source code was forked from Bitcoin~Core before the relevant changes were introduced. However, the limitation in the Zcash experiments is the time required to generate a shielded transaction (around $30$~seconds on a consumer laptop as of~2018). As of 2020, after a series of protocol optimizations, generating a shielded Zcash transaction takes $2$-$3$~seconds.}
 This means that $60$\% of the testnet transaction issued from a given entry set are correctly identified as such.
 
-Our method achieves better results on the Bitcoin testnet (Figure~\ref{fig:bitcoin-testnet-combined}).
-Out of $30$~control set transactions, $24$~are assigned to one cluster.
+Our method seems more promising since it tries to use all the available information, including timing.
+In the experiment on the Bitcoin testnet (Figure~\ref{fig:bitcoin-testnet-combined}), $24$~out of $30$~control set transaction~are assigned to one cluster.
 Additionally, $7$~transactions not from the control set have been put into this cluster.
 Therefore, we achieve a false positive rate of $23$\% and a false negative rate of $20$\%.
 This corresponds to the success rate of $80$\%, which is higher than $60$\% reported in~\cite{Biryukov2014}.
 
+We should note however that while our method is promising, more statistical evidence is needed to quantify its advantage over previous methods precisely.
 
 
 \section{Attack cost estimation}
@@ -659,8 +686,7 @@ We expect a resourceful attacker to achieve better results on the Bitcoin mainne
 
 Application-level cryptographic countermeasures, such as zero-knowledge proofs in Zcash, cannot defend against our attack.
 We only consider transaction hashes and their announcement times, ignoring their content.
-
-Popular mitigation for deanonymization attacks is using overlay networks such as Tor~\cite{Tor}.
+Overlay networks such as Tor~\cite{Tor} are a popular mitigation for deanonymization attacks.
 In our case, transactions announced from the same Bitcoin node would form a cluster, even if they are sent to this node through Tor.
 Moreover, broadcasting transactions via Tor may introduce man-in-the-middle vulnerabilities~\cite{Biryukov2015}.
 
@@ -668,7 +694,6 @@ Our method's main limitation is the assumption that a user issues multiple trans
 Transactions issued from different sessions would not be linkable by our technique.
 
 Practical countermeasures against transaction clustering depend on the wallet type.
-
 For a full node that accepts incoming connections (a server):
 
 \begin{itemize}
@@ -678,7 +703,7 @@ For a full node that accepts incoming connections (a server):
 	\item advise users not to broadcast sensitive transactions within a short period (if the node is used for broadcasting users' transactions).
 \end{itemize}
 
-Users of full nodes without incoming connections (for example, behind NAT) may wish to re-launch the software to issue each transaction through a new set of entry nodes.
+Users of full nodes without incoming connections (e.g.,~behind NAT) may wish to re-launch the software to issue each transaction through a new set of entry nodes.
 
 Proposed countermeasures for SPV nodes would be:
 

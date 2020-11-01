@@ -42,7 +42,7 @@ The following software was used while preparing this thesis:
 
 # Acknowledgments
 
-In addition to the people I thank in the dedicated "Acknowledgments" section, I thank all the [TeX StackExchange](https://tex.stackexchange.com/) contributors who helped me to solve so many [weird TeX problems](https://tex.stackexchange.com/q/537928/142924).
+In addition to the people I thank in the dedicated "Acknowledgments" section, I thank all the [TeX StackExchange](https://tex.stackexchange.com/) contributors who helped me solve so many [weird TeX problems](https://tex.stackexchange.com/q/537928/142924).
 That would take me forever to fix on my own.
 Why don't we write theses in Markdown?..
 

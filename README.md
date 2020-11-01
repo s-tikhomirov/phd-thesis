@@ -30,10 +30,14 @@ See the result as `tikhomirov-thesis.pdf`.
 
 The following software was used while preparing this thesis:
 
-* Ubuntu 18.04.5 LTS
-* Sublime Text 3.2.2
-* TeXstudio 2.12.6 ([with `texlive-full`](https://tex.stackexchange.com/a/312867/142924))
-* JabRef 5.1--2020-03-18--99183e1
+* [Ubuntu](https://ubuntu.com/) 18.04.5 LTS
+* [Sublime Text](https://www.sublimetext.com/) 3.2.2
+* [TeXstudio](https://www.texstudio.org/) 2.12.6 ([with `texlive-full`](https://tex.stackexchange.com/a/312867/142924))
+* [JabRef](https://www.jabref.org/) 5.1--2020-03-18--99183e1
+* [lacheck](https://ctan.org/pkg/lacheck?lang=en).lex, v 1.26
+* [language tool](https://tex.stackexchange.com/q/155148/142924)
+* [TeXtidote](https://github.com/sylvainhalle/textidote)
+* [Grammarly](https://www.grammarly.com/)
 
 
 # Acknowledgments
